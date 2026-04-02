@@ -971,7 +971,7 @@
         <!-- Total -->
         <div class="card" style="background:var(--dark);border-color:var(--dark);">
           <div class="kpi-label" style="color:rgba(255,255,255,0.4);">Total de Negócios</div>
-          <div class="kpi-value large" style="color:#fff;">604</div>
+          <div class="kpi-value large" style="color:#fff;">93</div>
           <div class="kpi-meta">
             <span class="delta up" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">↑ 11% <span class="compare-suffix"></span></span>
           </div>
@@ -981,7 +981,7 @@
         <!-- Pré Vendas/MKT -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--blue-dark);">Pré Vendas / MKT</div>
-          <div class="kpi-value medium">247</div>
+          <div class="kpi-value medium">38</div>
           <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">41% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 8% <span class="compare-suffix"></span></span></div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:41%;background:var(--blue);"></div></div>
@@ -990,7 +990,7 @@
         <!-- SMB 3.0 -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--salmon-dark);">SMB 3.0</div>
-          <div class="kpi-value medium">148</div>
+          <div class="kpi-value medium">22</div>
           <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">24% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 14% <span class="compare-suffix"></span></span></div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:24%;background:var(--salmon);"></div></div>
@@ -999,7 +999,7 @@
         <!-- Enterprise 3.0 -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:#6B88E0;">Enterprise 3.0</div>
-          <div class="kpi-value medium">79</div>
+          <div class="kpi-value medium">12</div>
           <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">13% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 6% <span class="compare-suffix"></span></span></div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:13%;background:#6B88E0;"></div></div>
@@ -1008,7 +1008,7 @@
         <!-- Expansão -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--green);">Expansão</div>
-          <div class="kpi-value medium">89</div>
+          <div class="kpi-value medium">14</div>
           <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">15% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta flat" style="font-size:10px;">→ 2% <span class="compare-suffix"></span></span></div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:15%;background:var(--green);"></div></div>
@@ -1017,7 +1017,7 @@
         <!-- RCC -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:#7C68CC;">RCC</div>
-          <div class="kpi-value medium">41</div>
+          <div class="kpi-value medium">7</div>
           <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">7% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta down" style="font-size:10px;">↓ 5% <span class="compare-suffix"></span></span></div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:7%;background:#7C68CC;"></div></div>
@@ -1097,6 +1097,105 @@
         </div>
 
       </div>
+
+      <!-- Leads por Canal -->
+      <div class="sub-header" style="margin-bottom:12px;">LEADS POR CANAL</div>
+      <div class="card no-hover" style="padding:0;margin-bottom:12px;overflow:hidden;">
+
+        <!-- Table header -->
+        <div style="display:grid;grid-template-columns:160px 60px 70px 70px 200px 160px;gap:0;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--light);">
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);">Canal</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);text-align:right;">Leads</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);text-align:right;">WoW</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);text-align:right;">Score</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);padding-left:16px;">Porte</span>
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);padding-left:16px;">New Logo vs Expansão</span>
+        </div>
+
+        <!-- Rows -->
+        <div id="canalTableRows"></div>
+      </div>
+
+      <script>
+      (function(){
+        const CANAIS = [
+          { nome:"Inbound Site",    icon:"🌐", n:10, wow:+12, score:45, small:50, mid:30, ent:20, newlogo:80, exp:20 },
+          { nome:"Inbound WA",      icon:"💬", n:6,  wow:+5,  score:40, small:60, mid:25, ent:15, newlogo:90, exp:10 },
+          { nome:"Outbound",        icon:"📤", n:9,  wow:0,   score:72, small:30, mid:35, ent:35, newlogo:55, exp:45 },
+          { nome:"Prosp. Direta",   icon:"🎯", n:7,  wow:+9,  score:68, small:25, mid:40, ent:35, newlogo:60, exp:40 },
+          { nome:"Bid / Licitação", icon:"🏛️", n:2,  wow:-20, score:30, small:70, mid:20, ent:10, newlogo:100,exp:0  },
+          { nome:"Parceria / Adv.", icon:"🤝", n:2,  wow:+33, score:75, small:20, mid:30, ent:50, newlogo:50, exp:50 },
+          { nome:"Eventos",         icon:"🎪", n:2,  wow:+25, score:80, small:15, mid:35, ent:50, newlogo:40, exp:60 },
+        ];
+
+        const wrap = document.getElementById("canalTableRows");
+        if (!wrap) return;
+
+        CANAIS.forEach((c, idx) => {
+          const row = document.createElement("div");
+          row.style.cssText = "display:grid;grid-template-columns:160px 60px 70px 70px 200px 160px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;";
+          row.onmouseenter = () => row.style.background = "rgba(249,237,228,0.3)";
+          row.onmouseleave = () => row.style.background = "transparent";
+          if (idx === CANAIS.length - 1) row.style.borderBottom = "none";
+
+          const wowColor = c.wow > 0 ? "#429952" : c.wow < 0 ? "#D12D2D" : "#C9A820";
+          const wowBg    = c.wow > 0 ? "rgba(66,153,82,0.08)" : c.wow < 0 ? "rgba(209,45,45,0.08)" : "rgba(201,168,32,0.1)";
+          const wowArrow = c.wow > 0 ? "↑" : c.wow < 0 ? "↓" : "→";
+          const wowTxt   = wowArrow + " " + Math.abs(c.wow) + "%";
+
+          const scoreColor = c.score >= 60 ? "#429952" : c.score >= 40 ? "#C9A820" : "#D12D2D";
+          const scoreBg    = c.score >= 60 ? "rgba(66,153,82,0.08)" : c.score >= 40 ? "rgba(201,168,32,0.1)" : "rgba(209,45,45,0.08)";
+
+          // Porte mini-bar
+          const porteBar = `
+            <div style="display:flex;flex-direction:column;gap:3px;padding-left:16px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:${c.small}px;max-width:60px;height:4px;background:#8AA5FF;border-radius:2px;flex-shrink:0;"></div>
+                <span style="font-size:9px;color:var(--gray-light);">SMB ${c.small}%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:${Math.round(c.mid*60/100)}px;height:4px;background:#FFBA86;border-radius:2px;flex-shrink:0;"></div>
+                <span style="font-size:9px;color:var(--gray-light);">Mid ${c.mid}%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:${Math.round(c.ent*60/100)}px;height:4px;background:#6B88E0;border-radius:2px;flex-shrink:0;"></div>
+                <span style="font-size:9px;color:var(--gray-light);">Ent ${c.ent}%</span>
+              </div>
+            </div>`;
+
+          // New Logo vs Expansão split bar
+          const splitBar = `
+            <div style="padding-left:16px;">
+              <div style="display:flex;height:6px;border-radius:4px;overflow:hidden;width:120px;gap:1px;margin-bottom:4px;">
+                <div style="width:${c.newlogo}%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div>
+                <div style="width:${c.exp}%;background:#FFBA86;border-radius:0 3px 3px 0;"></div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <span style="font-size:9px;color:#6B88E0;font-weight:600;">New ${c.newlogo}%</span>
+                <span style="font-size:9px;color:var(--salmon-dark);font-weight:600;">Exp ${c.exp}%</span>
+              </div>
+            </div>`;
+
+          row.innerHTML = `
+            <div style="display:flex;align-items:center;gap:7px;">
+              <span style="font-size:14px;line-height:1;">${c.icon}</span>
+              <span style="font-size:12px;font-weight:500;color:var(--dark);">${c.nome}</span>
+            </div>
+            <div style="text-align:right;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${c.n}</div>
+            <div style="text-align:right;">
+              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${wowBg};color:${wowColor};font-family:'Inter',sans-serif;">${wowTxt}</span>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${scoreBg};color:${scoreColor};font-family:'Inter',sans-serif;">${c.score}%</span>
+            </div>
+            ${porteBar}
+            ${splitBar}
+          `;
+
+          wrap.appendChild(row);
+        });
+      })();
+      </script>
 
       <!-- Linha 3: Performance de qualificação -->
       <div class="sub-header">Performance de qualificação</div>
