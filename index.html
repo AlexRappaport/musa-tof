@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Musa — Dashboard TOF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue:        #8AA5FF;
+    --blue-dark:   #6B88E0;
+    --blue-deep:   #3B4FBF;
+    --salmon:      #FFBA86;
+    --salmon-dark: #E8A06E;
+    --cream:       #FFFCE5;
+    --warm:        #F9EDE4;
+    --light:       #F5F5F5;
+    --dark:        #1A1A2E;
+    --dark2:       #222233;
+    --gray:        #6B6B7B;
+    --gray-light:  #9E9EAD;
+    --border:      #EDE8DF;
+    --green:       #429952;
+    --green-light: #D4EDDA;
+    --red:         #D12D2D;
+    --red-light:   #FDECEA;
+    --yellow:      #E3C545;
+    --yellow-light:#FFF8DC;
+    --sidebar-w:   220px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* ═══════════════════════════════
+     SIDEBAR
+  ═══════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    padding: 0;
+  }
+
+  .sidebar-logo {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .logo-mark {
+    width: 28px; height: 28px;
+    background: var(--salmon);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-text {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .sidebar-section {
+    padding: 18px 14px 6px;
+  }
+
+  .sidebar-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 0 6px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    transition: all 0.15s;
+    text-decoration: none;
+    margin-bottom: 2px;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
+  .nav-item.active { background: rgba(138,165,255,0.18); color: var(--blue); }
+
+  .nav-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    background: currentColor; opacity: 0.5;
+  }
+  .nav-item.active .nav-dot { opacity: 1; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    font-size: 10px; font-weight: 600;
+    padding: 1px 6px; border-radius: 10px;
+  }
+  .nav-item.active .nav-badge {
+    background: rgba(138,165,255,0.25);
+    color: var(--blue);
+  }
+
+  .nav-badge.red {
+    background: rgba(209,45,45,0.2);
+    color: #FF8080;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 14px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════
+     MAIN
+  ═══════════════════════════════ */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245,245,245,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .topbar-title {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 15px;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+  }
+
+  .topbar-right {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .filter-pill {
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.14s;
+  }
+
+  .filter-pill:hover { border-color: var(--blue); color: var(--blue-dark); }
+  .filter-pill.active {
+    background: rgba(138,165,255,0.12);
+    border-color: rgba(138,165,255,0.4);
+    color: var(--blue-dark);
+    font-weight: 600;
+  }
+
+  .period-select {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    color: var(--dark);
+    cursor: pointer;
+    appearance: none;
+    padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236B6B7B' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+
+  /* ═══════════════════════════════
+     CONTENT
+  ═══════════════════════════════ */
+  .content {
+    padding: 24px 28px 48px;
+    max-width: 1360px;
+    width: 100%;
+  }
+
+  /* ── Section headers ── */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .section-num {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: var(--dark);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-name {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 16px;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+  }
+
+  .section-sub {
+    font-size: 11px;
+    color: var(--gray-light);
+    margin-top: 1px;
+  }
+
+  .section-action {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue-dark);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+    opacity: 0.7;
+    transition: opacity 0.14s;
+  }
+  .section-action:hover { opacity: 1; }
+
+  .block { margin-bottom: 36px; }
+
+  /* ── Cards grid ── */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+
+  /* ── Base card ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: box-shadow 0.18s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+  .card-sm { padding: 14px 16px; border-radius: 10px; }
+
+  /* ── KPI card ── */
+  .kpi-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .kpi-value {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value.large { font-size: 44px; }
+  .kpi-value.medium { font-size: 28px; }
+  .kpi-value.small { font-size: 22px; }
+
+  .kpi-meta {
+    font-size: 11px;
+    color: var(--gray-light);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .delta {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 7px; border-radius: 20px;
+  }
+  .delta.up { background: var(--green-light); color: #2A7A3B; }
+  .delta.down { background: var(--red-light); color: #A02020; }
+  .delta.neutral { background: var(--yellow-light); color: #8A7020; }
+
+  .kpi-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 10px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .kpi-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease;
+  }
+
+  /* ── Alert card ── */
+  .card-alert {
+    background: var(--red-light);
+    border: 1px solid rgba(209,45,45,0.2);
+  }
+  .card-alert .kpi-value { color: var(--red); }
+  .card-alert .kpi-label { color: rgba(160,32,32,0.7); }
+
+  /* ── Accent card ── */
+  .card-accent-blue {
+    background: linear-gradient(135deg, rgba(138,165,255,0.12), rgba(138,165,255,0.04));
+    border-color: rgba(138,165,255,0.25);
+  }
+  .card-accent-salmon {
+    background: linear-gradient(135deg, rgba(255,186,134,0.15), rgba(255,186,134,0.04));
+    border-color: rgba(255,186,134,0.3);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* ── Sub-block header ── */
+  .sub-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sub-header::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Channel bar ── */
+  .channel-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .channel-row:last-child { border-bottom: none; }
+
+  .channel-name {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--dark);
+    width: 160px;
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .channel-icon {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .channel-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .channel-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    animation: barGrow 0.8s ease forwards;
+    transform-origin: left;
+  }
+
+  .channel-num {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .channel-delta {
+    width: 52px;
+    flex-shrink: 0;
+    display: flex; justify-content: flex-end;
+  }
+
+  .channel-quality {
+    width: 60px;
+    flex-shrink: 0;
+    display: flex; justify-content: flex-end;
+  }
+
+  .quality-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .quality-high { background: var(--green-light); color: #2A7A3B; }
+  .quality-mid { background: var(--yellow-light); color: #8A7020; }
+  .quality-low { background: var(--red-light); color: #A02020; }
+
+  /* ── Scorecard classification ── */
+  .score-class-bar {
+    display: flex;
+    height: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 4px;
+    gap: 2px;
+  }
+
+  .score-segment {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  /* ── Funnel ── */
+  .funnel-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(237,232,223,0.6);
+  }
+  .funnel-row:last-child { border-bottom: none; }
+
+  .funnel-stage {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--dark);
+    width: 170px;
+    flex-shrink: 0;
+  }
+
+  .funnel-count {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--dark);
+    width: 36px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .funnel-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .funnel-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+  }
+
+  .funnel-conv {
+    width: 50px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--gray-light);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .funnel-time {
+    width: 68px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .time-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  .time-ok { background: var(--green-light); color: #2A7A3B; }
+  .time-warn { background: var(--yellow-light); color: #8A7020; }
+  .time-crit { background: var(--red-light); color: #A02020; }
+
+  /* ── Profile donut placeholder ── */
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(237,232,223,0.5);
+    font-size: 12px;
+  }
+  .legend-item:last-child { border-bottom: none; }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .legend-name { flex: 1; color: var(--dark); font-weight: 500; }
+  .legend-val {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+  .legend-pct { font-size: 10px; color: var(--gray-light); margin-left: 2px; }
+
+  /* ── Heatmap ── */
+  .heatmap {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .heatmap th {
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    border-bottom: 1px solid var(--border);
+  }
+  .heatmap th:first-child { text-align: left; }
+  .heatmap td {
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(237,232,223,0.5);
+    color: var(--dark);
+  }
+  .heatmap td:first-child {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--dark);
+  }
+  .heatmap tr:last-child td { border-bottom: none; }
+
+  .heat-0 { background: transparent; color: var(--gray-light) !important; }
+  .heat-1 { background: rgba(138,165,255,0.08); }
+  .heat-2 { background: rgba(138,165,255,0.18); }
+  .heat-3 { background: rgba(138,165,255,0.30); }
+  .heat-4 { background: rgba(138,165,255,0.45); color: var(--blue-dark) !important; }
+
+  /* ── Event table ── */
+  .event-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  .event-table th {
+    padding: 7px 12px;
+    text-align: left;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .event-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(237,232,223,0.5);
+    color: var(--dark);
+    font-size: 12px;
+  }
+  .event-table tr:last-child td { border-bottom: none; }
+  .event-table tr:hover td { background: rgba(249,237,228,0.4); }
+
+  .event-num {
+    font-family: 'Libre Caslon Text', serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .show-rate {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+  .show-high { background: var(--green-light); color: #2A7A3B; }
+  .show-mid { background: var(--yellow-light); color: #8A7020; }
+  .show-low { background: var(--red-light); color: #A02020; }
+
+  /* ── Zona Cega mini-table ── */
+  .zona-cega-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  .zona-cega-table th {
+    padding: 6px 10px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .zona-cega-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(237,232,223,0.4);
+    font-size: 11.5px;
+    color: var(--dark);
+  }
+  .zona-cega-table tr:last-child td { border-bottom: none; }
+
+  .crit-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+    background: var(--red-light);
+    color: var(--red);
+  }
+
+  /* ── Animations ── */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.75); }
+  }
+  @keyframes barGrow {
+    from { transform: scaleX(0); transform-origin: left; }
+    to   { transform: scaleX(1); transform-origin: left; }
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in {
+    animation: fadeSlide 0.4s ease forwards;
+    opacity: 0;
+  }
+  .animate-in:nth-child(1) { animation-delay: 0.05s; }
+  .animate-in:nth-child(2) { animation-delay: 0.10s; }
+  .animate-in:nth-child(3) { animation-delay: 0.15s; }
+  .animate-in:nth-child(4) { animation-delay: 0.20s; }
+  .animate-in:nth-child(5) { animation-delay: 0.25s; }
+  .animate-in:nth-child(6) { animation-delay: 0.30s; }
+
+  /* ── Tag pills ── */
+  .tag {
+    display: inline-flex; align-items: center;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 10px;
+    white-space: nowrap;
+  }
+  .tag-blue { background: rgba(138,165,255,0.15); color: var(--blue-dark); }
+  .tag-salmon { background: rgba(255,186,134,0.2); color: var(--salmon-dark); }
+  .tag-green { background: var(--green-light); color: #2A7A3B; }
+  .tag-gray { background: rgba(158,158,173,0.12); color: var(--gray); }
+
+  /* ── SVG Donut placeholder ── */
+  .donut-wrap {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .donut-center {
+    position: absolute;
+    text-align: center;
+  }
+
+  /* ── Progress ring ── */
+  .ring-label {
+    font-size: 10px;
+    color: var(--gray-light);
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  /* ── Tooltip on hover ── */
+  [data-tip] { position: relative; cursor: default; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
+    background: var(--dark);
+    color: #fff;
+    font-size: 10.5px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 999;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .placeholder-chart {
+    background: linear-gradient(90deg, var(--border) 0%, rgba(237,232,223,0.3) 50%, var(--border) 100%);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gray-light);
+    font-size: 11px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6" stroke="#1A1A2E" stroke-width="2"/>
+        <path d="M5 8L7.5 10.5L11 6" stroke="#1A1A2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="logo-text">Musa</span>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Topo de Funil</div>
+    <a href="#b1" class="nav-item active">
+      <div class="nav-dot"></div>
+      Visão Geral
+      <span class="nav-badge">247</span>
+    </a>
+    <a href="#b2" class="nav-item">
+      <div class="nav-dot"></div>
+      Canais
+    </a>
+    <a href="#b3" class="nav-item">
+      <div class="nav-dot"></div>
+      Qualificação
+    </a>
+    <a href="#b4" class="nav-item">
+      <div class="nav-dot"></div>
+      Perfil dos Leads
+    </a>
+    <a href="#b5" class="nav-item">
+      <div class="nav-dot"></div>
+      Funil e Gargalos
+      <span class="nav-badge red">3</span>
+    </a>
+    <a href="#b6" class="nav-item">
+      <div class="nav-dot"></div>
+      Eventos
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="live-dot"></div>
+    Live · HubSpot · 14:32
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <span class="topbar-title">Dashboard de Pré-vendas &amp; MKT</span>
+    <div class="topbar-right">
+      <button class="filter-pill">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Segmento
+      </button>
+      <button class="filter-pill">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Porte
+      </button>
+      <button class="filter-pill active">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Este mês
+      </button>
+      <select class="period-select">
+        <option>Esta semana</option>
+        <option selected>Este mês</option>
+        <option>Mês passado</option>
+        <option>Trimestre</option>
+        <option>Este ano</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ══════════════════════════════════════════
+         BLOCO 1 — VISÃO GERAL
+    ══════════════════════════════════════════ -->
+    <div class="block" id="b1">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num">1</div>
+          <div>
+            <div class="section-name">Visão Geral</div>
+            <div class="section-sub">Estoque atual · Velocidade de entrada · Saúde da qualificação</div>
+          </div>
+        </div>
+        <span class="section-action">Ver detalhes →</span>
+      </div>
+
+      <!-- Linha 1: Estoque -->
+      <div class="sub-header">Estoque atual</div>
+      <div class="grid-3" style="margin-bottom:12px;">
+
+        <div class="card card-accent-blue animate-in">
+          <div class="kpi-label">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="var(--blue)" stroke-width="1.5"/></svg>
+            Total no Pipe
+          </div>
+          <div class="kpi-value large">247</div>
+          <div class="kpi-meta">
+            <span class="delta up">↑ 8% vs mês ant.</span>
+            <span>leads ativos</span>
+          </div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:72%;background:var(--blue);"></div></div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="kpi-label">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Qualificados
+          </div>
+          <div class="kpi-value" style="color:var(--green);">89</div>
+          <div class="kpi-meta">
+            <span class="delta up" style="background:var(--green-light);color:#2A7A3B;">36% do total</span>
+            <span>aprovados no scorecard</span>
+          </div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:36%;background:var(--green);"></div></div>
+        </div>
+
+        <div class="card card-alert animate-in">
+          <div class="kpi-label">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M8 3v6M8 11h.01" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="8" r="6.5" stroke="var(--red)" stroke-width="1.2"/></svg>
+            Zona Cega
+          </div>
+          <div class="kpi-value medium" style="color:var(--red);">31</div>
+          <div class="kpi-meta">
+            <span>Em Aquecimento · sem contato</span>
+          </div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:12.5%;background:var(--red);"></div></div>
+        </div>
+
+      </div>
+
+      <!-- Linha 2: Velocidade -->
+      <div class="sub-header">Velocidade de entrada</div>
+      <div class="grid-3" style="margin-bottom:12px;">
+
+        <div class="card animate-in">
+          <div class="kpi-label">Novos leads no período</div>
+          <div class="kpi-value medium">38</div>
+          <div class="kpi-meta">Março 2026</div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="kpi-label">Evolução WoW</div>
+          <div class="kpi-value small" style="color:#2A7A3B;">+14%</div>
+          <div class="kpi-meta">
+            <span class="delta up">↑ 5 leads a mais vs semana ant.</span>
+          </div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="kpi-label">Evolução MoM</div>
+          <div class="kpi-value small" style="color:var(--gray);">+3%</div>
+          <div class="kpi-meta">
+            <span class="delta neutral">→ Crescimento lento</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Linha 3: Saúde da qualificação -->
+      <div class="sub-header">Saúde da qualificação</div>
+      <div class="grid-2">
+
+        <div class="card animate-in">
+          <div class="kpi-label">Cobertura do scorecard</div>
+          <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
+            <div class="kpi-value medium">61%</div>
+            <div style="font-size:11px;color:var(--gray-light);padding-bottom:4px;">dos leads qualificados</div>
+          </div>
+          <div style="display:flex;gap:3px;height:8px;border-radius:10px;overflow:hidden;">
+            <div style="width:61%;background:var(--blue);border-radius:10px;"></div>
+            <div style="width:39%;background:var(--border);border-radius:10px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span style="font-size:10px;color:var(--blue-dark);font-weight:600;">150 passaram</span>
+            <span style="font-size:10px;color:var(--gray-light);">97 pendentes</span>
+          </div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="kpi-label">Tempo médio até qualificação</div>
+          <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
+            <div class="kpi-value medium">4.2 <span style="font-size:16px;font-family:'DM Sans';font-weight:500;">dias</span></div>
+            <div class="delta down" style="margin-bottom:4px;">↑ +0.8d vs mês ant.</span>
+          </div>
+          <div style="font-size:11px;color:var(--gray-light);">Mediana de tempo em Backlog antes de ser movido para A Validar ou Recusar</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         BLOCO 2 — CANAIS
+    ══════════════════════════════════════════ -->
+    <div class="block" id="b2">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num">2</div>
+          <div>
+            <div class="section-name">Canais</div>
+            <div class="section-sub">Volume por origem · Qualidade · Canal × Tipo de Movimento</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:12px;">
+
+        <!-- 2A: Volume por Canal -->
+        <div class="card">
+          <div class="sub-header">2A · Volume por Canal de Origem</div>
+          <div style="display:flex;padding:0 0 6px;gap:12px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:160px;flex-shrink:0;">Canal</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);flex:1;">Volume</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:32px;text-align:right;">N</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:52px;text-align:right;">WoW</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:60px;text-align:right;">Qualidade</span>
+          </div>
+
+          <!-- Rows -->
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(138,165,255,0.15);">🌐</div>
+              Inbound Site
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:70%;background:var(--blue);"></div></div>
+            <div class="channel-num">52</div>
+            <div class="channel-delta"><span class="delta up">↑ 12%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-mid">Média</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(66,153,82,0.12);">💬</div>
+              Inbound WA
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:28%;background:#4CAF7D;"></div></div>
+            <div class="channel-num">21</div>
+            <div class="channel-delta"><span class="delta up">↑ 5%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-mid">Média</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(255,186,134,0.2);">📤</div>
+              Outbound
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:86%;background:var(--salmon);"></div></div>
+            <div class="channel-num">64</div>
+            <div class="channel-delta"><span class="delta neutral">→ 0%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(59,116,210,0.12);">🎯</div>
+              Prosp. Direta
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:59%;background:#3B74D2;"></div></div>
+            <div class="channel-num">44</div>
+            <div class="channel-delta"><span class="delta up">↑ 9%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(227,197,69,0.15);">🏛️</div>
+              Bid / Licitação
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:14%;background:var(--yellow);"></div></div>
+            <div class="channel-num">10</div>
+            <div class="channel-delta"><span class="delta down">↓ 20%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-low">Baixa</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(138,165,255,0.1);">🤝</div>
+              Parceria / Adv.
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:22%;background:#9C88E8;"></div></div>
+            <div class="channel-num">16</div>
+            <div class="channel-delta"><span class="delta up">↑ 33%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(255,186,134,0.12);">🎪</div>
+              Eventos
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:27%;background:#FF8C69;"></div></div>
+            <div class="channel-num">20</div>
+            <div class="channel-delta"><span class="delta up">↑ 25%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name">
+              <div class="channel-icon" style="background:rgba(66,153,82,0.1);">📋</div>
+              Aquis. Carteira
+            </div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:8%;background:#80B080;"></div></div>
+            <div class="channel-num">6</div>
+            <div class="channel-delta"><span class="delta neutral">→ 0%</span></div>
+            <div class="channel-quality"><span class="quality-badge quality-mid">Média</span></div>
+          </div>
+        </div>
+
+        <!-- 2B: Heatmap Canal x Tipo -->
+        <div class="card">
+          <div class="sub-header">2B · Canal × Tipo de Movimento</div>
+          <table class="heatmap">
+            <thead>
+              <tr>
+                <th>Canal</th>
+                <th>Nova Conta</th>
+                <th>Upsell</th>
+                <th>Cross-sell</th>
+                <th>Reativação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Inbound Site</td>    <td class="heat-3">38</td><td class="heat-1">8</td> <td class="heat-1">5</td><td class="heat-0">1</td></tr>
+              <tr><td>Inbound WA</td>      <td class="heat-2">14</td><td class="heat-1">5</td> <td class="heat-0">2</td><td class="heat-0">0</td></tr>
+              <tr><td>Outbound</td>        <td class="heat-4">47</td><td class="heat-2">12</td><td class="heat-1">4</td><td class="heat-1">1</td></tr>
+              <tr><td>Prosp. Direta</td>   <td class="heat-3">32</td><td class="heat-2">9</td> <td class="heat-0">3</td><td class="heat-0">0</td></tr>
+              <tr><td>Bid</td>             <td class="heat-1">9</td> <td class="heat-0">1</td> <td class="heat-0">0</td><td class="heat-0">0</td></tr>
+              <tr><td>Parceria</td>        <td class="heat-2">11</td><td class="heat-1">3</td> <td class="heat-0">2</td><td class="heat-0">0</td></tr>
+              <tr><td>Eventos</td>         <td class="heat-2">12</td><td class="heat-2">7</td> <td class="heat-0">1</td><td class="heat-0">0</td></tr>
+              <tr><td>Aquis. Carteira</td> <td class="heat-0">0</td> <td class="heat-1">4</td> <td class="heat-0">2</td><td class="heat-0">0</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+            <span style="font-size:9.5px;color:var(--gray-light);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Intensidade:</span>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.08);border:1px solid var(--border);"></div>
+              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.18);"></div>
+              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.30);"></div>
+              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.45);"></div>
+            </div>
+            <span style="font-size:9.5px;color:var(--gray-light);">Baixo → Alto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         BLOCO 3 — QUALIFICAÇÃO E SCORECARD
+    ══════════════════════════════════════════ -->
+    <div class="block" id="b3">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num">3</div>
+          <div>
+            <div class="section-name">Qualificação &amp; Scorecard</div>
+            <div class="section-sub">Cobertura · Classificação · Mapeados vs Orgânicos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:12px;">
+
+        <div class="card animate-in">
+          <div class="kpi-label">Total entrados no período</div>
+          <div class="kpi-value medium">38</div>
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <span class="tag tag-blue">22 Mapeados</span>
+            <span class="tag tag-gray">16 Orgânicos</span>
+          </div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="kpi-label">Passaram pelo Scorecard</div>
+          <div class="kpi-value medium">23</div>
+          <div class="kpi-meta" style="margin-top:4px;">
+            <span class="delta neutral">61% de cobertura</span>
+            <span style="color:var(--gray-light);">15 pendentes</span>
+          </div>
+          <div class="kpi-bar" style="margin-top:10px;"><div class="kpi-bar-fill" style="width:61%;background:var(--blue);"></div></div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="kpi-label">Tempo médio no Backlog</div>
+          <div class="kpi-value small">4.2 dias</div>
+          <div class="kpi-meta">
+            <span class="delta down">↑ Aumentou 0.8d</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Classificação do Scorecard -->
+      <div class="grid-2">
+
+        <div class="card animate-in">
+          <div class="sub-header">Classificação do Scorecard</div>
+
+          <div style="display:flex;gap:3px;height:10px;border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="width:43%;background:var(--green);border-radius:10px 0 0 10px;"></div>
+            <div style="width:35%;background:var(--yellow);"></div>
+            <div style="width:22%;background:var(--red);border-radius:0 10px 10px 0;"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--green);"></div>
+              <div class="legend-name">✅ Qualificados</div>
+              <div class="legend-val">10 <span class="legend-pct">43%</span></div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--yellow);"></div>
+              <div class="legend-name">🟡 A Validar</div>
+              <div class="legend-val">8 <span class="legend-pct">35%</span></div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--red);"></div>
+              <div class="legend-name">❌ Recusados</div>
+              <div class="legend-val">5 <span class="legend-pct">22%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-in">
+          <div class="sub-header">Mapeados vs Orgânicos</div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:8px;height:8px;border-radius:2px;background:var(--blue);"></div>
+                  <span style="font-size:12px;font-weight:500;">Mapeados</span>
+                  <span class="tag tag-blue">22 leads</span>
+                </div>
+                <span style="font-size:12px;font-weight:700;color:var(--green);">68% aprovação</span>
+              </div>
+              <div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;">
+                <div style="width:68%;height:100%;background:var(--blue);border-radius:10px;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:8px;height:8px;border-radius:2px;background:var(--salmon);"></div>
+                  <span style="font-size:12px;font-weight:500;">Orgânicos</span>
+                  <span class="tag tag-salmon">16 leads</span>
+                </div>
+                <span style="font-size:12px;font-weight:700;color:var(--yellow);">44% aprovação</span>
+              </div>
+              <div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;">
+                <div style="width:44%;height:100%;background:var(--salmon);border-radius:10px;"></div>
+              </div>
+            </div>
+
+            <div style="padding:10px;background:rgba(66,153,82,0.07);border:1px solid rgba(66,153,82,0.2);border-radius:8px;font-size:11px;color:#2A7A3B;font-weight:500;">
+              💡 Hipótese validada: mapeados aprovam 24pp a mais. Revisar lista de targets.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         BLOCO 4 — PERFIL DOS LEADS
+    ══════════════════════════════════════════ -->
+    <div class="block" id="b4">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num">4</div>
+          <div>
+            <div class="section-name">Perfil dos Leads</div>
+            <div class="section-sub">Segmento · Porte · Canal × Perfil · Validação do ICP</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:12px;">
+
+        <!-- Segmentos -->
+        <div class="card">
+          <div class="sub-header">Por Segmento</div>
+          <div class="channel-row">
+            <div class="channel-name"><div class="channel-icon" style="background:rgba(138,165,255,0.12);">🏭</div>Indústria</div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:82%;background:var(--blue);"></div></div>
+            <div class="channel-num">61</div>
+            <div class="channel-delta"><span class="tag tag-blue">25%</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name"><div class="channel-icon" style="background:rgba(255,186,134,0.15);">🏗️</div>Construção</div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:58%;background:var(--salmon);"></div></div>
+            <div class="channel-num">43</div>
+            <div class="channel-delta"><span class="tag tag-salmon">17%</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name"><div class="channel-icon" style="background:rgba(66,153,82,0.12);">🌱</div>Ambiental</div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:46%;background:#4CAF7D;"></div></div>
+            <div class="channel-num">34</div>
+            <div class="channel-delta"><span class="tag tag-green">14%</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name"><div class="channel-icon" style="background:rgba(158,158,173,0.1);">🏥</div>Saúde</div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:27%;background:#9C88E8;"></div></div>
+            <div class="channel-num">20</div>
+            <div class="channel-delta"><span class="tag tag-gray">8%</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name"><div class="channel-icon" style="background:rgba(227,197,69,0.12);">🚛</div>Logística</div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:22%;background:var(--yellow);"></div></div>
+            <div class="channel-num">17</div>
+            <div class="channel-delta"><span class="tag tag-gray">7%</span></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-name"><div class="channel-icon" style="background:rgba(158,158,173,0.08);">📦</div>Outros</div>
+            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:45%;background:var(--gray-light);"></div></div>
+            <div class="channel-num">72</div>
+            <div class="channel-delta"><span class="tag tag-gray">29%</span></div>
+          </div>
+        </div>
+
+        <!-- Porte -->
+        <div class="card">
+          <div class="sub-header">Por Porte</div>
+
+          <div style="display:flex;gap:3px;height:10px;border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="width:38%;background:var(--blue);border-radius:10px 0 0 10px;" data-tip="Enterprise: 38%"></div>
+            <div style="width:35%;background:var(--salmon);"></div>
+            <div style="width:15%;background:var(--yellow);"></div>
+            <div style="width:12%;background:var(--border);border-radius:0 10px 10px 0;"></div>
+          </div>
+
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--blue);"></div>
+            <div class="legend-name">Enterprise</div>
+            <div class="legend-val">94 <span class="legend-pct">38%</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--salmon);"></div>
+            <div class="legend-name">Small Business</div>
+            <div class="legend-val">86 <span class="legend-pct">35%</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--yellow);"></div>
+            <div class="legend-name">Medium Business</div>
+            <div class="legend-val">37 <span class="legend-pct">15%</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--border);"></div>
+            <div class="legend-name" style="color:var(--gray-light);">Sem porte definido</div>
+            <div class="legend-val" style="color:var(--gray-light);">30 <span class="legend-pct">12%</span></div>
+          </div>
+
+          <div style="margin-top:14px;padding:10px;background:rgba(227,197,69,0.1);border:1px solid rgba(227,197,69,0.3);border-radius:8px;font-size:11px;color:#8A7020;font-weight:500;">
+            ⚠️ 12% sem porte definido — enriquecimento de dados necessário.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         BLOCO 5 — FUNIL E GARGALOS
+    ══════════════════════════════════════════ -->
+    <div class="block" id="b5">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num" style="background:var(--red);">5</div>
+          <div>
+            <div class="section-name">Funil &amp; Gargalos</div>
+            <div class="section-sub">Conversão por etapa · Tempo médio · Zona Cega</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="tag" style="background:rgba(209,45,45,0.1);color:var(--red);font-weight:700;">3 gargalos críticos detectados</span>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:12px;">
+
+        <!-- Funil -->
+        <div class="card">
+          <div class="sub-header">5A · Funil de Conversão por Etapa</div>
+          <div style="display:flex;padding:0 0 6px;gap:8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:170px;flex-shrink:0;">Etapa</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:36px;text-align:right;">N</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);flex:1;">Volume</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:50px;text-align:right;">Conv.</span>
+            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:68px;text-align:right;">Tempo</span>
+          </div>
+
+          <div class="funnel-row">
+            <div class="funnel-stage">Backlog</div>
+            <div class="funnel-count">247</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:100%;background:var(--blue);"></div></div>
+            <div class="funnel-conv">—</div>
+            <div class="funnel-time"><span class="time-badge time-ok">1.2d</span></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-stage">A Validar</div>
+            <div class="funnel-count">98</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:40%;background:#6B88E0;"></div></div>
+            <div class="funnel-conv">40%</div>
+            <div class="funnel-time"><span class="time-badge time-warn">3.8d ⚠</span></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-stage">Def. de Canal</div>
+            <div class="funnel-count">74</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:30%;background:#5574CC;"></div></div>
+            <div class="funnel-conv">76%</div>
+            <div class="funnel-time"><span class="time-badge time-ok">0.9d</span></div>
+          </div>
+          <div class="funnel-row" style="background:rgba(209,45,45,0.03);">
+            <div class="funnel-stage" style="color:var(--red);font-weight:600;">Aquecimento ⚠</div>
+            <div class="funnel-count" style="color:var(--red);">63</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:25.5%;background:var(--red);"></div></div>
+            <div class="funnel-conv">85%</div>
+            <div class="funnel-time"><span class="time-badge time-crit">14.2d 🔴</span></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-stage">Prosp. Direta</div>
+            <div class="funnel-count">38</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:15.4%;background:#3B74D2;"></div></div>
+            <div class="funnel-conv">60%</div>
+            <div class="funnel-time"><span class="time-badge time-ok">2.1d</span></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-stage">Contato Inicial</div>
+            <div class="funnel-count">28</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:11.3%;background:#4A82D8;"></div></div>
+            <div class="funnel-conv">74%</div>
+            <div class="funnel-time"><span class="time-badge time-ok">1.5d</span></div>
+          </div>
+          <div class="funnel-row" style="background:rgba(227,197,69,0.04);">
+            <div class="funnel-stage" style="color:#8A7020;">Agendado ⚠</div>
+            <div class="funnel-count">18</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:7.3%;background:var(--yellow);"></div></div>
+            <div class="funnel-conv">64%</div>
+            <div class="funnel-time"><span class="time-badge time-warn">7.4d ⚠</span></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-stage">Reunião Diag.</div>
+            <div class="funnel-count">12</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:4.9%;background:#66BB6A;"></div></div>
+            <div class="funnel-conv">67%</div>
+            <div class="funnel-time"><span class="time-badge time-ok">3.2d</span></div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-stage">✅ Concluído</div>
+            <div class="funnel-count" style="color:var(--green);">8</div>
+            <div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:3.2%;background:var(--green);"></div></div>
+            <div class="funnel-conv" style="color:var(--green);">67%</div>
+            <div class="funnel-time"><span class="time-badge time-ok">—</span></div>
+          </div>
+
+          <div style="margin-top:12px;padding:10px;background:rgba(59,116,210,0.06);border-radius:8px;font-size:11px;color:var(--blue-dark);">
+            Taxa ponta a ponta: <strong>3.2%</strong> · Tempo médio total: <strong>34.3 dias</strong>
+          </div>
+        </div>
+
+        <!-- Zona Cega -->
+        <div class="card card-alert">
+          <div class="sub-header" style="color:rgba(160,32,32,0.6);">5C · Zona Cega — Ação Imediata</div>
+          <div style="margin-bottom:12px;">
+            <span style="font-size:11px;color:rgba(160,32,32,0.7);">31 leads em Aquecimento sem contato associado. Risco de perda silenciosa.</span>
+          </div>
+
+          <table class="zona-cega-table">
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Segmento</th>
+                <th>Dias parado</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:600;">Metalúrgica Forja Sul</td>
+                <td><span class="tag tag-blue">Indústria</span></td>
+                <td><span class="crit-badge">28d</span></td>
+                <td><a style="font-size:10px;color:var(--blue-dark);font-weight:600;cursor:pointer;">↗ HubSpot</a></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">Construtora Omega</td>
+                <td><span class="tag tag-salmon">Construção</span></td>
+                <td><span class="crit-badge">21d</span></td>
+                <td><a style="font-size:10px;color:var(--blue-dark);font-weight:600;cursor:pointer;">↗ HubSpot</a></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">Hospital São Lucas</td>
+                <td><span class="tag tag-gray">Saúde</span></td>
+                <td><span class="crit-badge">19d</span></td>
+                <td><a style="font-size:10px;color:var(--blue-dark);font-weight:600;cursor:pointer;">↗ HubSpot</a></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">Grupo Verde Energia</td>
+                <td><span class="tag tag-green">Ambiental</span></td>
+                <td><span class="crit-badge">17d</span></td>
+                <td><a style="font-size:10px;color:var(--blue-dark);font-weight:600;cursor:pointer;">↗ HubSpot</a></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">LogFlex Transportes</td>
+                <td><span class="tag tag-gray">Logística</span></td>
+                <td><span class="crit-badge">15d</span></td>
+                <td><a style="font-size:10px;color:var(--blue-dark);font-weight:600;cursor:pointer;">↗ HubSpot</a></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:10px;text-align:right;">
+            <span style="font-size:11px;color:rgba(160,32,32,0.7);font-weight:600;cursor:pointer;">Ver todos os 31 →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         BLOCO 6 — EVENTOS
+    ══════════════════════════════════════════ -->
+    <div class="block" id="b6">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num" style="background:#9C88E8;">6</div>
+          <div>
+            <div class="section-name">Eventos — Acelerador</div>
+            <div class="section-sub">Não é origem de lead. Mede aceleração de novas contas e upsell.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6A: Macro por Evento -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="sub-header">6A · Visão Macro por Evento</div>
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>Evento / Data</th>
+              <th>Tipo</th>
+              <th>Listadas</th>
+              <th>Convidadas</th>
+              <th>Recusaram</th>
+              <th>Confirmaram</th>
+              <th>Show</th>
+              <th>No-Show</th>
+              <th>Taxa Show (vs conv.)</th>
+              <th>Taxa Show (vs conf.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Summit Resíduos SP</strong><br/><span style="font-size:10px;color:var(--gray-light);">15 Mar 2026</span></td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td class="event-num">48</td>
+              <td class="event-num">32</td>
+              <td class="event-num" style="color:var(--red);">6</td>
+              <td class="event-num">20</td>
+              <td class="event-num" style="color:var(--green);">17</td>
+              <td class="event-num" style="color:var(--red);">3</td>
+              <td><span class="show-rate show-high">53%</span></td>
+              <td><span class="show-rate show-high">85%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Jantar Executivo RJ</strong><br/><span style="font-size:10px;color:var(--gray-light);">22 Mar 2026</span></td>
+              <td><span class="tag tag-salmon">Upsell</span></td>
+              <td class="event-num">18</td>
+              <td class="event-num">15</td>
+              <td class="event-num" style="color:var(--red);">2</td>
+              <td class="event-num">10</td>
+              <td class="event-num" style="color:var(--green);">6</td>
+              <td class="event-num" style="color:var(--red);">4</td>
+              <td><span class="show-rate show-mid">40%</span></td>
+              <td><span class="show-rate show-mid">60%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Workshop ICP BH</strong><br/><span style="font-size:10px;color:var(--gray-light);">28 Mar 2026</span></td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td class="event-num">25</td>
+              <td class="event-num">20</td>
+              <td class="event-num" style="color:var(--red);">8</td>
+              <td class="event-num">9</td>
+              <td class="event-num" style="color:var(--yellow);">4</td>
+              <td class="event-num" style="color:var(--red);">5</td>
+              <td><span class="show-rate show-low">20%</span></td>
+              <td><span class="show-rate show-low">44%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 6B: Acompanhamento por empresa -->
+      <div class="card">
+        <div class="sub-header">6B · Acompanhamento Pós-Evento por Empresa</div>
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Evento</th>
+              <th>Closer</th>
+              <th>Tipo</th>
+              <th>Touch pós</th>
+              <th>Último touch</th>
+              <th>Dias s/ touch</th>
+              <th>Etapa atual</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">Votorantim Cimentos</td>
+              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
+              <td>Anderson F.</td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
+              <td style="font-size:11px;">29 Mar</td>
+              <td><span class="time-badge time-ok">3d</span></td>
+              <td><span class="tag tag-blue">Agendado</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">JSL Logística</td>
+              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
+              <td>Mariana C.</td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
+              <td style="font-size:11px;">27 Mar</td>
+              <td><span class="time-badge time-ok">5d</span></td>
+              <td><span class="tag tag-green">Reunião Diag.</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Klabin S.A.</td>
+              <td style="font-size:11px;color:var(--gray-light);">Jantar RJ</td>
+              <td>Anderson F.</td>
+              <td><span class="tag tag-salmon">Upsell</span></td>
+              <td><span style="color:var(--red);font-weight:600;">✗ Não</span></td>
+              <td style="font-size:11px;color:var(--gray-light);">—</td>
+              <td><span class="time-badge time-crit">10d 🔴</span></td>
+              <td><span class="tag tag-gray">Contato Inicial</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Gerdau</td>
+              <td style="font-size:11px;color:var(--gray-light);">Workshop BH</td>
+              <td>Rodrigo M.</td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td><span style="color:var(--yellow);font-weight:600;">⏳ Pendente</span></td>
+              <td style="font-size:11px;color:var(--gray-light);">—</td>
+              <td><span class="time-badge time-warn">5d ⚠</span></td>
+              <td><span class="tag tag-gray">Aquecimento</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Smooth scroll for nav items
+  document.querySelectorAll('.nav-item[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  // Scroll spy
+  const sections = ['b1','b2','b3','b4','b5','b6'];
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        document.querySelectorAll('.nav-item').forEach(n => {
+          n.classList.toggle('active', n.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '-80px 0px -60% 0px' });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>
+</body>
+</html>
