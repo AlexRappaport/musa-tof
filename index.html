@@ -16,8 +16,8 @@
     --cream:       #FFFCE5;
     --warm:        #F9EDE4;
     --light:       #F5F5F5;
-    --dark:        #1A1A2E;
-    --dark2:       #222233;
+    --dark:        #222222;
+    --dark2:       #333333;
     --gray:        #6B6B7B;
     --gray-light:  #9E9EAD;
     --border:      #EDE8DF;
@@ -25,16 +25,20 @@
     --green-light: #D4EDDA;
     --red:         #D12D2D;
     --red-light:   #FDECEA;
-    --yellow:      #E3C545;
-    --yellow-light:#FFF8DC;
+    --yellow:      #C9A820;
+    --yellow-light:#FEF9E0;
     --sidebar-w:   220px;
+    /* Light theme overrides */
+    --page-bg:     #F5F5F5;
+    --card-bg:     #FFFFFF;
+    --topbar-bg:   rgba(245,245,245,0.92);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    background: var(--light);
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--page-bg);
     color: var(--dark);
     min-height: 100vh;
     display: flex;
@@ -283,15 +287,14 @@
   .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
 
-  /* ── Base card ── */
   .card {
-    background: #fff;
+    background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 20px;
-    transition: box-shadow 0.18s;
+    transition: box-shadow 0.18s, transform 0.18s, border-color 0.18s;
   }
-  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .card:hover { box-shadow: 0 4px 20px rgba(255,186,134,0.15); transform: translateY(-2px); border-color: var(--salmon); }
 
   .card-sm { padding: 14px 16px; border-radius: 10px; }
 
@@ -778,13 +781,12 @@
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <nav class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-mark">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="6" stroke="#1A1A2E" stroke-width="2"/>
-        <path d="M5 8L7.5 10.5L11 6" stroke="#1A1A2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <span class="logo-text">Musa</span>
+    <!-- Símbolo Musa — 3 arcos — branco no fundo escuro -->
+    <svg width="34" height="36" viewBox="0 0 364 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M81.08 69.94C51.23 100.14 32.8 141.64 32.8 187.47C32.8 233.29 51.23 274.79 81.08 304.99C33.69 287 0 241.17 0 187.47C0 133.77 33.69 87.93 81.08 69.94Z" fill="#F5F5F5"/>
+      <path d="M361.49 148.01C350.99 106.87 324.9 69.7 285.62 46.1C246.35 22.5 201.26 16.92 160.03 26.95C199.84 -4.42 256.49 -9.7 302.52 17.97C348.55 45.62 370.49 98.1 361.49 148.01Z" fill="#F5F5F5"/>
+      <path d="M361.49 231.13C350.99 272.27 324.9 309.45 285.62 333.05C246.35 356.65 201.26 362.22 160.03 352.2C199.84 383.56 256.49 388.84 302.52 361.18C348.55 333.52 370.49 281.04 361.49 231.13Z" fill="#F5F5F5"/>
+    </svg>
   </div>
 
   <div class="sidebar-section">
