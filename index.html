@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Musa — Dashboard TOF</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
     --blue:        #8AA5FF;
@@ -55,7 +55,7 @@
   .sidebar {
     width: var(--sidebar-w);
     min-height: 100vh;
-    background: var(--dark);
+    background: #222222;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -66,22 +66,8 @@
 
   .sidebar-logo {
     padding: 22px 20px 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     display: flex; align-items: center; gap: 10px;
-  }
-
-  .logo-mark {
-    width: 28px; height: 28px;
-    background: var(--salmon);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  .logo-text {
-    font-family: 'Libre Caslon Text', serif;
-    font-size: 16px;
-    color: #fff;
-    letter-spacing: -0.02em;
   }
 
   .sidebar-section {
@@ -166,7 +152,7 @@
   /* ── Topbar ── */
   .topbar {
     position: sticky; top: 0; z-index: 50;
-    background: rgba(245,245,245,0.9);
+    background: var(--topbar-bg);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 28px;
@@ -191,7 +177,7 @@
     border-radius: 20px;
     border: 1px solid var(--border);
     background: #fff;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 11.5px;
     font-weight: 500;
     color: var(--gray);
@@ -214,7 +200,7 @@
     border-radius: 6px;
     border: 1px solid var(--border);
     background: #fff;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 11.5px;
     color: var(--dark);
     cursor: pointer;
@@ -310,9 +296,9 @@
   }
 
   .kpi-value {
-    font-family: 'Libre Caslon Text', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 36px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--dark);
     letter-spacing: -0.03em;
     line-height: 1;
@@ -718,7 +704,88 @@
   .animate-in:nth-child(5) { animation-delay: 0.25s; }
   .animate-in:nth-child(6) { animation-delay: 0.30s; }
 
-  /* ── Tag pills ── */
+  /* ── Period filter (Bloco 1) ── */
+  .period-filter { position: relative; }
+  .period-btn {
+    height: 30px; padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px; font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+    transition: all 0.14s;
+  }
+  .period-btn:hover { border-color: var(--salmon); color: var(--salmon-dark); }
+  .period-btn.open  { border-color: var(--salmon); color: var(--salmon-dark); background: rgba(255,186,134,0.06); }
+  .period-btn svg { opacity: 0.5; transition: transform 0.15s; }
+  .period-btn.open svg.caret { transform: rotate(180deg); }
+
+  .period-dropdown {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+    min-width: 210px;
+    z-index: 200;
+    overflow: hidden;
+    animation: fadeSlide 0.14s ease-out;
+    display: none;
+  }
+  .period-dropdown.open { display: block; }
+  .period-opt {
+    padding: 9px 14px;
+    font-size: 12px; font-weight: 400;
+    color: var(--gray);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.1s;
+  }
+  .period-opt:hover { background: rgba(255,186,134,0.06); color: var(--dark); }
+  .period-opt.active { font-weight: 600; color: var(--salmon-dark); background: rgba(255,186,134,0.08); }
+  .period-opt .check { opacity: 0; }
+  .period-opt.active .check { opacity: 1; }
+  .period-divider { height: 1px; background: var(--border); margin: 4px 0; }
+  .period-custom {
+    padding: 8px 14px 12px;
+  }
+  .period-custom-label {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--gray-light); margin-bottom: 8px;
+  }
+  .period-dates {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .period-dates input[type="date"] {
+    flex: 1; height: 28px; padding: 0 7px;
+    border-radius: 6px; font-size: 11px;
+    border: 1px solid var(--border);
+    font-family: 'Inter', sans-serif;
+    color: var(--dark); background: var(--light);
+    outline: none;
+  }
+  .period-dates input[type="date"]:focus { border-color: var(--salmon); }
+  .period-dates span { font-size: 10px; color: var(--gray-light); flex-shrink: 0; }
+  .period-apply {
+    margin-top: 8px; width: 100%; height: 28px;
+    background: var(--salmon); color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 11px; font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .period-apply:hover { background: var(--salmon-dark); }
+
+  .topbar-label {
+    font-size: 11.5px; font-weight: 400;
+    color: var(--gray-light);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topbar-sep { width: 1px; height: 14px; background: var(--border); }
   .tag {
     display: inline-flex; align-items: center;
     font-size: 10px; font-weight: 600;
@@ -763,7 +830,7 @@
     white-space: nowrap;
     pointer-events: none;
     z-index: 999;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   .placeholder-chart {
@@ -828,29 +895,30 @@
 <!-- ═══════════════ MAIN ═══════════════ -->
 <div class="main">
 
-  <!-- Topbar -->
+  <!-- Topbar: logo + label only -->
   <div class="topbar">
-    <span class="topbar-title">Dashboard de Pré-vendas &amp; MKT</span>
-    <div class="topbar-right">
-      <button class="filter-pill">
-        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Segmento
-      </button>
-      <button class="filter-pill">
-        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Porte
-      </button>
-      <button class="filter-pill active">
-        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Este mês
-      </button>
-      <select class="period-select">
-        <option>Esta semana</option>
-        <option selected>Este mês</option>
-        <option>Mês passado</option>
-        <option>Trimestre</option>
-        <option>Este ano</option>
-      </select>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <!-- Logo Musa wordmark -->
+      <svg height="18" viewBox="0 0 1386 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M619.536 222.823L538.313 58.6137H490.43V316.574H516.289V72.4741L593.094 231.131H646.067L722.773 72.4741V316.574H748.632V58.6137H700.749L619.525 222.823H619.536Z" fill="#222222"/>
+        <path d="M941.869 215.651C941.869 239.395 935.589 258.4 923.04 272.646C910.491 286.903 893.556 294.01 872.281 294.01C855.787 294.01 843.117 288.732 834.247 278.177C825.367 267.622 820.938 252.451 820.938 232.663V115.896H795.839V237.411C795.839 262.488 801.668 282.607 813.336 297.778C824.992 312.95 842.863 320.541 866.959 320.541C886.736 320.541 907.968 314.492 921.211 303.485C934.454 292.478 937.914 286.683 941.869 277.439V316.574H967.343V115.907H941.869V215.651Z" fill="#222222"/>
+        <path d="M1149.23 222.514C1137.7 214.989 1123.05 209.656 1105.31 206.483L1077.94 201.338C1062.22 198.44 1051.25 194.672 1045.05 190.067C1038.83 185.45 1035.73 178.531 1035.73 169.287C1035.73 158.732 1040.03 150.557 1048.65 144.739C1057.27 138.944 1068.67 136.035 1082.87 136.035C1100.1 136.035 1113.54 140.002 1123.19 147.913C1132.8 155.823 1137.88 166.643 1138.4 180.371H1164.63C1163.62 159.008 1156.21 142.238 1142.39 130.097C1128.57 117.955 1109.24 111.895 1084.39 111.895C1062.33 111.895 1044.46 116.842 1030.77 126.736C1017.07 136.63 1010.24 150.953 1010.24 169.684C1010.24 187.367 1015.31 200.027 1025.46 207.684C1035.59 215.342 1050.17 221.005 1069.19 224.707L1098.85 230.249C1114.82 233.411 1125.85 237.377 1131.92 242.126C1138.02 246.875 1141.05 253.871 1141.05 263.104C1141.05 273.923 1136.74 282.176 1128.12 287.85C1119.51 293.524 1107.72 296.355 1092.75 296.355C1075.26 296.355 1060.93 292.345 1049.77 284.28C1038.61 276.237 1032.92 265.351 1032.66 251.623H1006.8C1007.31 272.733 1015.23 289.491 1030.58 301.897C1045.91 314.304 1066.13 320.496 1091.23 320.496C1113.8 320.496 1131.99 315.548 1145.8 305.654C1159.62 295.761 1166.54 281.437 1166.54 262.707C1166.54 243.977 1160.77 230.05 1149.24 222.525L1149.23 222.514Z" fill="#222222"/>
+        <path d="M1378.37 290.009C1374.56 290.009 1371.59 289.414 1370.06 287.563C1368.55 285.712 1368.09 282.098 1368.09 277.35V189.879C1368.09 137.886 1339.95 111.895 1283.67 111.895C1259.57 111.895 1240.13 118.429 1225.3 131.496C1210.47 144.552 1202.53 162.963 1201.52 186.717H1227.38C1230.67 152.683 1250.06 135.661 1285.56 135.661C1304.57 135.661 1318.89 140.354 1328.53 149.719C1338.16 159.096 1342.99 171.689 1342.99 187.522C1342.99 193.846 1337.34 197.878 1326.06 199.597C1314.77 201.316 1297.47 202.44 1274.16 202.958C1251.34 203.486 1233.09 208.301 1219.39 217.413C1205.69 226.525 1198.86 240.44 1198.86 259.181C1198.86 277.923 1205.25 292.819 1218.06 303.914C1230.86 314.998 1247.41 320.529 1267.68 320.529C1285.42 320.529 1303.47 317.058 1317.31 308.85C1331.5 300.421 1341.56 285.999 1343.36 277.394V292.092C1343.36 305.61 1354.34 316.584 1367.86 316.584H1385.96V290.075H1378.36V290.031L1378.37 290.009ZM1343 244.098C1343 254.389 1339.52 263.5 1332.54 271.411C1325.56 279.322 1316.51 285.404 1305.35 289.613C1294.19 293.843 1282.79 296.091 1271.13 296.344C1256.93 296.344 1245.52 293.182 1236.91 286.836C1228.29 280.512 1223.98 271.4 1223.98 259.523C1223.98 239.999 1238.19 228.915 1266.57 226.271C1266.57 226.271 1305.6 223.638 1309.91 223.109C1309.91 223.109 1326.2 222.117 1338.76 220.498C1341 220.2 1343 221.963 1343 224.233V244.087V244.098Z" fill="#222222"/>
+        <path d="M81.08 69.94C51.23 100.14 32.8 141.64 32.8 187.47C32.8 233.29 51.23 274.79 81.08 304.99C33.69 287 0 241.17 0 187.47C0 133.77 33.69 87.93 81.08 69.94Z" fill="#222222"/>
+        <path d="M361.49 148.01C350.99 106.87 324.9 69.7 285.62 46.1C246.35 22.5 201.26 16.92 160.03 26.95C199.84 -4.42 256.49 -9.7 302.52 17.97C348.55 45.62 370.49 98.1 361.49 148.01Z" fill="#222222"/>
+        <path d="M361.49 231.13C350.99 272.27 324.9 309.45 285.62 333.05C246.35 356.65 201.26 362.22 160.03 352.2C199.84 383.56 256.49 388.84 302.52 361.18C348.55 333.52 370.49 281.04 361.49 231.13Z" fill="#222222"/>
+      </svg>
+      <div class="topbar-sep"></div>
+      <span class="topbar-label">Dashboard <span style="color:var(--border);margin:0 4px;">|</span> ToF</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;"></span>
+        <span style="font-size:10.5px;color:var(--gray-light);font-weight:500;">Live</span>
+      </div>
+      <div style="background:rgba(255,186,134,0.1);border:1px solid rgba(255,186,134,0.25);border-radius:5px;padding:2px 8px;">
+        <span style="font-size:10px;color:var(--salmon-dark);font-weight:600;">● HubSpot</span>
+      </div>
     </div>
   </div>
 
@@ -866,25 +934,49 @@
           <div class="section-num">1</div>
           <div>
             <div class="section-name">Visão Geral</div>
-            <div class="section-sub">Estoque atual · Velocidade de entrada · Saúde da qualificação</div>
+            <div class="section-sub">Pipeline de Pré Vendas/Mkt · Velocidade de entrada · Saúde da qualificação</div>
           </div>
         </div>
-        <span class="section-action">Ver detalhes →</span>
+        <!-- Filtro de período -->
+        <div class="period-filter" id="periodFilter">
+          <button class="period-btn" id="periodBtn" onclick="togglePeriod()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="periodLabel">Mês Atual</span>
+            <svg class="caret" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <div class="period-dropdown" id="periodDropdown">
+            <div class="period-opt active" onclick="selectPeriod(this,'Semana Atual')">Semana Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriod(this,'Semana Anterior')">Semana Anterior<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriod(this,'Mês Atual')">Mês Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriod(this,'Trimestre')">Trimestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriod(this,'Semestre')">Semestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-divider"></div>
+            <div class="period-custom">
+              <div class="period-custom-label">Período personalizado</div>
+              <div class="period-dates">
+                <input type="date" id="dateFrom" />
+                <span>até</span>
+                <input type="date" id="dateTo" />
+              </div>
+              <button class="period-apply" onclick="applyCustom()">Aplicar</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Linha 1: Estoque -->
-      <div class="sub-header">Estoque atual</div>
+      <!-- Linha 1: Pipeline -->
+      <div class="sub-header">Pipeline de Pré Vendas/Mkt</div>
       <div class="grid-3" style="margin-bottom:12px;">
 
         <div class="card card-accent-blue animate-in">
           <div class="kpi-label">
             <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="var(--blue)" stroke-width="1.5"/></svg>
-            Total no Pipe
+            Total de Negócios
           </div>
           <div class="kpi-value large">247</div>
           <div class="kpi-meta">
             <span class="delta up">↑ 8% vs mês ant.</span>
-            <span>leads ativos</span>
+            <span>negócios ativos</span>
           </div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:72%;background:var(--blue);"></div></div>
         </div>
@@ -902,16 +994,17 @@
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:36%;background:var(--green);"></div></div>
         </div>
 
-        <div class="card card-alert animate-in">
+        <div class="card animate-in" style="background:#fff;border-color:var(--border);">
           <div class="kpi-label">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M8 3v6M8 11h.01" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="8" r="6.5" stroke="var(--red)" stroke-width="1.2"/></svg>
-            Zona Cega
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M8 3v5l3 3" stroke="var(--blue)" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="8" r="6.5" stroke="var(--blue)" stroke-width="1.2"/></svg>
+            Ativados
           </div>
-          <div class="kpi-value medium" style="color:var(--red);">31</div>
-          <div class="kpi-meta">
-            <span>Em Aquecimento · sem contato</span>
+          <div class="kpi-value medium" style="color:var(--blue-dark);">148</div>
+          <div class="kpi-meta" style="margin-top:2px;">
+            <span class="delta up" style="background:var(--blue-dim);color:var(--blue-dark);">60% do total</span>
           </div>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:12.5%;background:var(--red);"></div></div>
+          <div style="font-size:10.5px;color:var(--gray-light);margin-top:6px;">com interação do comercial</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:60%;background:var(--blue);"></div></div>
         </div>
 
       </div>
@@ -967,7 +1060,7 @@
         <div class="card animate-in">
           <div class="kpi-label">Tempo médio até qualificação</div>
           <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
-            <div class="kpi-value medium">4.2 <span style="font-size:16px;font-family:'DM Sans';font-weight:500;">dias</span></div>
+            <div class="kpi-value medium">4.2 <span style="font-size:16px;font-family:'Inter';font-weight:500;">dias</span></div>
             <div class="delta down" style="margin-bottom:4px;">↑ +0.8d vs mês ant.</span>
           </div>
           <div style="font-size:11px;color:var(--gray-light);">Mediana de tempo em Backlog antes de ser movido para A Validar ou Recusar</div>
@@ -1633,7 +1726,42 @@
 </div>
 
 <script>
-  // Smooth scroll for nav items
+  // Period filter
+  function togglePeriod() {
+    const btn = document.getElementById('periodBtn');
+    const dd  = document.getElementById('periodDropdown');
+    btn.classList.toggle('open');
+    dd.classList.toggle('open');
+  }
+  function selectPeriod(el, label) {
+    document.querySelectorAll('.period-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('periodLabel').textContent = label;
+    // only close if not custom section
+    if (!el.closest('.period-custom')) {
+      document.getElementById('periodBtn').classList.remove('open');
+      document.getElementById('periodDropdown').classList.remove('open');
+    }
+  }
+  function applyCustom() {
+    const f = document.getElementById('dateFrom').value;
+    const t = document.getElementById('dateTo').value;
+    if (!f || !t) return;
+    const fmt = d => new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    document.getElementById('periodLabel').textContent = fmt(f) + ' – ' + fmt(t);
+    document.getElementById('periodBtn').classList.remove('open');
+    document.getElementById('periodDropdown').classList.remove('open');
+  }
+  // Close on outside click
+  document.addEventListener('click', e => {
+    const pf = document.getElementById('periodFilter');
+    if (pf && !pf.contains(e.target)) {
+      document.getElementById('periodBtn')?.classList.remove('open');
+      document.getElementById('periodDropdown')?.classList.remove('open');
+    }
+  });
+
+
   document.querySelectorAll('.nav-item[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
