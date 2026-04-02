@@ -1098,101 +1098,279 @@
 
       </div>
 
-      <!-- Leads por Canal -->
-      <div class="sub-header" style="margin-bottom:12px;">LEADS POR CANAL</div>
-      <div class="card no-hover" style="padding:0;margin-bottom:12px;overflow:hidden;">
+      <!-- Origem dos Leads -->
+      <div class="sub-header" style="margin-bottom:14px;">ORIGEM DOS LEADS</div>
+      <div class="card no-hover" style="padding:24px 28px;margin-bottom:12px;">
+        <div style="display:flex;gap:32px;align-items:flex-start;">
 
-        <!-- Table header -->
-        <div style="display:grid;grid-template-columns:160px 60px 70px 70px 200px 160px;gap:0;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--light);">
-          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);">Canal</span>
-          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);text-align:right;">Leads</span>
-          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);text-align:right;">WoW</span>
-          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);text-align:right;">Score</span>
-          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);padding-left:16px;">Porte</span>
-          <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);padding-left:16px;">New Logo vs Expansão</span>
+          <!-- Donut chart -->
+          <div style="flex-shrink:0;position:relative;width:160px;height:160px;">
+            <canvas id="donutCanvas" width="160" height="160"></canvas>
+            <div id="donutCenter" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
+              <div style="font-size:28px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);line-height:1;" id="donutTotal">38</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:2px;">leads</div>
+            </div>
+          </div>
+
+          <!-- Legend + table -->
+          <div style="flex:1;min-width:0;">
+
+            <!-- Legend row (canal summary) -->
+            <div style="display:grid;grid-template-columns:140px 44px 54px 56px 180px 160px;gap:0;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Canal</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">N</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">WoW</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Qualif.</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding-left:12px;">Porte</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding-left:12px;">New Logo vs Expansão</span>
+            </div>
+
+            <div id="origemRows"></div>
+          </div>
         </div>
-
-        <!-- Rows -->
-        <div id="canalTableRows"></div>
       </div>
+
+      <style>
+        .origem-row { transition: background 0.12s; cursor:pointer; border-radius:6px; }
+        .origem-row:hover { background: rgba(249,237,228,0.35); }
+        .origem-row.open { background: rgba(249,237,228,0.2); }
+        .origem-dropdown {
+          display:none; border-top:1px solid var(--border);
+          margin: 0 -4px; padding: 0 4px 8px;
+        }
+        .origem-dropdown.open { display:block; }
+        .deal-table { width:100%; border-collapse:collapse; margin-top:6px; }
+        .deal-table th {
+          font-size:8.5px; font-weight:700; letter-spacing:0.08em;
+          text-transform:uppercase; color:var(--text-dim);
+          padding:5px 8px; border-bottom:1px solid var(--border);
+          text-align:left; white-space:nowrap;
+        }
+        .deal-table td {
+          font-size:11px; padding:7px 8px;
+          border-bottom:1px solid rgba(237,232,223,0.5);
+          color:var(--dark); white-space:nowrap;
+        }
+        .deal-table tr:last-child td { border-bottom:none; }
+        .deal-table tr:hover td { background:rgba(249,237,228,0.3); }
+        .deal-dias-ok   { color:var(--green);  font-weight:600; }
+        .deal-dias-warn { color:var(--yellow); font-weight:600; }
+        .deal-dias-crit { color:var(--red);    font-weight:600; }
+      </style>
 
       <script>
       (function(){
         const CANAIS = [
-          { nome:"Inbound Site",    icon:"🌐", n:10, wow:+12, score:45, small:50, mid:30, ent:20, newlogo:80, exp:20 },
-          { nome:"Inbound WA",      icon:"💬", n:6,  wow:+5,  score:40, small:60, mid:25, ent:15, newlogo:90, exp:10 },
-          { nome:"Outbound",        icon:"📤", n:9,  wow:0,   score:72, small:30, mid:35, ent:35, newlogo:55, exp:45 },
-          { nome:"Prosp. Direta",   icon:"🎯", n:7,  wow:+9,  score:68, small:25, mid:40, ent:35, newlogo:60, exp:40 },
-          { nome:"Bid / Licitação", icon:"🏛️", n:2,  wow:-20, score:30, small:70, mid:20, ent:10, newlogo:100,exp:0  },
-          { nome:"Parceria / Adv.", icon:"🤝", n:2,  wow:+33, score:75, small:20, mid:30, ent:50, newlogo:50, exp:50 },
-          { nome:"Eventos",         icon:"🎪", n:2,  wow:+25, score:80, small:15, mid:35, ent:50, newlogo:40, exp:60 },
+          {
+            id:"inbound-site", nome:"Inbound Site", color:"#8AA5FF",
+            n:10, wow:+12, qualif:45, small:50, mid:30, ent:20, newlogo:80, exp:20,
+            deals:[
+              { nome:"Acme Indústrias",      entrada:"28 Mar", pipeline:"Pré Vendas/MKT", etapa:"Aquecimento",   resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:3  },
+              { nome:"Beta Construções",     entrada:"27 Mar", pipeline:"Pré Vendas/MKT", etapa:"A Validar",     resp:"Lucas T.",    closer:"Mariana C.",  porte:"SMB",        dias:4  },
+              { nome:"Gama Logística",       entrada:"26 Mar", pipeline:"Pré Vendas/MKT", etapa:"Backlog",       resp:"Carla M.",    closer:"—",           porte:"Mid",        dias:6  },
+              { nome:"Delta Saúde",          entrada:"25 Mar", pipeline:"SMB 3.0",        etapa:"Prosp. Direta", resp:"Pedro A.",    closer:"Rodrigo M.",  porte:"SMB",        dias:2  },
+              { nome:"Épsilon Energia",      entrada:"24 Mar", pipeline:"Pré Vendas/MKT", etapa:"Recusar",       resp:"Lucas T.",    closer:"—",           porte:"SMB",        dias:8  },
+            ]
+          },
+          {
+            id:"inbound-wa", nome:"Inbound WA", color:"#52B86A",
+            n:6, wow:+5, qualif:40, small:60, mid:25, ent:15, newlogo:90, exp:10,
+            deals:[
+              { nome:"Zeta Ambiental",       entrada:"29 Mar", pipeline:"Pré Vendas/MKT", etapa:"A Validar",     resp:"Ana R.",      closer:"Anderson F.", porte:"SMB",        dias:2  },
+              { nome:"Eta Comércio",         entrada:"27 Mar", pipeline:"Pré Vendas/MKT", etapa:"Backlog",       resp:"Ana R.",      closer:"—",           porte:"SMB",        dias:4  },
+              { nome:"Theta Alimentos",      entrada:"25 Mar", pipeline:"SMB 3.0",        etapa:"Contato Inicial",resp:"Pedro A.",   closer:"Mariana C.",  porte:"Mid",        dias:6  },
+            ]
+          },
+          {
+            id:"outbound", nome:"Outbound", color:"#FFBA86",
+            n:9, wow:0, qualif:72, small:30, mid:35, ent:35, newlogo:55, exp:45,
+            deals:[
+              { nome:"Iota Mineração",       entrada:"30 Mar", pipeline:"Enterprise 3.0", etapa:"Agendado",      resp:"Bruno S.",    closer:"Anderson F.", porte:"Enterprise", dias:1  },
+              { nome:"Kappa Siderurgia",     entrada:"28 Mar", pipeline:"Enterprise 3.0", etapa:"Aquecimento",   resp:"Bruno S.",    closer:"Anderson F.", porte:"Enterprise", dias:3  },
+              { nome:"Lambda Transporte",    entrada:"26 Mar", pipeline:"Pré Vendas/MKT", etapa:"Prosp. Direta", resp:"Fernanda O.", closer:"Rodrigo M.",  porte:"Mid",        dias:5  },
+              { nome:"Mu Farmacêutica",      entrada:"24 Mar", pipeline:"Enterprise 3.0", etapa:"Def. Canal",    resp:"Bruno S.",    closer:"Mariana C.",  porte:"Enterprise", dias:7  },
+            ]
+          },
+          {
+            id:"prosp-direta", nome:"Prosp. Direta", color:"#6B88E0",
+            n:8, wow:+9, qualif:68, small:25, mid:40, ent:35, newlogo:60, exp:40,
+            deals:[
+              { nome:"Nu Papel e Celulose",  entrada:"31 Mar", pipeline:"Enterprise 3.0", etapa:"Reunião Diag.", resp:"Anderson F.", closer:"Anderson F.", porte:"Enterprise", dias:0  },
+              { nome:"Xi Embalagens",        entrada:"29 Mar", pipeline:"Pré Vendas/MKT", etapa:"Aquecimento",   resp:"Fernanda O.", closer:"Rodrigo M.",  porte:"Mid",        dias:2  },
+              { nome:"Ômicron Têxtil",       entrada:"27 Mar", pipeline:"SMB 3.0",        etapa:"Prosp. Direta", resp:"Pedro A.",    closer:"Mariana C.",  porte:"SMB",        dias:4  },
+            ]
+          },
+          {
+            id:"bid", nome:"Bid", color:"#E3C545",
+            n:3, wow:-20, qualif:30, small:70, mid:20, ent:10, newlogo:100, exp:0,
+            deals:[
+              { nome:"Pi Obras Públicas",    entrada:"28 Mar", pipeline:"RCC",            etapa:"A Validar",     resp:"Lucas T.",    closer:"—",           porte:"SMB",        dias:4  },
+              { nome:"Rho Infraestrutura",   entrada:"25 Mar", pipeline:"RCC",            etapa:"Backlog",       resp:"Lucas T.",    closer:"—",           porte:"SMB",        dias:7  },
+            ]
+          },
+          {
+            id:"parceria", nome:"Parceria / Adv.", color:"#9C88E8",
+            n:2, wow:+33, qualif:75, small:20, mid:30, ent:50, newlogo:50, exp:50,
+            deals:[
+              { nome:"Sigma Química",        entrada:"30 Mar", pipeline:"Enterprise 3.0", etapa:"Def. Canal",    resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:1  },
+              { nome:"Tau Petroquímica",     entrada:"29 Mar", pipeline:"Expansão",       etapa:"Aquecimento",   resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:2  },
+            ]
+          },
         ];
 
-        const wrap = document.getElementById("canalTableRows");
+        // ── Donut ────────────────────────────────────────────────────────────
+        const canvas = document.getElementById("donutCanvas");
+        if (canvas) {
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width  = 160 * dpr;
+          canvas.height = 160 * dpr;
+          const ctx = canvas.getContext("2d");
+          ctx.scale(dpr, dpr);
+          const cx = 80, cy = 80, r = 64, inner = 44;
+          const total = CANAIS.reduce((s,c) => s+c.n, 0);
+          let angle = -Math.PI / 2;
+          CANAIS.forEach(c => {
+            const slice = (c.n / total) * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, r, angle, angle + slice);
+            ctx.closePath();
+            ctx.fillStyle = c.color;
+            ctx.fill();
+            angle += slice;
+          });
+          // inner hole
+          ctx.beginPath();
+          ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
+          ctx.fillStyle = "#ffffff";
+          ctx.fill();
+        }
+
+        // ── Rows ─────────────────────────────────────────────────────────────
+        const wrap = document.getElementById("origemRows");
         if (!wrap) return;
 
-        CANAIS.forEach((c, idx) => {
-          const row = document.createElement("div");
-          row.style.cssText = "display:grid;grid-template-columns:160px 60px 70px 70px 200px 160px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;";
-          row.onmouseenter = () => row.style.background = "rgba(249,237,228,0.3)";
-          row.onmouseleave = () => row.style.background = "transparent";
-          if (idx === CANAIS.length - 1) row.style.borderBottom = "none";
-
+        CANAIS.forEach(c => {
           const wowColor = c.wow > 0 ? "#429952" : c.wow < 0 ? "#D12D2D" : "#C9A820";
           const wowBg    = c.wow > 0 ? "rgba(66,153,82,0.08)" : c.wow < 0 ? "rgba(209,45,45,0.08)" : "rgba(201,168,32,0.1)";
           const wowArrow = c.wow > 0 ? "↑" : c.wow < 0 ? "↓" : "→";
           const wowTxt   = wowArrow + " " + Math.abs(c.wow) + "%";
+          const qColor   = c.qualif >= 60 ? "#429952" : c.qualif >= 40 ? "#C9A820" : "#D12D2D";
+          const qBg      = c.qualif >= 60 ? "rgba(66,153,82,0.08)" : c.qualif >= 40 ? "rgba(201,168,32,0.1)" : "rgba(209,45,45,0.08)";
 
-          const scoreColor = c.score >= 60 ? "#429952" : c.score >= 40 ? "#C9A820" : "#D12D2D";
-          const scoreBg    = c.score >= 60 ? "rgba(66,153,82,0.08)" : c.score >= 40 ? "rgba(201,168,32,0.1)" : "rgba(209,45,45,0.08)";
+          // channel icon SVG by id
+          const ICONS = {
+            "inbound-site": `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5M8 1.5C8 1.5 10.5 4 10.5 8s-2.5 6.5-2.5 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.3"/></svg>`,
+            "inbound-wa":   `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13.5 2.5A6.96 6.96 0 0 0 8 0C3.58 0 0 3.58 0 8c0 1.41.37 2.73 1.01 3.88L0 16l4.24-1.11A7.94 7.94 0 0 0 8 16c4.42 0 8-3.58 8-8 0-2.14-.83-4.15-2.5-5.5Z" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M5.5 6s.5-1 1.5-1 1.5 1 1.5 2-1 2.5-1 2.5 1.5 1.5 3 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+            "outbound":     `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8h10M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3v10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+            "prosp-direta": `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+            "bid":          `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 4V3a3 3 0 0 1 6 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 9v2M8 8h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+            "parceria":     `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M5.5 7.5C5.5 6.12 6.62 5 8 5s2.5 1.12 2.5 2.5S9.38 10 8 10 5.5 8.88 5.5 7.5Z" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 2.69-4 6-4s6 1.79 6 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12.5 2.5a2.5 2.5 0 1 0 0 5" stroke="currentColor" stroke-width="1.3"/><path d="M14 10c1.5.5 2 1.5 2 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+          };
 
-          // Porte mini-bar
-          const porteBar = `
-            <div style="display:flex;flex-direction:column;gap:3px;padding-left:16px;">
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:${c.small}px;max-width:60px;height:4px;background:#8AA5FF;border-radius:2px;flex-shrink:0;"></div>
-                <span style="font-size:9px;color:var(--gray-light);">SMB ${c.small}%</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:${Math.round(c.mid*60/100)}px;height:4px;background:#FFBA86;border-radius:2px;flex-shrink:0;"></div>
-                <span style="font-size:9px;color:var(--gray-light);">Mid ${c.mid}%</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
-                <div style="width:${Math.round(c.ent*60/100)}px;height:4px;background:#6B88E0;border-radius:2px;flex-shrink:0;"></div>
-                <span style="font-size:9px;color:var(--gray-light);">Ent ${c.ent}%</span>
-              </div>
-            </div>`;
+          const container = document.createElement("div");
+          container.style.cssText = "margin-bottom:2px;";
 
-          // New Logo vs Expansão split bar
-          const splitBar = `
-            <div style="padding-left:16px;">
-              <div style="display:flex;height:6px;border-radius:4px;overflow:hidden;width:120px;gap:1px;margin-bottom:4px;">
-                <div style="width:${c.newlogo}%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div>
-                <div style="width:${c.exp}%;background:#FFBA86;border-radius:0 3px 3px 0;"></div>
-              </div>
-              <div style="display:flex;gap:8px;">
-                <span style="font-size:9px;color:#6B88E0;font-weight:600;">New ${c.newlogo}%</span>
-                <span style="font-size:9px;color:var(--salmon-dark);font-weight:600;">Exp ${c.exp}%</span>
-              </div>
-            </div>`;
+          // Summary row
+          const row = document.createElement("div");
+          row.className = "origem-row";
+          row.style.cssText = "display:grid;grid-template-columns:140px 44px 54px 56px 180px 160px;gap:0;padding:9px 4px;align-items:center;";
+
+          const porteBar = `<div style="padding-left:12px;">
+            <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
+              <div style="width:${c.small}%;background:#8AA5FF;"></div>
+              <div style="width:${c.mid}%;background:#FFBA86;"></div>
+              <div style="width:${c.ent}%;background:#6B88E0;"></div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:8.5px;color:var(--gray-light);">S ${c.small}%</span>
+              <span style="font-size:8.5px;color:var(--gray-light);">M ${c.mid}%</span>
+              <span style="font-size:8.5px;color:var(--gray-light);">E ${c.ent}%</span>
+            </div>
+          </div>`;
+
+          const splitBar = `<div style="padding-left:12px;">
+            <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
+              <div style="width:${c.newlogo}%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div>
+              <div style="width:${c.exp}%;background:#FFBA86;border-radius:0 3px 3px 0;"></div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <span style="font-size:8.5px;color:#6B88E0;font-weight:600;">New ${c.newlogo}%</span>
+              <span style="font-size:8.5px;color:var(--salmon-dark);font-weight:600;">Exp ${c.exp}%</span>
+            </div>
+          </div>`;
 
           row.innerHTML = `
-            <div style="display:flex;align-items:center;gap:7px;">
-              <span style="font-size:14px;line-height:1;">${c.icon}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:center;color:${c.color};flex-shrink:0;">
+                ${ICONS[c.id]||""}
+              </div>
               <span style="font-size:12px;font-weight:500;color:var(--dark);">${c.nome}</span>
+              <svg id="chevron-${c.id}" width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left:auto;opacity:0.35;transition:transform 0.18s;flex-shrink:0;">
+                <path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
             </div>
-            <div style="text-align:right;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${c.n}</div>
+            <div style="text-align:right;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${c.n}</div>
             <div style="text-align:right;">
               <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${wowBg};color:${wowColor};font-family:'Inter',sans-serif;">${wowTxt}</span>
             </div>
             <div style="text-align:right;">
-              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${scoreBg};color:${scoreColor};font-family:'Inter',sans-serif;">${c.score}%</span>
+              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${qBg};color:${qColor};font-family:'Inter',sans-serif;">${c.qualif}%</span>
             </div>
             ${porteBar}
             ${splitBar}
           `;
 
-          wrap.appendChild(row);
+          // Dropdown
+          const dd = document.createElement("div");
+          dd.className = "origem-dropdown";
+          dd.id = "dd-" + c.id;
+
+          const dealRows = c.deals.map(d => {
+            const diasClass = d.dias <= 2 ? "deal-dias-ok" : d.dias <= 5 ? "deal-dias-warn" : "deal-dias-crit";
+            const hsUrl = `https://app.hubspot.com/contacts/9035464/deal/`;
+            return `<tr>
+              <td style="font-weight:500;">${d.nome}</td>
+              <td style="color:var(--gray-light);">${d.entrada}</td>
+              <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--blue-dim);color:var(--blue-dark);font-weight:600;">${d.pipeline}</span></td>
+              <td style="color:var(--gray-light);">${d.etapa}</td>
+              <td>${d.resp}</td>
+              <td>${d.closer}</td>
+              <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${d.porte}</span></td>
+              <td class="${diasClass}">${d.dias}d</td>
+              <td><a href="${hsUrl}" target="_blank" style="font-size:10px;color:var(--blue-dark);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                HubSpot
+              </a></td>
+            </tr>`;
+          }).join("");
+
+          dd.innerHTML = `<table class="deal-table" style="margin-top:8px;">
+            <thead><tr>
+              <th>Negociação</th>
+              <th>Entrada</th>
+              <th>Pipeline</th>
+              <th>Etapa</th>
+              <th>Responsável</th>
+              <th>Closer</th>
+              <th>Porte</th>
+              <th>Últ. interação</th>
+              <th></th>
+            </tr></thead>
+            <tbody>${dealRows}</tbody>
+          </table>`;
+
+          row.addEventListener("click", () => {
+            const isOpen = dd.classList.contains("open");
+            dd.classList.toggle("open", !isOpen);
+            row.classList.toggle("open", !isOpen);
+            const chev = document.getElementById("chevron-" + c.id);
+            if (chev) chev.style.transform = isOpen ? "" : "rotate(180deg)";
+          });
+
+          container.appendChild(row);
+          container.appendChild(dd);
+          wrap.appendChild(container);
         });
       })();
       </script>
