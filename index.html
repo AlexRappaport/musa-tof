@@ -2309,22 +2309,8 @@
         window.drawInboundTrend = drawTrend;
         window.addEventListener('resize', drawTrend);
 
-        // Intercept goPage — draw after the fade-in transition (180+50ms)
-        const _goPage = window.goPage;
-        window.goPage = function(pageId, navEl) {
-          _goPage(pageId, navEl);
-          if (pageId === 'inbound') {
-            // Try at 250ms (after transition) and again at 500ms as fallback
-            setTimeout(drawTrend, 250);
-            setTimeout(drawTrend, 500);
-          }
-        };
-
-        // If page is already active on load (unlikely but safe)
-        const ibPage = document.getElementById('page-inbound');
-        if (ibPage && ibPage.style.display !== 'none') {
-          requestAnimationFrame(() => requestAnimationFrame(drawTrend));
-        }
+        // Expose draw function globally so goPage can call it
+        window._drawInboundTrend = drawTrend;
 
       })();
       </script>
@@ -2744,6 +2730,11 @@
       requestAnimationFrame(() => requestAnimationFrame(() => {
         inn.style.opacity = '1'; inn.style.transform = 'translateY(0)';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Redraw canvas charts for specific pages
+        if (pageId === 'inbound' && typeof window.drawInboundTrend === 'function') {
+          setTimeout(window.drawInboundTrend, 250);
+          setTimeout(window.drawInboundTrend, 500);
+        }
         if (typeof draw === 'function') setTimeout(draw, 60);
       }));
       currentPage = pageId;
