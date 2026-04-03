@@ -1104,10 +1104,10 @@
         <div style="display:flex;gap:32px;align-items:flex-start;">
 
           <!-- Donut chart -->
-          <div style="flex-shrink:0;position:relative;width:160px;height:160px;">
-            <canvas id="donutCanvas" width="160" height="160"></canvas>
+          <div style="flex-shrink:0;position:relative;width:140px;height:140px;overflow:hidden;">
+            <canvas id="donutCanvas" style="display:block;"></canvas>
             <div id="donutCenter" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
-              <div style="font-size:28px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);line-height:1;" id="donutTotal">38</div>
+              <div style="font-size:24px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);line-height:1;" id="donutTotal">38</div>
               <div style="font-size:10px;color:var(--gray-light);margin-top:2px;">leads</div>
             </div>
           </div>
@@ -1136,7 +1136,8 @@
         .origem-row.open { background: rgba(249,237,228,0.2); }
         .origem-dropdown {
           display:none; border-top:1px solid var(--border);
-          margin: 0 -4px; padding: 0 4px 8px;
+          margin: 4px 0 0; padding: 8px 0;
+          overflow-x: auto;
         }
         .origem-dropdown.open { display:block; }
         .deal-table { width:100%; border-collapse:collapse; margin-top:6px; }
@@ -1222,11 +1223,13 @@
         const canvas = document.getElementById("donutCanvas");
         if (canvas) {
           const dpr = window.devicePixelRatio || 1;
-          canvas.width  = 160 * dpr;
-          canvas.height = 160 * dpr;
+          canvas.width        = 140 * dpr;
+          canvas.height       = 140 * dpr;
+          canvas.style.width  = "140px";
+          canvas.style.height = "140px";
           const ctx = canvas.getContext("2d");
           ctx.scale(dpr, dpr);
-          const cx = 80, cy = 80, r = 64, inner = 44;
+          const cx = 70, cy = 70, r = 56, inner = 38;
           const total = CANAIS.reduce((s,c) => s+c.n, 0);
           let angle = -Math.PI / 2;
           CANAIS.forEach(c => {
@@ -1324,6 +1327,7 @@
           // Dropdown
           const dd = document.createElement("div");
           dd.className = "origem-dropdown";
+          dd.style.overflowX = "auto";
           dd.id = "dd-" + c.id;
 
           const dealRows = c.deals.map(d => {
@@ -1345,7 +1349,7 @@
             </tr>`;
           }).join("");
 
-          dd.innerHTML = `<table class="deal-table" style="margin-top:8px;">
+          dd.innerHTML = `<table class="deal-table" style="margin-top:8px;min-width:700px;">
             <thead><tr>
               <th>Negociação</th>
               <th>Entrada</th>
