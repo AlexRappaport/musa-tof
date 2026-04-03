@@ -2146,7 +2146,7 @@
             <div id="ib-filter-etapa"></div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:minmax(140px,1fr) 80px 70px 130px 110px 100px 90px 72px 52px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:grid;grid-template-columns:200px 76px 66px 120px 110px 100px 88px 70px 48px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Empresa</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Canal</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Entrada</span>
@@ -2307,7 +2307,7 @@
           btn.innerHTML = label + ' <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
 
           const dd = document.createElement('div');
-          dd.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.09);min-width:200px;z-index:200;padding:4px 0;white-space:nowrap;';
+          dd.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.09);min-width:180px;z-index:300;padding:4px 0;';
 
           ['todos', ...options].forEach(opt => {
             const item = document.createElement('div');
@@ -2364,7 +2364,7 @@
             const diasColor = l.dias === 0 ? 'var(--green)' : l.dias <= 3 ? 'var(--green)' : l.dias <= 7 ? 'var(--yellow)' : 'var(--red)';
             const diasLabel = l.dias === 0 ? 'hoje' : l.dias + 'd';
             const row = document.createElement('div');
-            row.style.cssText = 'display:grid;grid-template-columns:minmax(140px,1fr) 80px 70px 130px 110px 100px 90px 72px 52px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
+            row.style.cssText = 'display:grid;grid-template-columns:200px 76px 66px 120px 110px 100px 88px 70px 48px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
             row.onmouseenter = () => row.style.background = 'rgba(249,237,228,0.25)';
             row.onmouseleave = () => row.style.background = '';
             row.innerHTML = `
@@ -2520,39 +2520,470 @@
 
 
     <div class="page" id="page-outbound" style="display:none;">
-      <div style="padding:40px 0 24px;max-width:500px;">
-        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;">📤</div>
-        <div style="font-family:'Libre Caslon Text',serif;font-size:22px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:6px;">Outbound</div>
-        <div style="font-size:12.5px;color:var(--gray-light);margin-bottom:28px;">Funil de atividade da operação de prospecção ativa</div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:4px;">Esta página conterá</div>
-          
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Contas abordadas no período</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Quantidade de touchpoints</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Taxa de resposta</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Evoluíram para o time comercial</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Evoluíram para reunião de diagnóstico</span>
+
+      <!-- Header -->
+      <div class="section-header" style="margin-bottom:20px;">
+        <div class="section-title">
+          <div class="section-num">↗</div>
+          <div>
+            <div class="section-label">Canal</div>
+            <div class="section-name">Outbound</div>
+            <div class="section-sub">Enriquecimento · Cadência dupla (LinkedIn + E-mail) · Performance por segmento</div>
           </div>
         </div>
-        <div style="margin-top:14px;padding:11px 16px;background:rgba(138,165,255,0.08);border:1px solid rgba(138,165,255,0.2);border-radius:8px;font-size:11px;color:var(--blue-dark);">
-          🔧 Em construção — estrutura definida, aguardando integração com HubSpot
+        <div class="period-filter" id="periodFilterOutbound">
+          <button class="period-btn" id="periodBtnOutbound" onclick="togglePeriodOB()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="periodLabelOB">Semana Atual</span>
+            <svg class="caret" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <div class="period-dropdown" id="periodDropdownOB">
+            <div class="period-opt active" onclick="selectPeriodOB(this,'Semana Atual')">Semana Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodOB(this,'Semana Anterior')">Semana Anterior<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodOB(this,'Mês Atual')">Mês Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodOB(this,'Trimestre')">Trimestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodOB(this,'Semestre')">Semestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-divider"></div>
+            <div class="period-custom">
+              <div class="period-custom-label">Período personalizado</div>
+              <div class="period-dates">
+                <input type="date" id="dateFromOB"/><span>até</span><input type="date" id="dateToOB"/>
+              </div>
+              <button class="period-apply" onclick="applyCustomOB()">Aplicar</button>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Bloco 1: Big Numbers -->
+      <div class="sub-header" style="margin-bottom:12px;">VOLUME NO PERÍODO</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;">
+
+        <div class="card" style="background:var(--dark);border-color:var(--dark);">
+          <div class="kpi-label" style="color:rgba(255,255,255,0.35);">Contas no Pipe</div>
+          <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;letter-spacing:-0.04em;line-height:1;margin-bottom:10px;">124</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">total mapeadas para abordagem</div>
+        </div>
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--green);">
+            <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Com Contato Mapeado
+          </div>
+          <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">87</div>
+          <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+            <div style="width:70%;height:100%;background:var(--green);border-radius:10px;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--gray-light);">70% das contas · LinkedIn ou e-mail</div>
+        </div>
+
+        <div class="card card-alert">
+          <div class="kpi-label" style="color:rgba(209,45,45,0.5);">
+            <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M6 3v4M6 8.5h.01" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="6" r="5" stroke="var(--red)" stroke-width="1"/></svg>
+            Sem Contato
+          </div>
+          <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">37</div>
+          <div style="height:5px;background:rgba(209,45,45,0.1);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+            <div style="width:30%;height:100%;background:var(--red);border-radius:10px;"></div>
+          </div>
+          <div style="font-size:10px;color:rgba(209,45,45,0.5);">30% sem LinkedIn ou e-mail</div>
+        </div>
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--blue-dark);">
+            <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M6 2v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1"/></svg>
+            Em Cadência Ativa
+          </div>
+          <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">42</div>
+          <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+            <div style="width:48%;height:100%;background:var(--blue);border-radius:10px;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--gray-light);">48% das contas com contato</div>
+        </div>
+
+      </div>
+
+      <!-- Bloco 2: Enriquecimento -->
+      <div class="sub-header" style="margin-bottom:12px;">ENRIQUECIMENTO DE CONTATOS <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· cobertura por segmento</span></div>
+      <div class="card no-hover" style="margin-bottom:28px;padding:0;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:180px 1fr 80px 80px 90px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Cobertura</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Total</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Mapeados</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Faltam</span>
+        </div>
+        <div id="enrichRows"></div>
+      </div>
+
+      <!-- Bloco 3: Performance por Segmento -->
+      <div class="sub-header" style="margin-bottom:12px;">PERFORMANCE POR SEGMENTO <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· clique para ver detalhe</span></div>
+      <div class="card no-hover" style="margin-bottom:12px;padding:0;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Contas</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Touchpoints</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Respostas</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Taxa Resp.</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">→ Contato Inicial</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">D. médio resp.</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Status</span>
+        </div>
+        <div id="perfRows"></div>
+      </div>
+
+      <!-- Drill-down do segmento selecionado -->
+      <div id="drillDown" style="display:none;margin-bottom:28px;"></div>
+
+      <!-- Bloco 4: A/B Test -->
+      <div class="sub-header" style="margin-bottom:12px;">TESTE A/B DE CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· Varejo Multisite · mensagem</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+
+        <div class="card no-hover" style="border-left:3px solid var(--blue);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--blue-dim);color:var(--blue-dark);">Versão A</span>
+            <span style="font-size:11px;color:var(--gray-light);">Foco em dor operacional</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Contas</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">21</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Taxa Resp.</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">24%</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">→ Contato Inicial</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);">14%</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">D. médio resp.</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">8.2d</div>
+            </div>
+          </div>
+          <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+            <div style="width:24%;height:100%;background:var(--blue);border-radius:10px;"></div>
+          </div>
+        </div>
+
+        <div class="card no-hover" style="border-left:3px solid var(--salmon);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--orange-dim);color:var(--salmon-dark);">Versão B</span>
+            <span style="font-size:11px;color:var(--gray-light);">Foco em resultado financeiro</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Contas</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">21</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Taxa Resp.</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--yellow);">19%</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">→ Contato Inicial</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--salmon-dark);">10%</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">D. médio resp.</div>
+              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">9.8d</div>
+            </div>
+          </div>
+          <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+            <div style="width:19%;height:100%;background:var(--salmon);border-radius:10px;"></div>
+          </div>
+        </div>
+
+      </div>
+      <div style="padding:12px 16px;background:rgba(66,153,82,0.07);border:1px solid rgba(66,153,82,0.2);border-radius:8px;font-size:11px;color:var(--green);font-weight:500;margin-bottom:28px;">
+        💡 Versão A liderando com +5pp de taxa de resposta e +4pp de conversão para Contato Inicial. Amostra ainda pequena — continuar por mais 2 semanas antes de concluir.
+      </div>
+
+      <!-- Bloco 5: Lista de contas -->
+      <div class="sub-header" style="margin-bottom:12px;">CONTAS <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· ordenadas por dias sem interação</span></div>
+      <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface-warm);">
+          <button onclick="filterOB('todos',this)" id="ob-tab-todos" style="font-size:11px;font-weight:600;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--salmon-dark);border-bottom:2px solid var(--salmon);font-family:'Inter',sans-serif;">Todos (42)</button>
+          <button onclick="filterOB('varejo',this)" id="ob-tab-varejo" style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">Varejo Multisite (42)</button>
+          <div style="margin-left:auto;display:flex;gap:8px;padding:6px 0;">
+            <div id="ob-filter-closer"></div>
+            <div id="ob-filter-status"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:200px 100px 70px 130px 110px 100px 90px 80px 52px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Empresa</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Versão A/B</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Touches</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Etapa</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Resp.</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Responsável</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Closer</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Porte</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Dias</span>
+        </div>
+        <div id="obLeadRows"></div>
+      </div>
+
+      <script>
+      (function(){
+
+        // ── Period filter ─────────────────────────────────────────────────
+        window.togglePeriodOB = function() {
+          document.getElementById('periodBtnOutbound').classList.toggle('open');
+          document.getElementById('periodDropdownOB').classList.toggle('open');
+        };
+        window.selectPeriodOB = function(el, label) {
+          document.querySelectorAll('#periodDropdownOB .period-opt').forEach(o => o.classList.remove('active'));
+          el.classList.add('active');
+          document.getElementById('periodLabelOB').textContent = label;
+          if (!el.closest('.period-custom')) {
+            document.getElementById('periodBtnOutbound').classList.remove('open');
+            document.getElementById('periodDropdownOB').classList.remove('open');
+          }
+        };
+        window.applyCustomOB = function() {
+          const f = document.getElementById('dateFromOB').value;
+          const t = document.getElementById('dateToOB').value;
+          if (!f || !t) return;
+          const fmt = d => new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+          document.getElementById('periodLabelOB').textContent = fmt(f) + ' – ' + fmt(t);
+          document.getElementById('periodBtnOutbound').classList.remove('open');
+          document.getElementById('periodDropdownOB').classList.remove('open');
+        };
+        document.addEventListener('click', e => {
+          const pf = document.getElementById('periodFilterOutbound');
+          if (pf && !pf.contains(e.target)) {
+            document.getElementById('periodBtnOutbound')?.classList.remove('open');
+            document.getElementById('periodDropdownOB')?.classList.remove('open');
+          }
+        });
+
+        // ── Enriquecimento data ───────────────────────────────────────────
+        const ENRICH = [
+          { seg:'Varejo Multisite', total:42, mapped:34, color:'var(--blue)',   active:true  },
+          { seg:'Logística',        total:28, mapped:18, color:'var(--salmon)', active:false },
+          { seg:'Indústria',        total:32, mapped:20, color:'var(--green)',  active:false },
+          { seg:'Construção',       total:22, mapped:15, color:'#9C88E8',       active:false },
+        ];
+
+        const enrichWrap = document.getElementById('enrichRows');
+        if (enrichWrap) {
+          ENRICH.forEach(s => {
+            const pct = Math.round(s.mapped / s.total * 100);
+            const row = document.createElement('div');
+            row.style.cssText = 'display:grid;grid-template-columns:180px 1fr 80px 80px 90px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;';
+            row.innerHTML = `
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="width:7px;height:7px;border-radius:2px;background:${s.color};display:inline-block;flex-shrink:0;"></span>
+                <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
+                ${s.active ? '<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>' : '<span style="font-size:9px;padding:1px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</span>'}
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+                  <div style="width:${pct}%;height:100%;background:${s.color};border-radius:10px;"></div>
+                </div>
+                <span style="font-size:11px;font-weight:700;color:${pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--red)'};width:34px;text-align:right;">${pct}%</span>
+              </div>
+              <div style="text-align:right;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${s.total}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">${s.mapped}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);">${s.total-s.mapped}</div>
+            `;
+            enrichWrap.appendChild(row);
+          });
+        }
+
+        // ── Performance data ──────────────────────────────────────────────
+        const PERF = [
+          { seg:'Varejo Multisite', contas:42, touches:187, resp:9,  taxa:21, ci:5,  dmed:8.4, active:true  },
+          { seg:'Logística',        contas:28, touches:0,   resp:0,  taxa:0,  ci:0,  dmed:0,   active:false },
+          { seg:'Indústria',        contas:32, touches:0,   resp:0,  taxa:0,  ci:0,  dmed:0,   active:false },
+          { seg:'Construção',       contas:22, touches:0,   resp:0,  taxa:0,  ci:0,  dmed:0,   active:false },
+        ];
+
+        const perfWrap = document.getElementById('perfRows');
+        if (perfWrap) {
+          PERF.forEach(s => {
+            const row = document.createElement('div');
+            row.style.cssText = `display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
+            if (s.active) {
+              row.onmouseenter = () => row.style.background = 'rgba(249,237,228,0.3)';
+              row.onmouseleave = () => row.style.background = '';
+              row.onclick = () => toggleDrill(s);
+            }
+            const taxaColor = s.taxa >= 20 ? 'var(--green)' : s.taxa >= 10 ? 'var(--yellow)' : s.taxa > 0 ? 'var(--red)' : 'var(--gray-light)';
+            row.innerHTML = `
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
+                ${s.active ? '<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>' : ''}
+              </div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
+              <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
+              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Em andamento</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</span>'}</div>
+            `;
+            perfWrap.appendChild(row);
+          });
+        }
+
+        // ── Drill-down ────────────────────────────────────────────────────
+        function toggleDrill(s) {
+          const dd = document.getElementById('drillDown');
+          if (dd.style.display === 'block' && dd.dataset.seg === s.seg) {
+            dd.style.display = 'none'; return;
+          }
+          dd.dataset.seg = s.seg;
+          dd.style.display = 'block';
+          dd.innerHTML = `
+            <div class="sub-header" style="margin-bottom:12px;">${s.seg.toUpperCase()} · DETALHE DA CADÊNCIA</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="card no-hover">
+                <div class="sub-label" style="margin-bottom:14px;">CANAL QUE GEROU RESPOSTA</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                      <span style="font-size:12px;color:var(--dark);">LinkedIn</span>
+                      <span style="font-size:16px;font-weight:700;color:var(--blue-dark);">6 respostas</span>
+                    </div>
+                    <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
+                      <div style="width:67%;height:100%;background:var(--blue);border-radius:10px;"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                      <span style="font-size:12px;color:var(--dark);">E-mail</span>
+                      <span style="font-size:16px;font-weight:700;color:var(--salmon-dark);">3 respostas</span>
+                    </div>
+                    <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
+                      <div style="width:33%;height:100%;background:var(--salmon);border-radius:10px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card no-hover">
+                <div class="sub-label" style="margin-bottom:14px;">DESTINO DAS RESPOSTAS</div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(66,153,82,0.07);border-radius:8px;border:1px solid rgba(66,153,82,0.15);">
+                    <span style="font-size:12px;color:var(--dark);">✅ Positivo → Contato Inicial</span>
+                    <span style="font-size:16px;font-weight:700;color:var(--green);">5</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(209,45,45,0.05);border-radius:8px;border:1px solid rgba(209,45,45,0.12);">
+                    <span style="font-size:12px;color:var(--dark);">❌ Negativo → Encerrado</span>
+                    <span style="font-size:16px;font-weight:700;color:var(--red);">4</span>
+                  </div>
+                  <div style="font-size:10.5px;color:var(--gray-light);padding-top:4px;">Dia médio de resposta: <strong style="color:var(--dark);">8.4d</strong></div>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        // ── Lead data ─────────────────────────────────────────────────────
+        const OB_LEADS = [
+          { nome:"GPA Multivarejo",      ab:"A", touches:5, etapa:"Contato Inicial", resp:"✅ Positivo", resp_s:"pos", resp2:"Anderson F.", closer:"Anderson F.", porte:"Enterprise", dias:0  },
+          { nome:"Grupo Big",            ab:"B", touches:4, etapa:"Aquecimento",     resp:"—",          resp_s:"",    resp2:"Pedro A.",   closer:"—",           porte:"Enterprise", dias:2  },
+          { nome:"Supermercados Nóbrega",ab:"A", touches:6, etapa:"Contato Inicial", resp:"❌ Negativo", resp_s:"neg", resp2:"Carla M.",   closer:"—",           porte:"Mid",        dias:3  },
+          { nome:"Rede Econômica",       ab:"A", touches:3, etapa:"Aquecimento",     resp:"—",          resp_s:"",    resp2:"Lucas T.",   closer:"—",           porte:"Mid",        dias:4  },
+          { nome:"Atacadão Regional",    ab:"B", touches:4, etapa:"Contato Inicial", resp:"✅ Positivo", resp_s:"pos", resp2:"Fernanda O.",closer:"Rodrigo M.",  porte:"Enterprise", dias:5  },
+          { nome:"Redes Mais",           ab:"A", touches:2, etapa:"Aquecimento",     resp:"—",          resp_s:"",    resp2:"Bruno S.",   closer:"—",           porte:"SMB",        dias:6  },
+          { nome:"Supermercados Fênix",  ab:"B", touches:5, etapa:"Aquecimento",     resp:"—",          resp_s:"",    resp2:"Ana R.",     closer:"—",           porte:"Mid",        dias:7  },
+          { nome:"Grupo Maia",           ab:"A", touches:7, etapa:"Contato Inicial", resp:"✅ Positivo", resp_s:"pos", resp2:"Anderson F.",closer:"Anderson F.", porte:"Enterprise", dias:8  },
+          { nome:"Supermercados Líder",  ab:"B", touches:3, etapa:"Aquecimento",     resp:"—",          resp_s:"",    resp2:"Pedro A.",   closer:"—",           porte:"Mid",        dias:9  },
+          { nome:"Redes Populares",      ab:"A", touches:4, etapa:"Aquecimento",     resp:"—",          resp_s:"",    resp2:"Carla M.",   closer:"—",           porte:"SMB",        dias:10 },
+        ];
+
+        const CLOSERS_OB = [...new Set(OB_LEADS.map(l => l.resp2))].filter(c => c !== '—').sort();
+        const STATUS_OB  = ['Aguardando resposta','Com resposta positiva','Com resposta negativa'];
+
+        function buildDDOB(id, label, opts, cb) {
+          const wrap = document.getElementById(id);
+          if (!wrap) return;
+          wrap.style.cssText = 'position:relative;display:inline-block;';
+          const btn = document.createElement('button');
+          btn.style.cssText = 'height:28px;padding:0 10px;border-radius:7px;border:1px solid var(--border);background:#fff;font-family:"Inter",sans-serif;font-size:11px;font-weight:500;color:var(--gray);cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;';
+          btn.innerHTML = label + ' <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+          const dd = document.createElement('div');
+          dd.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.09);min-width:200px;z-index:300;padding:4px 0;';
+          ['todos',...opts].forEach(opt => {
+            const item = document.createElement('div');
+            item.style.cssText = 'padding:8px 14px;font-size:12px;cursor:pointer;color:var(--gray);font-family:"Inter",sans-serif;';
+            item.textContent = opt === 'todos' ? 'Todos' : opt;
+            item.onmouseenter = () => item.style.background = 'rgba(255,186,134,0.06)';
+            item.onmouseleave = () => item.style.background = '';
+            item.onclick = () => { cb(opt); btn.innerHTML = (opt==='todos'?label:opt)+' <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'; btn.style.color=opt==='todos'?'var(--gray)':'var(--salmon-dark)'; btn.style.borderColor=opt==='todos'?'var(--border)':'rgba(255,186,134,0.4)'; dd.style.display='none'; };
+            dd.appendChild(item);
+          });
+          btn.onclick = e => { e.stopPropagation(); dd.style.display = dd.style.display==='none'?'block':'none'; };
+          document.addEventListener('click', () => dd.style.display='none');
+          wrap.appendChild(btn); wrap.appendChild(dd);
+        }
+
+        let obSegFilter = 'todos', obCloserFilter = 'todos', obStatusFilter = 'todos';
+        buildDDOB('ob-filter-closer', 'Responsável', CLOSERS_OB, v => { obCloserFilter = v; renderOBRows(); });
+        buildDDOB('ob-filter-status', 'Status', STATUS_OB, v => { obStatusFilter = v; renderOBRows(); });
+
+        window.filterOB = function(f, el) {
+          obSegFilter = f;
+          document.querySelectorAll('[id^="ob-tab-"]').forEach(t => { t.style.color='var(--gray-light)'; t.style.borderBottom='2px solid transparent'; t.style.fontWeight='400'; });
+          el.style.color='var(--salmon-dark)'; el.style.borderBottom='2px solid var(--salmon)'; el.style.fontWeight='600';
+          renderOBRows();
+        };
+
+        function renderOBRows() {
+          const wrap = document.getElementById('obLeadRows');
+          if (!wrap) return;
+          wrap.innerHTML = '';
+          let list = OB_LEADS;
+          if (obCloserFilter !== 'todos') list = list.filter(l => l.resp2 === obCloserFilter);
+          if (obStatusFilter === 'Com resposta positiva') list = list.filter(l => l.resp_s === 'pos');
+          else if (obStatusFilter === 'Com resposta negativa') list = list.filter(l => l.resp_s === 'neg');
+          else if (obStatusFilter === 'Aguardando resposta') list = list.filter(l => l.resp_s === '');
+
+          list.forEach(l => {
+            const diasColor = l.dias===0?'var(--green)':l.dias<=3?'var(--green)':l.dias<=7?'var(--yellow)':'var(--red)';
+            const abColor   = l.ab==='A'?'var(--blue-dark)':'var(--salmon-dark)';
+            const abBg      = l.ab==='A'?'var(--blue-dim)':'var(--orange-dim)';
+            const respColor = l.resp_s==='pos'?'var(--green)':l.resp_s==='neg'?'var(--red)':'var(--text-dim)';
+            const row = document.createElement('div');
+            row.style.cssText = 'display:grid;grid-template-columns:200px 100px 70px 130px 110px 100px 90px 80px 52px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
+            row.onmouseenter = () => row.style.background='rgba(249,237,228,0.25)';
+            row.onmouseleave = () => row.style.background='';
+            row.innerHTML = `
+              <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                <span style="font-size:12px;font-weight:500;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.nome}</span>
+                <a href="https://app.hubspot.com/contacts/9035464/deal/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue-dark);opacity:0.4;flex-shrink:0;transition:opacity 0.14s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              </div>
+              <div><span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:8px;background:${abBg};color:${abColor};">Versão ${l.ab}</span></div>
+              <div style="text-align:right;font-size:12px;font-weight:600;color:var(--dark);">${l.touches}</div>
+              <div style="font-size:11px;color:var(--gray-light);">${l.etapa}</div>
+              <div style="font-size:11px;font-weight:500;color:${respColor};">${l.resp}</div>
+              <div style="font-size:11.5px;color:var(--dark);">${l.resp2}</div>
+              <div style="font-size:11.5px;color:var(--dark);">${l.closer}</div>
+              <div><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${l.porte}</span></div>
+              <div style="font-size:12px;font-weight:700;color:${diasColor};">${l.dias===0?'hoje':l.dias+'d'}</div>`;
+            wrap.appendChild(row);
+          });
+
+          if (!list.length) {
+            const e = document.createElement('div');
+            e.style.cssText = 'padding:32px;text-align:center;font-size:12px;color:var(--gray-light);';
+            e.textContent = 'Nenhuma conta com esses filtros.';
+            wrap.appendChild(e);
+          }
+        }
+        renderOBRows();
+
+        // Intercept goPage
+        const _gp = window.goPage;
+        window.goPage = function(pageId, navEl) { _gp(pageId, navEl); };
+
+      })();
+      </script>
+
     </div>
+
 
 
     <div class="page" id="page-parcerias" style="display:none;">
