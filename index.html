@@ -841,6 +841,59 @@
     font-size: 11px;
     font-style: italic;
   }
+  /* ── Page system ── */
+  .page {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    padding: 26px 28px 60px;
+    max-width: 1380px;
+    width: 100%;
+  }
+  .page.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .page.fade-in {
+    animation: pageIn 0.22s ease forwards;
+  }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* page-level sub-header */
+  .page-eyebrow {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--salmon-dark);
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 4px;
+  }
+  .page-eyebrow::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--salmon); flex-shrink: 0;
+  }
+  .page-title {
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 22px; font-weight: 400;
+    color: var(--dark); letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 11px; color: var(--text-dim);
+    font-weight: 300; margin-bottom: 24px;
+  }
+  .coming-soon {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 320px; gap: 12px;
+    color: var(--gray-light);
+  }
+  .coming-soon svg { opacity: 0.3; }
+  .coming-soon span { font-size: 13px; font-style: italic; }
+
 </style>
 </head>
 <body>
@@ -857,32 +910,28 @@
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-label">Topo de Funil</div>
-    <a href="#b1" class="nav-item active">
-      <div class="nav-dot"></div>
-      Visão Geral
-      <span class="nav-badge">247</span>
+    <div class="sidebar-label">Páginas</div>
+    <a class="nav-item active" onclick="goPage('visao-geral',this)">
+      <div class="nav-dot"></div>Visão Geral
     </a>
-    <a href="#b2" class="nav-item">
-      <div class="nav-dot"></div>
-      Canais
+    <a class="nav-item" onclick="goPage('inbound',this)">
+      <div class="nav-dot"></div>Inbound
     </a>
-    <a href="#b3" class="nav-item">
-      <div class="nav-dot"></div>
-      Qualificação
+    <a class="nav-item" onclick="goPage('outbound',this)">
+      <div class="nav-dot"></div>Outbound
     </a>
-    <a href="#b4" class="nav-item">
-      <div class="nav-dot"></div>
-      Perfil dos Leads
+    <a class="nav-item" onclick="goPage('parcerias',this)">
+      <div class="nav-dot"></div>Parcerias
     </a>
-    <a href="#b5" class="nav-item">
-      <div class="nav-dot"></div>
-      Funil e Gargalos
-      <span class="nav-badge red">3</span>
+    <a class="nav-item" onclick="goPage('prosp-direta',this)">
+      <div class="nav-dot"></div>Prospecção Direta
     </a>
-    <a href="#b6" class="nav-item">
-      <div class="nav-dot"></div>
-      Eventos
+    <a class="nav-item" onclick="goPage('eventos',this)">
+      <div class="nav-dot"></div>Eventos
+    </a>
+    <a class="nav-item" onclick="goPage('funil',this)">
+      <div class="nav-dot"></div>Funil e Gargalos
+      <span class="nav-badge alert">3</span>
     </a>
   </div>
 
@@ -924,6 +973,8 @@
 
   <!-- Content -->
   <div class="content">
+
+    <div class="page" id="page-visao-geral" style="display:block;opacity:1;transform:none;">
 
     <!-- ══════════════════════════════════════════
          BLOCO 1 — VISÃO GERAL
@@ -1401,7 +1452,13 @@
 
         <!-- Card 1: Top 5 Segmentos (wide) -->
         <div class="card no-hover" style="grid-row:span 3;">
-          <div class="kpi-label" style="margin-bottom:14px;">Top 5 Segmentos</div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+            <div class="kpi-label" style="margin-bottom:0;">Top 5 Segmentos</div>
+            <div style="display:flex;align-items:baseline;gap:4px;">
+              <span style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;">38</span>
+              <span style="font-size:10px;color:var(--gray-light);">leads no período</span>
+            </div>
+          </div>
           <div id="segmentoRows"></div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:10px;color:var(--gray-light);">Outros</span>
@@ -1767,369 +1824,281 @@
     <!-- ══════════════════════════════════════════
          BLOCO 2 — CANAIS
     ══════════════════════════════════════════ -->
-    <div class="block" id="b2">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-num">2</div>
-          <div>
-            <div class="section-name">Canais</div>
-            <div class="section-sub">Volume por origem · Qualidade · Canal × Tipo de Movimento</div>
-          </div>
-        </div>
-      </div>
 
-      <div class="grid-2" style="margin-bottom:12px;">
-
-        <!-- 2A: Volume por Canal -->
-        <div class="card">
-          <div class="sub-header">2A · Volume por Canal de Origem</div>
-          <div style="display:flex;padding:0 0 6px;gap:12px;border-bottom:1px solid var(--border);margin-bottom:4px;">
-            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:160px;flex-shrink:0;">Canal</span>
-            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);flex:1;">Volume</span>
-            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:32px;text-align:right;">N</span>
-            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:52px;text-align:right;">WoW</span>
-            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray-light);width:60px;text-align:right;">Qualidade</span>
-          </div>
-
-          <!-- Rows -->
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(138,165,255,0.15);">🌐</div>
-              Inbound Site
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:70%;background:var(--blue);"></div></div>
-            <div class="channel-num">52</div>
-            <div class="channel-delta"><span class="delta up">↑ 12%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-mid">Média</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(66,153,82,0.12);">💬</div>
-              Inbound WA
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:28%;background:#4CAF7D;"></div></div>
-            <div class="channel-num">21</div>
-            <div class="channel-delta"><span class="delta up">↑ 5%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-mid">Média</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(255,186,134,0.2);">📤</div>
-              Outbound
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:86%;background:var(--salmon);"></div></div>
-            <div class="channel-num">64</div>
-            <div class="channel-delta"><span class="delta neutral">→ 0%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(59,116,210,0.12);">🎯</div>
-              Prosp. Direta
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:59%;background:#3B74D2;"></div></div>
-            <div class="channel-num">44</div>
-            <div class="channel-delta"><span class="delta up">↑ 9%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(227,197,69,0.15);">🏛️</div>
-              Bid / Licitação
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:14%;background:var(--yellow);"></div></div>
-            <div class="channel-num">10</div>
-            <div class="channel-delta"><span class="delta down">↓ 20%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-low">Baixa</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(138,165,255,0.1);">🤝</div>
-              Parceria / Adv.
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:22%;background:#9C88E8;"></div></div>
-            <div class="channel-num">16</div>
-            <div class="channel-delta"><span class="delta up">↑ 33%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(255,186,134,0.12);">🎪</div>
-              Eventos
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:27%;background:#FF8C69;"></div></div>
-            <div class="channel-num">20</div>
-            <div class="channel-delta"><span class="delta up">↑ 25%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-high">Alta</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name">
-              <div class="channel-icon" style="background:rgba(66,153,82,0.1);">📋</div>
-              Aquis. Carteira
-            </div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:8%;background:#80B080;"></div></div>
-            <div class="channel-num">6</div>
-            <div class="channel-delta"><span class="delta neutral">→ 0%</span></div>
-            <div class="channel-quality"><span class="quality-badge quality-mid">Média</span></div>
-          </div>
-        </div>
-
-        <!-- 2B: Heatmap Canal x Tipo -->
-        <div class="card">
-          <div class="sub-header">2B · Canal × Tipo de Movimento</div>
-          <table class="heatmap">
-            <thead>
-              <tr>
-                <th>Canal</th>
-                <th>Nova Conta</th>
-                <th>Upsell</th>
-                <th>Cross-sell</th>
-                <th>Reativação</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Inbound Site</td>    <td class="heat-3">38</td><td class="heat-1">8</td> <td class="heat-1">5</td><td class="heat-0">1</td></tr>
-              <tr><td>Inbound WA</td>      <td class="heat-2">14</td><td class="heat-1">5</td> <td class="heat-0">2</td><td class="heat-0">0</td></tr>
-              <tr><td>Outbound</td>        <td class="heat-4">47</td><td class="heat-2">12</td><td class="heat-1">4</td><td class="heat-1">1</td></tr>
-              <tr><td>Prosp. Direta</td>   <td class="heat-3">32</td><td class="heat-2">9</td> <td class="heat-0">3</td><td class="heat-0">0</td></tr>
-              <tr><td>Bid</td>             <td class="heat-1">9</td> <td class="heat-0">1</td> <td class="heat-0">0</td><td class="heat-0">0</td></tr>
-              <tr><td>Parceria</td>        <td class="heat-2">11</td><td class="heat-1">3</td> <td class="heat-0">2</td><td class="heat-0">0</td></tr>
-              <tr><td>Eventos</td>         <td class="heat-2">12</td><td class="heat-2">7</td> <td class="heat-0">1</td><td class="heat-0">0</td></tr>
-              <tr><td>Aquis. Carteira</td> <td class="heat-0">0</td> <td class="heat-1">4</td> <td class="heat-0">2</td><td class="heat-0">0</td></tr>
-            </tbody>
-          </table>
-          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
-            <span style="font-size:9.5px;color:var(--gray-light);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Intensidade:</span>
-            <div style="display:flex;gap:4px;align-items:center;">
-              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.08);border:1px solid var(--border);"></div>
-              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.18);"></div>
-              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.30);"></div>
-              <div style="width:12px;height:12px;border-radius:3px;background:rgba(138,165,255,0.45);"></div>
-            </div>
-            <span style="font-size:9.5px;color:var(--gray-light);">Baixo → Alto</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════
-         BLOCO 3 — QUALIFICAÇÃO E SCORECARD
-    ══════════════════════════════════════════ -->
-    <div class="block" id="b3">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-num">3</div>
-          <div>
-            <div class="section-name">Qualificação &amp; Scorecard</div>
-            <div class="section-sub">Cobertura · Classificação · Mapeados vs Orgânicos</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-3" style="margin-bottom:12px;">
-
-        <div class="card animate-in">
-          <div class="kpi-label">Total entrados no período</div>
-          <div class="kpi-value medium">38</div>
-          <div style="display:flex;gap:6px;margin-top:8px;">
-            <span class="tag tag-blue">22 Mapeados</span>
-            <span class="tag tag-gray">16 Orgânicos</span>
-          </div>
-        </div>
-
-        <div class="card animate-in">
-          <div class="kpi-label">Passaram pelo Scorecard</div>
-          <div class="kpi-value medium">23</div>
-          <div class="kpi-meta" style="margin-top:4px;">
-            <span class="delta neutral">61% de cobertura</span>
-            <span style="color:var(--gray-light);">15 pendentes</span>
-          </div>
-          <div class="kpi-bar" style="margin-top:10px;"><div class="kpi-bar-fill" style="width:61%;background:var(--blue);"></div></div>
-        </div>
-
-        <div class="card animate-in">
-          <div class="kpi-label">Tempo médio no Backlog</div>
-          <div class="kpi-value small">4.2 dias</div>
-          <div class="kpi-meta">
-            <span class="delta down">↑ Aumentou 0.8d</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Classificação do Scorecard -->
-      <div class="grid-2">
-
-        <div class="card animate-in">
-          <div class="sub-header">Classificação do Scorecard</div>
-
-          <div style="display:flex;gap:3px;height:10px;border-radius:10px;overflow:hidden;margin-bottom:14px;">
-            <div style="width:43%;background:var(--green);border-radius:10px 0 0 10px;"></div>
-            <div style="width:35%;background:var(--yellow);"></div>
-            <div style="width:22%;background:var(--red);border-radius:0 10px 10px 0;"></div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:0;">
-            <div class="legend-item">
-              <div class="legend-dot" style="background:var(--green);"></div>
-              <div class="legend-name">✅ Qualificados</div>
-              <div class="legend-val">10 <span class="legend-pct">43%</span></div>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:var(--yellow);"></div>
-              <div class="legend-name">🟡 A Validar</div>
-              <div class="legend-val">8 <span class="legend-pct">35%</span></div>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:var(--red);"></div>
-              <div class="legend-name">❌ Recusados</div>
-              <div class="legend-val">5 <span class="legend-pct">22%</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card animate-in">
-          <div class="sub-header">Mapeados vs Orgânicos</div>
-
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                  <div style="width:8px;height:8px;border-radius:2px;background:var(--blue);"></div>
-                  <span style="font-size:12px;font-weight:500;">Mapeados</span>
-                  <span class="tag tag-blue">22 leads</span>
-                </div>
-                <span style="font-size:12px;font-weight:700;color:var(--green);">68% aprovação</span>
-              </div>
-              <div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;">
-                <div style="width:68%;height:100%;background:var(--blue);border-radius:10px;"></div>
-              </div>
-            </div>
-
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                  <div style="width:8px;height:8px;border-radius:2px;background:var(--salmon);"></div>
-                  <span style="font-size:12px;font-weight:500;">Orgânicos</span>
-                  <span class="tag tag-salmon">16 leads</span>
-                </div>
-                <span style="font-size:12px;font-weight:700;color:var(--yellow);">44% aprovação</span>
-              </div>
-              <div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;">
-                <div style="width:44%;height:100%;background:var(--salmon);border-radius:10px;"></div>
-              </div>
-            </div>
-
-            <div style="padding:10px;background:rgba(66,153,82,0.07);border:1px solid rgba(66,153,82,0.2);border-radius:8px;font-size:11px;color:#2A7A3B;font-weight:500;">
-              💡 Hipótese validada: mapeados aprovam 24pp a mais. Revisar lista de targets.
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════
-         BLOCO 4 — PERFIL DOS LEADS
-    ══════════════════════════════════════════ -->
-    <div class="block" id="b4">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-num">4</div>
-          <div>
-            <div class="section-name">Perfil dos Leads</div>
-            <div class="section-sub">Segmento · Porte · Canal × Perfil · Validação do ICP</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-2" style="margin-bottom:12px;">
-
-        <!-- Segmentos -->
-        <div class="card">
-          <div class="sub-header">Por Segmento</div>
-          <div class="channel-row">
-            <div class="channel-name"><div class="channel-icon" style="background:rgba(138,165,255,0.12);">🏭</div>Indústria</div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:82%;background:var(--blue);"></div></div>
-            <div class="channel-num">61</div>
-            <div class="channel-delta"><span class="tag tag-blue">25%</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name"><div class="channel-icon" style="background:rgba(255,186,134,0.15);">🏗️</div>Construção</div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:58%;background:var(--salmon);"></div></div>
-            <div class="channel-num">43</div>
-            <div class="channel-delta"><span class="tag tag-salmon">17%</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name"><div class="channel-icon" style="background:rgba(66,153,82,0.12);">🌱</div>Ambiental</div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:46%;background:#4CAF7D;"></div></div>
-            <div class="channel-num">34</div>
-            <div class="channel-delta"><span class="tag tag-green">14%</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name"><div class="channel-icon" style="background:rgba(158,158,173,0.1);">🏥</div>Saúde</div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:27%;background:#9C88E8;"></div></div>
-            <div class="channel-num">20</div>
-            <div class="channel-delta"><span class="tag tag-gray">8%</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name"><div class="channel-icon" style="background:rgba(227,197,69,0.12);">🚛</div>Logística</div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:22%;background:var(--yellow);"></div></div>
-            <div class="channel-num">17</div>
-            <div class="channel-delta"><span class="tag tag-gray">7%</span></div>
-          </div>
-          <div class="channel-row">
-            <div class="channel-name"><div class="channel-icon" style="background:rgba(158,158,173,0.08);">📦</div>Outros</div>
-            <div class="channel-bar-wrap"><div class="channel-bar-fill" style="width:45%;background:var(--gray-light);"></div></div>
-            <div class="channel-num">72</div>
-            <div class="channel-delta"><span class="tag tag-gray">29%</span></div>
-          </div>
-        </div>
-
-        <!-- Porte -->
-        <div class="card">
-          <div class="sub-header">Por Porte</div>
-
-          <div style="display:flex;gap:3px;height:10px;border-radius:10px;overflow:hidden;margin-bottom:14px;">
-            <div style="width:38%;background:var(--blue);border-radius:10px 0 0 10px;" data-tip="Enterprise: 38%"></div>
-            <div style="width:35%;background:var(--salmon);"></div>
-            <div style="width:15%;background:var(--yellow);"></div>
-            <div style="width:12%;background:var(--border);border-radius:0 10px 10px 0;"></div>
-          </div>
-
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--blue);"></div>
-            <div class="legend-name">Enterprise</div>
-            <div class="legend-val">94 <span class="legend-pct">38%</span></div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--salmon);"></div>
-            <div class="legend-name">Small Business</div>
-            <div class="legend-val">86 <span class="legend-pct">35%</span></div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--yellow);"></div>
-            <div class="legend-name">Medium Business</div>
-            <div class="legend-val">37 <span class="legend-pct">15%</span></div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--border);"></div>
-            <div class="legend-name" style="color:var(--gray-light);">Sem porte definido</div>
-            <div class="legend-val" style="color:var(--gray-light);">30 <span class="legend-pct">12%</span></div>
-          </div>
-
-          <div style="margin-top:14px;padding:10px;background:rgba(227,197,69,0.1);border:1px solid rgba(227,197,69,0.3);border-radius:8px;font-size:11px;color:#8A7020;font-weight:500;">
-            ⚠️ 12% sem porte definido — enriquecimento de dados necessário.
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════
+<!-- ══════════════════════════════════════════
          BLOCO 5 — FUNIL E GARGALOS
     ══════════════════════════════════════════ -->
-    <div class="block" id="b5">
+    
+    </div>
+
+
+    <div class="page" id="page-inbound" style="display:none;">
+      <div style="padding:40px 0 24px;max-width:500px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;">🌐</div>
+        <div style="font-family:'Libre Caslon Text',serif;font-size:22px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:6px;">Inbound</div>
+        <div style="font-size:12.5px;color:var(--gray-light);margin-bottom:28px;">Leads que chegaram sem esforço ativo de prospecção</div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:4px;">Esta página conterá</div>
+          
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Volume por sub-canal: Site · WhatsApp · Resiclean</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Perfil dos leads por sub-canal (segmento, porte)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">WoW e evolução por sub-canal</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Qualificados vs Recusados por origem</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:11px 16px;background:rgba(138,165,255,0.08);border:1px solid rgba(138,165,255,0.2);border-radius:8px;font-size:11px;color:var(--blue-dark);">
+          🔧 Em construção — estrutura definida, aguardando integração com HubSpot
+        </div>
+      </div>
+    </div>
+
+
+    <div class="page" id="page-outbound" style="display:none;">
+      <div style="padding:40px 0 24px;max-width:500px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;">📤</div>
+        <div style="font-family:'Libre Caslon Text',serif;font-size:22px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:6px;">Outbound</div>
+        <div style="font-size:12.5px;color:var(--gray-light);margin-bottom:28px;">Funil de atividade da operação de prospecção ativa</div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:4px;">Esta página conterá</div>
+          
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Contas abordadas no período</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Quantidade de touchpoints</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Taxa de resposta</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Evoluíram para o time comercial</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Evoluíram para reunião de diagnóstico</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:11px 16px;background:rgba(138,165,255,0.08);border:1px solid rgba(138,165,255,0.2);border-radius:8px;font-size:11px;color:var(--blue-dark);">
+          🔧 Em construção — estrutura definida, aguardando integração com HubSpot
+        </div>
+      </div>
+    </div>
+
+
+    <div class="page" id="page-parcerias" style="display:none;">
+      <div style="padding:40px 0 24px;max-width:500px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;">🤝</div>
+        <div style="font-family:'Libre Caslon Text',serif;font-size:22px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:6px;">Parcerias</div>
+        <div style="font-size:12.5px;color:var(--gray-light);margin-bottom:28px;">Dois funis: recrutamento de parceiros e performance por advisor</div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:4px;">Esta página conterá</div>
+          
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Funil de parceiros/advisors (quantos trouxemos)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Performance por advisor (contas indicadas → qualificadas → diagnóstico)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Comparativo entre advisors</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Tempo médio de maturação por parceiro</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:11px 16px;background:rgba(138,165,255,0.08);border:1px solid rgba(138,165,255,0.2);border-radius:8px;font-size:11px;color:var(--blue-dark);">
+          🔧 Em construção — estrutura definida, aguardando integração com HubSpot
+        </div>
+      </div>
+    </div>
+
+
+    <div class="page" id="page-prosp-direta" style="display:none;">
+      <div style="padding:40px 0 24px;max-width:500px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;">🎯</div>
+        <div style="font-family:'Libre Caslon Text',serif;font-size:22px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:6px;">Prospecção Direta</div>
+        <div style="font-size:12.5px;color:var(--gray-light);margin-bottom:28px;">Abordagem direta pelo time comercial sem cadência formal</div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:4px;">Esta página conterá</div>
+          
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Volume de leads gerados por prospecção direta</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Por responsável (SDR/BDR)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Qualificação e perfil dos leads</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
+            <span style="font-size:12.5px;color:var(--dark);">Evolução WoW · Porte · Segmento · New Logo vs Expansão</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:11px 16px;background:rgba(138,165,255,0.08);border:1px solid rgba(138,165,255,0.2);border-radius:8px;font-size:11px;color:var(--blue-dark);">
+          🔧 Em construção — estrutura definida, aguardando integração com HubSpot
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-eventos" style="display:none;">
+<div class="block" id="b6">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-num" style="background:#9C88E8;">6</div>
+          <div>
+            <div class="section-name">Eventos — Acelerador</div>
+            <div class="section-sub">Não é origem de lead. Mede aceleração de novas contas e upsell.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6A: Macro por Evento -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="sub-header">6A · Visão Macro por Evento</div>
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>Evento / Data</th>
+              <th>Tipo</th>
+              <th>Listadas</th>
+              <th>Convidadas</th>
+              <th>Recusaram</th>
+              <th>Confirmaram</th>
+              <th>Show</th>
+              <th>No-Show</th>
+              <th>Taxa Show (vs conv.)</th>
+              <th>Taxa Show (vs conf.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Summit Resíduos SP</strong><br/><span style="font-size:10px;color:var(--gray-light);">15 Mar 2026</span></td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td class="event-num">48</td>
+              <td class="event-num">32</td>
+              <td class="event-num" style="color:var(--red);">6</td>
+              <td class="event-num">20</td>
+              <td class="event-num" style="color:var(--green);">17</td>
+              <td class="event-num" style="color:var(--red);">3</td>
+              <td><span class="show-rate show-high">53%</span></td>
+              <td><span class="show-rate show-high">85%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Jantar Executivo RJ</strong><br/><span style="font-size:10px;color:var(--gray-light);">22 Mar 2026</span></td>
+              <td><span class="tag tag-salmon">Upsell</span></td>
+              <td class="event-num">18</td>
+              <td class="event-num">15</td>
+              <td class="event-num" style="color:var(--red);">2</td>
+              <td class="event-num">10</td>
+              <td class="event-num" style="color:var(--green);">6</td>
+              <td class="event-num" style="color:var(--red);">4</td>
+              <td><span class="show-rate show-mid">40%</span></td>
+              <td><span class="show-rate show-mid">60%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Workshop ICP BH</strong><br/><span style="font-size:10px;color:var(--gray-light);">28 Mar 2026</span></td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td class="event-num">25</td>
+              <td class="event-num">20</td>
+              <td class="event-num" style="color:var(--red);">8</td>
+              <td class="event-num">9</td>
+              <td class="event-num" style="color:var(--yellow);">4</td>
+              <td class="event-num" style="color:var(--red);">5</td>
+              <td><span class="show-rate show-low">20%</span></td>
+              <td><span class="show-rate show-low">44%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 6B: Acompanhamento por empresa -->
+      <div class="card">
+        <div class="sub-header">6B · Acompanhamento Pós-Evento por Empresa</div>
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Evento</th>
+              <th>Closer</th>
+              <th>Tipo</th>
+              <th>Touch pós</th>
+              <th>Último touch</th>
+              <th>Dias s/ touch</th>
+              <th>Etapa atual</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">Votorantim Cimentos</td>
+              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
+              <td>Anderson F.</td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
+              <td style="font-size:11px;">29 Mar</td>
+              <td><span class="time-badge time-ok">3d</span></td>
+              <td><span class="tag tag-blue">Agendado</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">JSL Logística</td>
+              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
+              <td>Mariana C.</td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
+              <td style="font-size:11px;">27 Mar</td>
+              <td><span class="time-badge time-ok">5d</span></td>
+              <td><span class="tag tag-green">Reunião Diag.</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Klabin S.A.</td>
+              <td style="font-size:11px;color:var(--gray-light);">Jantar RJ</td>
+              <td>Anderson F.</td>
+              <td><span class="tag tag-salmon">Upsell</span></td>
+              <td><span style="color:var(--red);font-weight:600;">✗ Não</span></td>
+              <td style="font-size:11px;color:var(--gray-light);">—</td>
+              <td><span class="time-badge time-crit">10d 🔴</span></td>
+              <td><span class="tag tag-gray">Contato Inicial</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Gerdau</td>
+              <td style="font-size:11px;color:var(--gray-light);">Workshop BH</td>
+              <td>Rodrigo M.</td>
+              <td><span class="tag tag-blue">Nova Conta</span></td>
+              <td><span style="color:var(--yellow);font-weight:600;">⏳ Pendente</span></td>
+              <td style="font-size:11px;color:var(--gray-light);">—</td>
+              <td><span class="time-badge time-warn">5d ⚠</span></td>
+              <td><span class="tag tag-gray">Aquecimento</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="page" id="page-funil" style="display:none;">
+<div class="block" id="b5">
       <div class="section-header">
         <div class="section-title">
           <div class="section-num" style="background:var(--red);">5</div>
@@ -2281,146 +2250,38 @@
         </div>
       </div>
     </div>
-
-    <!-- ══════════════════════════════════════════
-         BLOCO 6 — EVENTOS
-    ══════════════════════════════════════════ -->
-    <div class="block" id="b6">
-      <div class="section-header">
-        <div class="section-title">
-          <div class="section-num" style="background:#9C88E8;">6</div>
-          <div>
-            <div class="section-name">Eventos — Acelerador</div>
-            <div class="section-sub">Não é origem de lead. Mede aceleração de novas contas e upsell.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6A: Macro por Evento -->
-      <div class="card" style="margin-bottom:12px;">
-        <div class="sub-header">6A · Visão Macro por Evento</div>
-        <table class="event-table">
-          <thead>
-            <tr>
-              <th>Evento / Data</th>
-              <th>Tipo</th>
-              <th>Listadas</th>
-              <th>Convidadas</th>
-              <th>Recusaram</th>
-              <th>Confirmaram</th>
-              <th>Show</th>
-              <th>No-Show</th>
-              <th>Taxa Show (vs conv.)</th>
-              <th>Taxa Show (vs conf.)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Summit Resíduos SP</strong><br/><span style="font-size:10px;color:var(--gray-light);">15 Mar 2026</span></td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td class="event-num">48</td>
-              <td class="event-num">32</td>
-              <td class="event-num" style="color:var(--red);">6</td>
-              <td class="event-num">20</td>
-              <td class="event-num" style="color:var(--green);">17</td>
-              <td class="event-num" style="color:var(--red);">3</td>
-              <td><span class="show-rate show-high">53%</span></td>
-              <td><span class="show-rate show-high">85%</span></td>
-            </tr>
-            <tr>
-              <td><strong>Jantar Executivo RJ</strong><br/><span style="font-size:10px;color:var(--gray-light);">22 Mar 2026</span></td>
-              <td><span class="tag tag-salmon">Upsell</span></td>
-              <td class="event-num">18</td>
-              <td class="event-num">15</td>
-              <td class="event-num" style="color:var(--red);">2</td>
-              <td class="event-num">10</td>
-              <td class="event-num" style="color:var(--green);">6</td>
-              <td class="event-num" style="color:var(--red);">4</td>
-              <td><span class="show-rate show-mid">40%</span></td>
-              <td><span class="show-rate show-mid">60%</span></td>
-            </tr>
-            <tr>
-              <td><strong>Workshop ICP BH</strong><br/><span style="font-size:10px;color:var(--gray-light);">28 Mar 2026</span></td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td class="event-num">25</td>
-              <td class="event-num">20</td>
-              <td class="event-num" style="color:var(--red);">8</td>
-              <td class="event-num">9</td>
-              <td class="event-num" style="color:var(--yellow);">4</td>
-              <td class="event-num" style="color:var(--red);">5</td>
-              <td><span class="show-rate show-low">20%</span></td>
-              <td><span class="show-rate show-low">44%</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 6B: Acompanhamento por empresa -->
-      <div class="card">
-        <div class="sub-header">6B · Acompanhamento Pós-Evento por Empresa</div>
-        <table class="event-table">
-          <thead>
-            <tr>
-              <th>Empresa</th>
-              <th>Evento</th>
-              <th>Closer</th>
-              <th>Tipo</th>
-              <th>Touch pós</th>
-              <th>Último touch</th>
-              <th>Dias s/ touch</th>
-              <th>Etapa atual</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:600;">Votorantim Cimentos</td>
-              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
-              <td>Anderson F.</td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
-              <td style="font-size:11px;">29 Mar</td>
-              <td><span class="time-badge time-ok">3d</span></td>
-              <td><span class="tag tag-blue">Agendado</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">JSL Logística</td>
-              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
-              <td>Mariana C.</td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
-              <td style="font-size:11px;">27 Mar</td>
-              <td><span class="time-badge time-ok">5d</span></td>
-              <td><span class="tag tag-green">Reunião Diag.</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">Klabin S.A.</td>
-              <td style="font-size:11px;color:var(--gray-light);">Jantar RJ</td>
-              <td>Anderson F.</td>
-              <td><span class="tag tag-salmon">Upsell</span></td>
-              <td><span style="color:var(--red);font-weight:600;">✗ Não</span></td>
-              <td style="font-size:11px;color:var(--gray-light);">—</td>
-              <td><span class="time-badge time-crit">10d 🔴</span></td>
-              <td><span class="tag tag-gray">Contato Inicial</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">Gerdau</td>
-              <td style="font-size:11px;color:var(--gray-light);">Workshop BH</td>
-              <td>Rodrigo M.</td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td><span style="color:var(--yellow);font-weight:600;">⏳ Pendente</span></td>
-              <td style="font-size:11px;color:var(--gray-light);">—</td>
-              <td><span class="time-badge time-warn">5d ⚠</span></td>
-              <td><span class="tag tag-gray">Aquecimento</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /content -->
+<style>
+  .page { animation: fadeSlide 0.22s ease both; }
+</style>
 
 <script>
+  // ── Page router ────────────────────────────────────────────────
+  let currentPage = 'visao-geral';
+  function goPage(pageId, navEl) {
+    if (pageId === currentPage) return;
+    const out = document.getElementById('page-' + currentPage);
+    const inn = document.getElementById('page-' + pageId);
+    if (!out || !inn) return;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (navEl) navEl.classList.add('active');
+    out.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
+    out.style.opacity = '0'; out.style.transform = 'translateY(6px)';
+    setTimeout(() => {
+      out.style.display = 'none'; out.style.opacity = ''; out.style.transform = '';
+      inn.style.display = 'block'; inn.style.opacity = '0'; inn.style.transform = 'translateY(6px)';
+      inn.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        inn.style.opacity = '1'; inn.style.transform = 'translateY(0)';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof draw === 'function') setTimeout(draw, 60);
+      }));
+      currentPage = pageId;
+    }, 180);
+  }
+
   // Period filter config
   const PERIOD_CONFIG = {
     'Semana Atual':    { sub: 'nesta semana',    compare: 'vs semana anterior',    short: 'vs sem. ant.' },
@@ -2482,37 +2343,7 @@
   });
   // Init with default
   updatePeriodLabels('Semana Atual');
-
-
-  document.querySelectorAll('.nav-item[href^="#"]').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const id = link.getAttribute('href').slice(1);
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      link.classList.add('active');
-    });
-  });
-
-  // Scroll spy
-  const sections = ['b1','b2','b3','b4','b5','b6'];
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        document.querySelectorAll('.nav-item').forEach(n => {
-          n.classList.toggle('active', n.getAttribute('href') === '#' + id);
-        });
-      }
-    });
-  }, { threshold: 0.2, rootMargin: '-80px 0px -60% 0px' });
-
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
 </script>
+
 </body>
 </html>
