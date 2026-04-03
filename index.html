@@ -1101,13 +1101,13 @@
       <!-- Origem dos Leads -->
       <div class="sub-header" style="margin-bottom:14px;">ORIGEM DOS LEADS</div>
       <div class="card no-hover" style="padding:24px 28px;margin-bottom:12px;">
-        <div style="display:flex;gap:32px;align-items:flex-start;">
+        <div style="display:flex;gap:20px;align-items:flex-start;">
 
           <!-- Donut chart -->
-          <div style="flex-shrink:0;position:relative;width:140px;height:140px;overflow:hidden;">
+          <div style="flex-shrink:0;position:relative;width:170px;height:170px;overflow:hidden;">
             <canvas id="donutCanvas" style="display:block;"></canvas>
             <div id="donutCenter" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
-              <div style="font-size:24px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);line-height:1;" id="donutTotal">38</div>
+              <div style="font-size:26px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);line-height:1;" id="donutTotal">38</div>
               <div style="font-size:10px;color:var(--gray-light);margin-top:2px;">leads</div>
             </div>
           </div>
@@ -1116,7 +1116,7 @@
           <div style="flex:1;min-width:0;">
 
             <!-- Legend row (canal summary) -->
-            <div style="display:grid;grid-template-columns:140px 44px 54px 56px 180px 160px;gap:0;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+            <div style="display:grid;grid-template-columns:155px 36px 62px 95px 170px 155px;gap:0;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Canal</span>
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">#</span>
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">WoW</span>
@@ -1223,13 +1223,13 @@
         const canvas = document.getElementById("donutCanvas");
         if (canvas) {
           const dpr = window.devicePixelRatio || 1;
-          canvas.width        = 140 * dpr;
-          canvas.height       = 140 * dpr;
-          canvas.style.width  = "140px";
-          canvas.style.height = "140px";
+          canvas.width        = 170 * dpr;
+          canvas.height       = 170 * dpr;
+          canvas.style.width  = "170px";
+          canvas.style.height = "170px";
           const ctx = canvas.getContext("2d");
           ctx.scale(dpr, dpr);
-          const cx = 70, cy = 70, r = 56, inner = 38;
+          const cx = 85, cy = 85, r = 72, inner = 48;
           const total = CANAIS.reduce((s,c) => s+c.n, 0);
           let angle = -Math.PI / 2;
           const slices = [];
@@ -1293,7 +1293,7 @@
           // Summary row
           const row = document.createElement("div");
           row.className = "origem-row";
-          row.style.cssText = "display:grid;grid-template-columns:140px 44px 54px 56px 180px 160px;gap:0;padding:9px 4px;align-items:center;";
+          row.style.cssText = "display:grid;grid-template-columns:155px 36px 62px 95px 170px 155px;gap:0;padding:9px 4px;align-items:center;";
 
           const porteBar = `<div style="padding-left:12px;">
             <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
@@ -1391,6 +1391,115 @@
           container.appendChild(row);
           container.appendChild(dd);
           wrap.appendChild(container);
+        });
+      })();
+      </script>
+
+      <!-- Perfil dos Leads -->
+      <div class="sub-header" style="margin-bottom:12px;">PERFIL DOS LEADS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+
+        <!-- Card 1: Top 5 Segmentos (wide) -->
+        <div class="card no-hover" style="grid-row:span 3;">
+          <div class="kpi-label" style="margin-bottom:14px;">Top 5 Segmentos</div>
+          <div id="segmentoRows"></div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:10px;color:var(--gray-light);">Outros</span>
+            <span style="font-size:11px;font-weight:600;color:var(--gray-light);">11 leads · 29%</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Porte -->
+        <div class="card no-hover">
+          <div class="kpi-label" style="margin-bottom:10px;">Porte</div>
+          <div style="display:flex;height:7px;border-radius:4px;overflow:hidden;gap:1px;margin-bottom:8px;">
+            <div style="width:38%;background:var(--blue);border-radius:3px 0 0 3px;" title="Enterprise 38%"></div>
+            <div style="width:35%;background:var(--salmon);"></div>
+            <div style="width:15%;background:var(--yellow);border-radius:0 3px 3px 0;"></div>
+            <div style="width:12%;background:var(--border);border-radius:0 3px 3px 0;"></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--blue);display:inline-block;"></span>Enterprise <strong style="color:var(--dark);">38%</strong>
+            </span>
+            <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--salmon);display:inline-block;"></span>SMB <strong style="color:var(--dark);">35%</strong>
+            </span>
+            <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--yellow);display:inline-block;"></span>Mid <strong style="color:var(--dark);">15%</strong>
+            </span>
+            <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--border);display:inline-block;"></span>Sem def. <strong style="color:var(--gray-light);">12%</strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 3: ICP Match -->
+        <div class="card no-hover">
+          <div class="kpi-label" style="margin-bottom:6px;">ICP Match</div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
+            <div style="font-size:28px;font-weight:700;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;">68%</div>
+            <span style="font-size:11px;color:var(--gray-light);">dentro do ICP</span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;">
+            <div style="width:68%;height:100%;background:var(--green);border-radius:10px;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--gray-light);margin-top:6px;">Campo <strong style="color:var(--dark);font-weight:600;">Segmento dentro do ICP = 1</strong></div>
+        </div>
+
+        <!-- Card 4: Mapeado vs Orgânico -->
+        <div class="card no-hover">
+          <div class="kpi-label" style="margin-bottom:6px;">Mapeado vs Orgânico</div>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
+            <div style="text-align:center;">
+              <div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue-dark);line-height:1;">22</div>
+              <div style="font-size:9px;color:var(--gray-light);margin-top:2px;">mapeados</div>
+            </div>
+            <div style="flex:1;height:6px;background:var(--border);border-radius:10px;overflow:hidden;display:flex;gap:1px;">
+              <div style="width:58%;height:100%;background:var(--blue);border-radius:10px 0 0 10px;"></div>
+              <div style="width:42%;height:100%;background:var(--salmon);border-radius:0 10px 10px 0;"></div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--salmon-dark);line-height:1;">16</div>
+              <div style="font-size:9.5px;color:var(--gray-light);margin-top:2px;">orgânicos</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <span style="font-size:10px;color:var(--blue-dark);font-weight:600;">58% mapeados</span>
+              <div style="font-size:9px;color:var(--gray-light);margin-top:2px;">Detalhamento de Canal = OUT - Lista ABM</div>
+            </div>
+            <span style="font-size:10px;color:var(--salmon-dark);font-weight:600;">42% orgânicos</span>
+          </div>
+        </div>
+
+      </div>
+
+      <script>
+      (function(){
+        // Base: 38 novos leads no período
+        const SEGMENTOS = [
+          { nome:"Indústria",  n:10, pct:26, color:"#8AA5FF" },
+          { nome:"Construção", n:6,  pct:16, color:"#FFBA86" },
+          { nome:"Ambiental",  n:5,  pct:13, color:"#52A862" },
+          { nome:"Saúde",      n:3,  pct:8,  color:"#9C88E8" },
+          { nome:"Logística",  n:3,  pct:8,  color:"#E3C545" },
+        ];
+        const MAX = Math.max(...SEGMENTOS.map(s => s.pct));
+        const wrap = document.getElementById("segmentoRows");
+        if (!wrap) return;
+        SEGMENTOS.forEach(s => {
+          const row = document.createElement("div");
+          row.style.cssText = "display:flex;align-items:center;gap:10px;margin-bottom:10px;";
+          row.innerHTML = `
+            <span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">${s.nome}</span>
+            <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+              <div style="width:${(s.pct/MAX)*100}%;height:100%;background:${s.color};border-radius:10px;"></div>
+            </div>
+            <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">${s.n}</span>
+            <span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">${s.pct}%</span>
+          `;
+          wrap.appendChild(row);
         });
       })();
       </script>
