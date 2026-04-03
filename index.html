@@ -1118,9 +1118,9 @@
             <!-- Legend row (canal summary) -->
             <div style="display:grid;grid-template-columns:140px 44px 54px 56px 180px 160px;gap:0;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Canal</span>
-              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">N</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">#</span>
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">WoW</span>
-              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Qualif.</span>
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Qualificados</span>
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding-left:12px;">Porte</span>
               <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding-left:12px;">New Logo vs Expansão</span>
             </div>
@@ -1232,8 +1232,10 @@
           const cx = 70, cy = 70, r = 56, inner = 38;
           const total = CANAIS.reduce((s,c) => s+c.n, 0);
           let angle = -Math.PI / 2;
+          const slices = [];
           CANAIS.forEach(c => {
             const slice = (c.n / total) * 2 * Math.PI;
+            slices.push({ c, start: angle, slice });
             ctx.beginPath();
             ctx.moveTo(cx, cy);
             ctx.arc(cx, cy, r, angle, angle + slice);
@@ -1247,6 +1249,20 @@
           ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
           ctx.fillStyle = "#ffffff";
           ctx.fill();
+          // % labels on slices (only if slice > 8%)
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          slices.forEach(({ c, start, slice }) => {
+            const pct = (c.n / total) * 100;
+            if (pct < 8) return;
+            const mid = start + slice / 2;
+            const labelR = (r + inner) / 2;
+            const lx = cx + Math.cos(mid) * labelR;
+            const ly = cy + Math.sin(mid) * labelR;
+            ctx.font = "bold 9px Inter,sans-serif";
+            ctx.fillStyle = "rgba(255,255,255,0.92)";
+            ctx.fillText(Math.round(pct) + "%", lx, ly);
+          });
         }
 
         // ── Rows ─────────────────────────────────────────────────────────────
