@@ -1877,7 +1877,7 @@
 
         <div class="card" style="background:var(--dark);border-color:var(--dark);">
           <div class="kpi-label" style="color:rgba(255,255,255,0.35);margin-bottom:10px;">Total Inbound</div>
-          <div style="font-size:44px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;letter-spacing:-0.04em;line-height:1;margin-bottom:12px;">18</div>
+          <div id="ib-total" style="font-size:44px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;letter-spacing:-0.04em;line-height:1;margin-bottom:12px;">18</div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <span style="font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.75);">↑ 8% <span class="ib-compare-suffix">vs sem. ant.</span></span>
             <span style="font-size:10px;color:rgba(255,255,255,0.3);">47% do total de leads</span>
@@ -1892,8 +1892,8 @@
             <svg width="10" height="10" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M7 1C5 3.5 5 7 5 7s0 3.5 2 6M7 1c2 2.5 2 6 2 6s0 3.5-2 6M1 7h12" stroke="currentColor" stroke-width="1.3"/></svg>
             Site
           </div>
-          <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">10</div>
-          <div style="font-size:10.5px;color:var(--gray-light);margin-bottom:8px;">56% do Inbound</div>
+          <div id="ib-site" style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">10</div>
+          <div id="ib-site-pct" style="font-size:10.5px;color:var(--gray-light);margin-bottom:8px;">56% do Inbound</div>
           <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:var(--green-light);color:var(--green);">↑ 12% <span class="ib-compare-suffix">vs sem. ant.</span></span>
           <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:12px;">
             <div style="width:56%;height:100%;background:var(--blue);border-radius:10px;"></div>
@@ -1905,8 +1905,8 @@
             <svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M12.5 2A6.5 6.5 0 0 0 7 0C3.13 0 0 3.13 0 7c0 1.23.33 2.4.9 3.4L0 14l3.72-.97A6.97 6.97 0 0 0 7 14c3.87 0 7-3.13 7-7 0-1.87-.73-3.63-2-4.9" stroke="currentColor" stroke-width="1.3" fill="none"/></svg>
             WhatsApp
           </div>
-          <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">6</div>
-          <div style="font-size:10.5px;color:var(--gray-light);margin-bottom:8px;">33% do Inbound</div>
+          <div id="ib-wa" style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">6</div>
+          <div id="ib-wa-pct" style="font-size:10.5px;color:var(--gray-light);margin-bottom:8px;">33% do Inbound</div>
           <span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:var(--green-light);color:var(--green);">↑ 5% <span class="ib-compare-suffix">vs sem. ant.</span></span>
           <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:12px;">
             <div style="width:33%;height:100%;background:var(--salmon);border-radius:10px;"></div>
@@ -1918,8 +1918,8 @@
             <svg width="10" height="10" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M4 7h6M7 4v6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
             Resiclean
           </div>
-          <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">2</div>
-          <div style="font-size:10.5px;color:var(--gray-light);margin-bottom:8px;">11% do Inbound</div>
+          <div id="ib-resi" style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">2</div>
+          <div id="ib-resi-pct" style="font-size:10.5px;color:var(--gray-light);margin-bottom:8px;">11% do Inbound</div>
           <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;background:rgba(158,158,173,0.1);color:var(--gray-light);">— primeiro período</span>
           <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:12px;">
             <div style="width:11%;height:100%;background:var(--green);border-radius:10px;"></div>
@@ -2021,10 +2021,28 @@
               <td style="text-align:center;padding:12px 16px;"><span style="font-size:12px;font-weight:700;padding:3px 12px;border-radius:10px;background:var(--red-light);color:var(--red);">35%</span></td>
             </tr>
             <tr style="border-bottom:1px solid var(--border);">
-              <td style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-dim);padding:12px 16px;">Seg. Principal</td>
-              <td style="text-align:center;font-size:12.5px;font-weight:500;color:var(--dark);padding:12px 16px;">Indústria</td>
-              <td style="text-align:center;font-size:12.5px;font-weight:500;color:var(--dark);padding:12px 16px;">Construção</td>
-              <td style="text-align:center;font-size:12.5px;font-weight:500;color:var(--dark);padding:12px 16px;">Ambiental</td>
+              <td style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-dim);padding:12px 16px;vertical-align:top;">Top Segmentos</td>
+              <td style="padding:12px 16px;vertical-align:top;">
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Indústria</span><span style="font-weight:600;color:var(--blue-dark);">40%</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Construção</span><span style="font-weight:600;color:var(--blue-dark);">25%</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Saúde</span><span style="font-weight:600;color:var(--blue-dark);">15%</span></div>
+                </div>
+              </td>
+              <td style="padding:12px 16px;vertical-align:top;">
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Construção</span><span style="font-weight:600;color:var(--salmon-dark);">45%</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Comércio</span><span style="font-weight:600;color:var(--salmon-dark);">25%</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Logística</span><span style="font-weight:600;color:var(--salmon-dark);">17%</span></div>
+                </div>
+              </td>
+              <td style="padding:12px 16px;vertical-align:top;">
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Ambiental</span><span style="font-weight:600;color:var(--green);">50%</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Indústria</span><span style="font-weight:600;color:var(--green);">30%</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--dark);">Saúde</span><span style="font-weight:600;color:var(--green);">20%</span></div>
+                </div>
+              </td>
             </tr>
             <tr style="border-bottom:1px solid var(--border);">
               <td style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-dim);padding:12px 16px;">Porte</td>
@@ -2078,7 +2096,7 @@
       <!-- ── Bloco 4: Lista de empresas ────────────────────────────────────── -->
       <div class="sub-header" style="margin-bottom:12px;">EMPRESAS <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;"> · ordenadas por dias sem interação</span></div>
       <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:24px;">
-        <div style="display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface-warm);">
+        <div style="display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface-warm);">
           <button onclick="filterInbound('todos',this)" id="ib-tab-todos"
             style="font-size:11px;font-weight:600;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--salmon-dark);border-bottom:2px solid var(--salmon);font-family:'Inter',sans-serif;transition:all 0.14s;">
             Todos (18)
@@ -2095,6 +2113,11 @@
             style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;transition:all 0.14s;">
             Resiclean (2)
           </button>
+          <!-- Filter dropdowns -->
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:6px 0;">
+            <div id="ib-filter-closer"></div>
+            <div id="ib-filter-etapa"></div>
+          </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px 70px 130px 120px 110px 90px 80px 52px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Empresa</span>
@@ -2112,39 +2135,51 @@
 
       <script>
       (function(){
-        // ── Period filter ──────────────────────────────────────────────────
-        const IB_PERIODS = {
-          'Semana Atual':    'vs sem. ant.',
-          'Semana Anterior': 'vs sem. ret.',
-          'Mês Atual':       'vs mês ant.',
-          'Trimestre':       'vs tri. ant.',
-          'Semestre':        'vs sem. ant.',
+        // ── Period data (simulated per period) ────────────────────────────
+        const PERIOD_DATA = {
+          'Semana Atual':    { site:10, wa:6,  resi:2,  total:18, wowSite:12,  wowWa:5,   trend:{ site:[6,8,7,9,9,10],  wa:[3,4,5,4,5,6],  resi:[0,0,1,1,1,2]  } },
+          'Semana Anterior': { site:9,  wa:5,  resi:1,  total:15, wowSite:9,   wowWa:-8,  trend:{ site:[5,6,7,8,7,9],   wa:[4,3,4,5,6,5],  resi:[0,0,0,1,1,1]  } },
+          'Mês Atual':       { site:38, wa:22, resi:7,  total:67, wowSite:15,  wowWa:10,  trend:{ site:[22,26,28,30,34,38], wa:[14,16,17,19,21,22], resi:[2,3,4,5,6,7] } },
+          'Trimestre':       { site:92, wa:54, resi:18, total:164,wowSite:22,  wowWa:18,  trend:{ site:[60,68,72,78,85,92], wa:[36,40,44,48,51,54], resi:[8,10,12,14,16,18] } },
+          'Semestre':        { site:180,wa:105,resi:35, total:320,wowSite:18,  wowWa:12,  trend:{ site:[120,135,148,158,168,180], wa:[72,82,90,96,100,105], resi:[18,22,26,30,32,35] } },
         };
+        const WEEK_LABELS = ['S-5','S-4','S-3','S-2','S-1','Atual'];
+
+        let currentPeriod = 'Semana Atual';
+
+        // ── Period filter ─────────────────────────────────────────────────
+        const IB_SUFFIXES = {
+          'Semana Atual':'vs sem. ant.','Semana Anterior':'vs sem. ret.',
+          'Mês Atual':'vs mês ant.','Trimestre':'vs tri. ant.','Semestre':'vs sem. ant.'
+        };
+
         window.togglePeriodInbound = function() {
           document.getElementById('periodBtnInbound').classList.toggle('open');
           document.getElementById('periodDropdownInbound').classList.toggle('open');
         };
+
         window.selectPeriodInbound = function(el, label) {
           document.querySelectorAll('#periodDropdownInbound .period-opt').forEach(o => o.classList.remove('active'));
           el.classList.add('active');
           document.getElementById('periodLabelInbound').textContent = label;
-          const suf = IB_PERIODS[label] || 'vs período ant.';
-          document.querySelectorAll('.ib-compare-suffix').forEach(s => s.textContent = suf);
+          currentPeriod = label;
+          updatePeriodUI(label);
           if (!el.closest('.period-custom')) {
             document.getElementById('periodBtnInbound').classList.remove('open');
             document.getElementById('periodDropdownInbound').classList.remove('open');
           }
         };
+
         window.applyCustomInbound = function() {
           const f = document.getElementById('dateFromInbound').value;
           const t = document.getElementById('dateToInbound').value;
           if (!f || !t) return;
           const fmt = d => new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
           document.getElementById('periodLabelInbound').textContent = fmt(f) + ' – ' + fmt(t);
-          document.querySelectorAll('.ib-compare-suffix').forEach(s => s.textContent = 'vs período ant.');
           document.getElementById('periodBtnInbound').classList.remove('open');
           document.getElementById('periodDropdownInbound').classList.remove('open');
         };
+
         document.addEventListener('click', e => {
           const pf = document.getElementById('periodFilterInbound');
           if (pf && !pf.contains(e.target)) {
@@ -2153,7 +2188,50 @@
           }
         });
 
-        // ── Lead data ──────────────────────────────────────────────────────
+        function updatePeriodUI(label) {
+          const d = PERIOD_DATA[label] || PERIOD_DATA['Semana Atual'];
+          const suf = IB_SUFFIXES[label] || 'vs período ant.';
+
+          // Update big numbers
+          const totalEl = document.getElementById('ib-total');
+          const siteEl  = document.getElementById('ib-site');
+          const waEl    = document.getElementById('ib-wa');
+          const resiEl  = document.getElementById('ib-resi');
+          if (totalEl) totalEl.textContent = d.total;
+          if (siteEl)  siteEl.textContent  = d.site;
+          if (waEl)    waEl.textContent    = d.wa;
+          if (resiEl)  resiEl.textContent  = d.resi;
+
+          // Update % of inbound
+          const sitePct = Math.round(d.site/d.total*100);
+          const waPct   = Math.round(d.wa/d.total*100);
+          const resiPct = Math.round(d.resi/d.total*100);
+          const el = (id) => document.getElementById(id);
+          if (el('ib-site-pct'))  el('ib-site-pct').textContent  = sitePct + '% do Inbound';
+          if (el('ib-wa-pct'))    el('ib-wa-pct').textContent    = waPct   + '% do Inbound';
+          if (el('ib-resi-pct'))  el('ib-resi-pct').textContent  = resiPct + '% do Inbound';
+          if (el('ib-total-pct')) el('ib-total-pct').textContent = '47% do total de leads';
+
+          // Update WoW suffixes
+          document.querySelectorAll('.ib-compare-suffix').forEach(s => s.textContent = suf);
+
+          // Update WoW values
+          const siteWow = d.wowSite > 0 ? `↑ ${d.wowSite}%` : d.wowSite < 0 ? `↓ ${Math.abs(d.wowSite)}%` : `→ 0%`;
+          const waWow   = d.wowWa   > 0 ? `↑ ${d.wowWa}%`   : d.wowWa   < 0 ? `↓ ${Math.abs(d.wowWa)}%`   : `→ 0%`;
+          if (el('ib-site-wow')) el('ib-site-wow').textContent = siteWow + ' ';
+          if (el('ib-wa-wow'))   el('ib-wa-wow').textContent   = waWow   + ' ';
+
+          // Update bars
+          if (el('ib-site-bar'))  el('ib-site-bar').style.width  = sitePct + '%';
+          if (el('ib-wa-bar'))    el('ib-wa-bar').style.width    = waPct   + '%';
+          if (el('ib-resi-bar'))  el('ib-resi-bar').style.width  = resiPct + '%';
+          if (el('ib-total-bar')) el('ib-total-bar').style.width = '47%';
+
+          // Redraw trend chart
+          setTimeout(() => drawTrend(d.trend), 30);
+        }
+
+        // ── Lead data ─────────────────────────────────────────────────────
         const LEADS = [
           { nome:"Metalúrgica Forja Sul",  canal:"site",      entrada:"31 Mar", pipeline:"Pré Vendas/MKT", etapa:"Aquecimento",     resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:0  },
           { nome:"Construtora Omega",      canal:"whatsapp",  entrada:"30 Mar", pipeline:"Pré Vendas/MKT", etapa:"A Validar",       resp:"Ana R.",      closer:"—",           porte:"SMB",        dias:1  },
@@ -2181,23 +2259,79 @@
           resiclean: { label:"Resiclean", bg:"rgba(66,153,82,0.1)",    color:"var(--green)",        border:"rgba(66,153,82,0.25)"  },
         };
 
-        window.filterInbound = function(filter, tabEl) {
-          document.querySelectorAll('[id^="ib-tab-"]').forEach(t => {
-            t.style.color = 'var(--gray-light)';
-            t.style.borderBottom = '2px solid transparent';
-            t.style.fontWeight = '400';
+        // Unique values for filters
+        const CLOSERS = [...new Set(LEADS.map(l => l.closer))].filter(c => c !== '—').sort();
+        const ETAPAS  = [...new Set(LEADS.map(l => l.etapa))].sort();
+
+        let activeCanal  = 'todos';
+        let activeCloser = 'todos';
+        let activeEtapa  = 'todos';
+
+        // Build filter dropdowns
+        function buildDropdown(id, labelId, options, label, onSelect) {
+          const wrap = document.getElementById(id);
+          if (!wrap) return;
+          wrap.innerHTML = '';
+          wrap.style.cssText = 'position:relative;display:inline-block;';
+
+          const btn = document.createElement('button');
+          btn.id = labelId;
+          btn.style.cssText = 'height:28px;padding:0 10px;border-radius:7px;border:1px solid var(--border);background:#fff;font-family:"Inter",sans-serif;font-size:11px;font-weight:500;color:var(--gray);cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;';
+          btn.innerHTML = label + ' <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+
+          const dd = document.createElement('div');
+          dd.style.cssText = 'display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.09);min-width:160px;z-index:200;padding:4px 0;';
+
+          ['todos', ...options].forEach(opt => {
+            const item = document.createElement('div');
+            item.style.cssText = 'padding:8px 14px;font-size:12px;cursor:pointer;color:var(--gray);font-family:"Inter",sans-serif;';
+            item.textContent = opt === 'todos' ? 'Todos' : opt;
+            item.onmouseenter = () => item.style.background = 'rgba(255,186,134,0.06)';
+            item.onmouseleave = () => item.style.background = '';
+            item.onclick = () => {
+              onSelect(opt);
+              btn.innerHTML = (opt === 'todos' ? label : opt) + ' <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+              btn.style.color = opt === 'todos' ? 'var(--gray)' : 'var(--salmon-dark)';
+              btn.style.borderColor = opt === 'todos' ? 'var(--border)' : 'rgba(255,186,134,0.4)';
+              dd.style.display = 'none';
+            };
+            dd.appendChild(item);
           });
-          tabEl.style.color = 'var(--salmon-dark)';
-          tabEl.style.borderBottom = '2px solid var(--salmon)';
-          tabEl.style.fontWeight = '600';
-          renderRows(filter);
+
+          btn.onclick = (e) => { e.stopPropagation(); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; };
+          document.addEventListener('click', () => dd.style.display = 'none');
+
+          wrap.appendChild(btn);
+          wrap.appendChild(dd);
+        }
+
+        buildDropdown('ib-filter-closer', 'ib-btn-closer', CLOSERS, 'Closer', (v) => { activeCloser = v; renderRows(); });
+        buildDropdown('ib-filter-etapa',  'ib-btn-etapa',  ETAPAS,  'Etapa',  (v) => { activeEtapa  = v; renderRows(); });
+
+        window.filterInbound = function(filter, tabEl) {
+          activeCanal = filter;
+          document.querySelectorAll('[id^="ib-tab-"]').forEach(t => {
+            t.style.color = 'var(--gray-light)'; t.style.borderBottom = '2px solid transparent'; t.style.fontWeight = '400';
+          });
+          tabEl.style.color = 'var(--salmon-dark)'; tabEl.style.borderBottom = '2px solid var(--salmon)'; tabEl.style.fontWeight = '600';
+          renderRows();
         };
 
-        function renderRows(filter) {
+        function renderRows() {
           const wrap = document.getElementById('inboundLeadRows');
           if (!wrap) return;
           wrap.innerHTML = '';
-          const list = filter === 'todos' ? LEADS : LEADS.filter(l => l.canal === filter);
+          const list = LEADS.filter(l =>
+            (activeCanal  === 'todos' || l.canal   === activeCanal) &&
+            (activeCloser === 'todos' || l.closer  === activeCloser) &&
+            (activeEtapa  === 'todos' || l.etapa   === activeEtapa)
+          );
+          if (!list.length) {
+            const empty = document.createElement('div');
+            empty.style.cssText = 'padding:32px;text-align:center;font-size:12px;color:var(--gray-light);';
+            empty.textContent = 'Nenhum lead com esses filtros.';
+            wrap.appendChild(empty); return;
+          }
           list.forEach(l => {
             const cs = CANAL_STYLE[l.canal];
             const diasColor = l.dias === 0 ? 'var(--green)' : l.dias <= 3 ? 'var(--green)' : l.dias <= 7 ? 'var(--yellow)' : 'var(--red)';
@@ -2222,73 +2356,61 @@
               <div style="font-size:11.5px;color:var(--dark);">${l.resp}</div>
               <div style="font-size:11.5px;color:var(--dark);">${l.closer}</div>
               <div><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${l.porte}</span></div>
-              <div style="font-size:12px;font-weight:700;font-family:'Inter',sans-serif;color:${diasColor};">${diasLabel}</div>
-            `;
+              <div style="font-size:12px;font-weight:700;font-family:'Inter',sans-serif;color:${diasColor};">${diasLabel}</div>`;
             wrap.appendChild(row);
           });
-          if (!list.length) {
-            const empty = document.createElement('div');
-            empty.style.cssText = 'padding:32px;text-align:center;font-size:12px;color:var(--gray-light);';
-            empty.textContent = 'Nenhum lead neste sub-canal no período.';
-            wrap.appendChild(empty);
-          }
         }
+        renderRows();
 
-        renderRows('todos');
+        // ── Trend chart ───────────────────────────────────────────────────
+        let currentTrend = PERIOD_DATA['Semana Atual'].trend;
+        let tooltipData  = null;
 
-        // ── Trend chart ──────────────────────────────────────────────────
-        function drawTrend() {
+        function drawTrend(trendData) {
+          if (trendData) currentTrend = trendData;
           const canvas = document.getElementById('inboundTrendCanvas');
           if (!canvas) return;
           const rawW = canvas.parentElement.clientWidth;
-          // Guard: don't draw if container has no width (page hidden)
           if (rawW < 50) return;
-          const dpr   = window.devicePixelRatio || 1;
-          const W     = rawW - 44;
-          const H     = 100;
+          const dpr  = window.devicePixelRatio || 1;
+          const W    = rawW - 44;
+          const H    = 100;
           canvas.width        = W * dpr;
           canvas.height       = H * dpr;
           canvas.style.width  = W + 'px';
           canvas.style.height = H + 'px';
-
           const ctx = canvas.getContext('2d');
           ctx.scale(dpr, dpr);
           ctx.clearRect(0, 0, W, H);
 
-          const weeks  = ['S-5','S-4','S-3','S-2','S-1','Atual'];
           const series = [
-            { data:[6,8,7,9,9,10],  color:'#8AA5FF' },
-            { data:[3,4,5,4,5,6],   color:'#FFBA86' },
-            { data:[0,0,1,1,1,2],   color:'#429952' },
+            { data: currentTrend.site, color:'#8AA5FF', label:'Site'      },
+            { data: currentTrend.wa,   color:'#FFBA86', label:'WhatsApp'  },
+            { data: currentTrend.resi, color:'#429952', label:'Resiclean' },
           ];
-          const maxV   = Math.max(...series.flatMap(s => s.data));
-          const PAD_L  = 8, PAD_R = 8, PAD_T = 16, PAD_B = 22;
-          const cW     = W - PAD_L - PAD_R;
-          const cH     = H - PAD_T - PAD_B;
-          const xStep  = cW / (weeks.length - 1);
+          const allVals = series.flatMap(s => s.data);
+          const maxV    = Math.max(...allVals, 1);
+          const PAD_L=8, PAD_R=8, PAD_T=16, PAD_B=22;
+          const cW = W - PAD_L - PAD_R;
+          const cH = H - PAD_T - PAD_B;
+          const xStep = cW / (WEEK_LABELS.length - 1);
 
-          // Grid lines (only above 0)
-          ctx.strokeStyle = '#EDE8DF';
-          ctx.lineWidth   = 1;
+          // Grid
+          ctx.strokeStyle = '#EDE8DF'; ctx.lineWidth = 1;
           [0, 0.5, 1].forEach(f => {
             const y = PAD_T + cH * (1 - f);
             ctx.beginPath(); ctx.moveTo(PAD_L, y); ctx.lineTo(W - PAD_R, y); ctx.stroke();
           });
 
-          // Week labels
-          ctx.font      = '9px Inter,sans-serif';
-          ctx.fillStyle = '#9E9EAD';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'alphabetic';
-          weeks.forEach((w, i) => ctx.fillText(w, PAD_L + i * xStep, H - 5));
+          // Labels
+          ctx.font = '9px Inter,sans-serif'; ctx.fillStyle = '#9E9EAD';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+          WEEK_LABELS.forEach((w, i) => ctx.fillText(w, PAD_L + i * xStep, H - 5));
 
           // Lines + dots
           series.forEach(s => {
-            ctx.beginPath();
-            ctx.strokeStyle = s.color;
-            ctx.lineWidth   = 2;
-            ctx.lineJoin    = 'round';
-            ctx.lineCap     = 'round';
+            ctx.beginPath(); ctx.strokeStyle = s.color; ctx.lineWidth = 2;
+            ctx.lineJoin = 'round'; ctx.lineCap = 'round';
             s.data.forEach((v, i) => {
               const x = PAD_L + i * xStep;
               const y = PAD_T + cH * (1 - v / maxV);
@@ -2298,19 +2420,71 @@
             s.data.forEach((v, i) => {
               const x = PAD_L + i * xStep;
               const y = PAD_T + cH * (1 - v / maxV);
-              ctx.beginPath();
-              ctx.arc(x, y, 3, 0, 2 * Math.PI);
-              ctx.fillStyle = s.color;
-              ctx.fill();
+              ctx.beginPath(); ctx.arc(x, y, 3, 0, 2*Math.PI);
+              ctx.fillStyle = s.color; ctx.fill();
             });
           });
+
+          // Tooltip overlay
+          if (tooltipData !== null) {
+            const xi = tooltipData;
+            const x  = PAD_L + xi * xStep;
+            // vertical line
+            ctx.strokeStyle = 'rgba(0,0,0,0.1)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+            ctx.beginPath(); ctx.moveTo(x, PAD_T); ctx.lineTo(x, PAD_T + cH); ctx.stroke();
+            ctx.setLineDash([]);
+            // tooltip box
+            const lines  = series.map(s => `${s.label}: ${s.data[xi]}`);
+            const bw = 110, bh = lines.length * 16 + 14;
+            let bx = x + 8, by = PAD_T;
+            if (bx + bw > W) bx = x - bw - 8;
+            ctx.fillStyle = '#222'; ctx.beginPath();
+            ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 6) : ctx.rect(bx, by, bw, bh);
+            ctx.fill();
+            ctx.font = 'bold 9px Inter,sans-serif'; ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+            ctx.fillText(WEEK_LABELS[xi], bx + 8, by + 6);
+            series.forEach((s, i) => {
+              ctx.fillStyle = s.color;
+              ctx.fillText(`${s.label}: ${s.data[xi]}`, bx + 8, by + 18 + i * 16);
+            });
+          }
+
+          // Store layout for mouse
+          canvas._layout = { PAD_L, PAD_R, PAD_T, PAD_B, cW, cH, xStep, W, H };
+        }
+
+        // Mouse events for tooltip
+        const tCanvas = document.getElementById('inboundTrendCanvas');
+        if (tCanvas) {
+          tCanvas.addEventListener('mousemove', e => {
+            const l = tCanvas._layout;
+            if (!l) return;
+            const rect = tCanvas.getBoundingClientRect();
+            const mx = (e.clientX - rect.left) * (tCanvas.width / rect.width) / (window.devicePixelRatio||1);
+            let closest = 0, minDist = Infinity;
+            WEEK_LABELS.forEach((_, i) => {
+              const x = l.PAD_L + i * l.xStep;
+              const d = Math.abs(mx - x);
+              if (d < minDist) { minDist = d; closest = i; }
+            });
+            if (minDist < 30) { tooltipData = closest; drawTrend(); }
+            else { tooltipData = null; drawTrend(); }
+          });
+          tCanvas.addEventListener('mouseleave', () => { tooltipData = null; drawTrend(); });
         }
 
         window.drawInboundTrend = drawTrend;
-        window.addEventListener('resize', drawTrend);
+        window.addEventListener('resize', () => drawTrend());
 
-        // Expose draw function globally so goPage can call it
-        window._drawInboundTrend = drawTrend;
+        const _goPage = window.goPage;
+        window.goPage = function(pageId, navEl) {
+          _goPage(pageId, navEl);
+          if (pageId === 'inbound') { setTimeout(() => drawTrend(), 250); setTimeout(() => drawTrend(), 500); }
+        };
+
+        // Init
+        updatePeriodUI('Semana Atual');
 
       })();
       </script>
