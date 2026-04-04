@@ -2560,9 +2560,9 @@
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;">
 
         <div class="card" style="background:var(--dark);border-color:var(--dark);">
-          <div class="kpi-label" style="color:rgba(255,255,255,0.35);">Contas no Pipe</div>
+          <div class="kpi-label" style="color:rgba(255,255,255,0.35);">Contas Listadas</div>
           <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;letter-spacing:-0.04em;line-height:1;margin-bottom:10px;">124</div>
-          <div style="font-size:10px;color:rgba(255,255,255,0.3);">total mapeadas para abordagem</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">total de contas na lista de abordagem</div>
         </div>
 
         <div class="card">
@@ -2616,10 +2616,65 @@
         <div id="enrichRows"></div>
       </div>
 
+      <!-- Bloco Cadência: Big Numbers -->
+      <div class="sub-header" style="margin-bottom:12px;">MÉTRICAS DA CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· Varejo Multisite · acumulado</span></div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:28px;">
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--blue-dark);">Em Cadência</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">42</div>
+          <div style="font-size:10px;color:var(--gray-light);">contas ativas</div>
+        </div>
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--gray);">Sem Resposta</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">33</div>
+          <div style="font-size:10px;color:var(--gray-light);">79% das contas</div>
+        </div>
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--green);">Com Resposta</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">9</div>
+          <div style="font-size:10px;color:var(--gray-light);">21% de taxa de resposta</div>
+          <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:21%;height:100%;background:var(--green);border-radius:10px;"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--green);">Resp. Positiva</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">5</div>
+          <div style="font-size:10px;color:var(--gray-light);">56% das respostas</div>
+          <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:56%;height:100%;background:var(--green);border-radius:10px;"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="kpi-label" style="color:var(--red);">Resp. Negativa</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">4</div>
+          <div style="font-size:10px;color:var(--gray-light);">44% das respostas</div>
+          <div style="height:2px;background:rgba(209,45,45,0.1);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:44%;height:100%;background:var(--red);border-radius:10px;"></div></div>
+        </div>
+
+        <div class="card" style="border-left:3px solid var(--blue);">
+          <div class="kpi-label" style="color:var(--blue-dark);">→ Contato Inicial</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">5</div>
+          <div style="font-size:10px;color:var(--gray-light);">12% de conversão</div>
+          <div style="height:2px;background:var(--blue-dim);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:12%;height:100%;background:var(--blue);border-radius:10px;"></div></div>
+        </div>
+
+      </div>
+
       <!-- Bloco 3: Performance por Segmento -->
-      <div class="sub-header" style="margin-bottom:12px;">PERFORMANCE POR SEGMENTO <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· clique para ver detalhe</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sub-header" style="margin-bottom:0;flex:1;">MÉTRICAS DA CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· clique no segmento para ver detalhe</span></div>
+        <div style="display:flex;gap:6px;flex-shrink:0;margin-left:16px;" id="ob-seg-filter-wrap">
+          <button onclick="filterOBSeg('todos',this)" id="ob-seg-todos" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Todos</button>
+          <button onclick="filterOBSeg('Varejo Multisite',this)" id="ob-seg-varejo" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Varejo Multisite</button>
+          <button onclick="filterOBSeg('Logística',this)" id="ob-seg-log" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Logística</button>
+          <button onclick="filterOBSeg('Indústria',this)" id="ob-seg-ind" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Indústria</button>
+          <button onclick="filterOBSeg('Construção',this)" id="ob-seg-cons" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Construção</button>
+        </div>
+      </div>
       <div class="card no-hover" style="margin-bottom:12px;padding:0;overflow:hidden;">
-        <div style="display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:grid;grid-template-columns:200px 80px 100px 90px 100px 140px 120px 100px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Contas</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Touchpoints</span>
@@ -2635,69 +2690,87 @@
       <!-- Drill-down do segmento selecionado -->
       <div id="drillDown" style="display:none;margin-bottom:28px;"></div>
 
-      <!-- Bloco 4: A/B Test -->
-      <div class="sub-header" style="margin-bottom:12px;">TESTE A/B DE CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· Varejo Multisite · mensagem</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+      <!-- Bloco 4: A/B Test with tabs -->
+      <div class="sub-header" style="margin-bottom:12px;">TESTE A/B DE CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· mensagem</span></div>
+      <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:28px;">
 
-        <div class="card no-hover" style="border-left:3px solid var(--blue);">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--blue-dim);color:var(--blue-dark);">Versão A</span>
-            <span style="font-size:11px;color:var(--gray-light);">Foco em dor operacional</span>
+        <!-- Cadence tabs -->
+        <div style="display:flex;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface-warm);">
+          <button onclick="selectABTab('varejo',this)" id="ab-tab-varejo"
+            style="font-size:11px;font-weight:600;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--salmon-dark);border-bottom:2px solid var(--salmon);font-family:'Inter',sans-serif;">
+            Varejo Multisite
+            <span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);margin-left:6px;">Ativa</span>
+          </button>
+          <button onclick="selectABTab('proxima',this)" id="ab-tab-proxima"
+            style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">
+            Logística
+            <span style="font-size:9px;padding:1px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);margin-left:6px;">Em breve</span>
+          </button>
+        </div>
+
+        <!-- Varejo A/B content -->
+        <div id="ab-content-varejo" style="padding:20px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+
+            <!-- Versão A -->
+            <div style="border:1px solid rgba(138,165,255,0.3);border-left:3px solid var(--blue);border-radius:10px;padding:16px 18px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--blue-dim);color:var(--blue-dark);">Versão A</span>
+                <span style="font-size:11px;color:var(--gray-light);">Foco em dor operacional</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Contas</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">21</div></div>
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Taxa Resp.</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">24%</div></div>
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">→ Contato</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);">14%</div></div>
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">D. médio</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">8.2d</div></div>
+              </div>
+            </div>
+
+            <!-- Versão B -->
+            <div style="border:1px solid rgba(255,186,134,0.3);border-left:3px solid var(--salmon);border-radius:10px;padding:16px 18px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--orange-dim);color:var(--salmon-dark);">Versão B</span>
+                <span style="font-size:11px;color:var(--gray-light);">Foco em resultado financeiro</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Contas</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">21</div></div>
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Taxa Resp.</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--yellow);">19%</div></div>
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">→ Contato</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--salmon-dark);">10%</div></div>
+                <div><div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">D. médio</div><div style="font-size:24px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">9.8d</div></div>
+              </div>
+            </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Contas</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">21</div>
+
+          <!-- Comparativo visual -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--border);border-radius:8px;overflow:hidden;">
+            <div style="padding:10px 16px;background:#fff;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;color:var(--gray);">Taxa de resposta</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;font-weight:700;color:var(--blue-dark);">24%</span>
+                <span style="font-size:10px;color:var(--green);font-weight:600;">↑ +5pp</span>
+                <span style="font-size:11px;color:var(--salmon-dark);">19%</span>
+              </div>
             </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Taxa Resp.</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">24%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">→ Contato Inicial</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);">14%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">D. médio resp.</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">8.2d</div>
+            <div style="padding:10px 16px;background:#fff;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;color:var(--gray);">Conversão para Contato</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;font-weight:700;color:var(--blue-dark);">14%</span>
+                <span style="font-size:10px;color:var(--green);font-weight:600;">↑ +4pp</span>
+                <span style="font-size:11px;color:var(--salmon-dark);">10%</span>
+              </div>
             </div>
           </div>
-          <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
-            <div style="width:24%;height:100%;background:var(--blue);border-radius:10px;"></div>
+          <div style="margin-top:12px;padding:10px 14px;background:rgba(66,153,82,0.07);border:1px solid rgba(66,153,82,0.18);border-radius:8px;font-size:11px;color:var(--green);font-weight:500;">
+            💡 Versão A liderando — continuar por mais 2 semanas para significância estatística.
           </div>
         </div>
 
-        <div class="card no-hover" style="border-left:3px solid var(--salmon);">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--orange-dim);color:var(--salmon-dark);">Versão B</span>
-            <span style="font-size:11px;color:var(--gray-light);">Foco em resultado financeiro</span>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Contas</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">21</div>
-            </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Taxa Resp.</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--yellow);">19%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">→ Contato Inicial</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--salmon-dark);">10%</div>
-            </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">D. médio resp.</div>
-              <div style="font-size:22px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">9.8d</div>
-            </div>
-          </div>
-          <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
-            <div style="width:19%;height:100%;background:var(--salmon);border-radius:10px;"></div>
-          </div>
+        <!-- Próxima cadência placeholder -->
+        <div id="ab-content-proxima" style="display:none;padding:32px;text-align:center;">
+          <div style="font-size:13px;color:var(--gray-light);">Teste A/B para Logística ainda não iniciado.</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Quando a cadência for ativada, o comparativo aparece aqui.</div>
         </div>
 
-      </div>
-      <div style="padding:12px 16px;background:rgba(66,153,82,0.07);border:1px solid rgba(66,153,82,0.2);border-radius:8px;font-size:11px;color:var(--green);font-weight:500;margin-bottom:28px;">
-        💡 Versão A liderando com +5pp de taxa de resposta e +4pp de conversão para Contato Inicial. Amostra ainda pequena — continuar por mais 2 semanas antes de concluir.
       </div>
 
       <!-- Bloco 5: Lista de contas -->
@@ -2711,7 +2784,7 @@
             <div id="ob-filter-status"></div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:200px 100px 70px 130px 110px 100px 90px 80px 52px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:grid;grid-template-columns:180px 90px 60px 120px 100px 110px 90px 70px 48px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Empresa</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Versão A/B</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Touches</span>
@@ -2720,7 +2793,7 @@
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Responsável</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Closer</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Porte</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Dias</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Últ. toque</span>
         </div>
         <div id="obLeadRows"></div>
       </div>
@@ -2801,11 +2874,44 @@
           { seg:'Construção',       contas:22, touches:0,   resp:0,  taxa:0,  ci:0,  dmed:0,   active:false },
         ];
 
+        window.filterOBSeg = function(val) {
+          const rows = document.querySelectorAll('.perf-row');
+          const consol = document.getElementById('perf-consol');
+          rows.forEach(r => {
+            r.style.display = (val === 'todos' || r.dataset.seg === val) ? '' : 'none';
+          });
+          if (consol) consol.style.display = val === 'todos' ? '' : 'none';
+        };
+
         const perfWrap = document.getElementById('perfRows');
         if (perfWrap) {
+          // Consolidated row
+          const totalContas = PERF.reduce((s,x) => s+x.contas, 0);
+          const totalTouches = PERF.reduce((s,x) => s+x.touches, 0);
+          const totalResp = PERF.reduce((s,x) => s+x.resp, 0);
+          const totalCI = PERF.reduce((s,x) => s+x.ci, 0);
+          const avgTaxa = PERF.filter(x=>x.touches>0).length > 0
+            ? Math.round(PERF.filter(x=>x.touches>0).reduce((s,x)=>s+x.taxa,0) / PERF.filter(x=>x.touches>0).length) : 0;
+          const avgDmed = PERF.filter(x=>x.dmed>0).length > 0
+            ? (PERF.filter(x=>x.dmed>0).reduce((s,x)=>s+x.dmed,0) / PERF.filter(x=>x.dmed>0).length).toFixed(1) : 0;
+
+          const consolRow = document.createElement('div');
+          consolRow.id = 'perf-consol';
+          consolRow.style.cssText = 'display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.3);';
+          consolRow.innerHTML = `
+            <div style="font-size:11px;font-weight:700;color:var(--dark);">Consolidado</div>
+            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalContas}</div>
+            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalTouches||'—'}</div>
+            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalResp||'—'}</div>
+            <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(201,168,32,0.1);color:var(--yellow);">${avgTaxa>0?avgTaxa+'%':'—'}</span></div>
+            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--blue-dark);">${totalCI||'—'}</div>
+            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${avgDmed>0?avgDmed+'d':'—'}</div>
+            <div></div>`;
+          perfWrap.appendChild(consolRow);
+
           PERF.forEach(s => {
             const row = document.createElement('div');
-            row.style.cssText = `display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
+            row.style.cssText = `display:grid;grid-template-columns:200px 80px 100px 90px 100px 140px 120px 100px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
             if (s.active) {
               row.onmouseenter = () => row.style.background = 'rgba(249,237,228,0.3)';
               row.onmouseleave = () => row.style.background = '';
@@ -2924,6 +3030,90 @@
         buildDDOB('ob-filter-closer', 'Responsável', CLOSERS_OB, v => { obCloserFilter = v; renderOBRows(); });
         buildDDOB('ob-filter-status', 'Status', STATUS_OB, v => { obStatusFilter = v; renderOBRows(); });
 
+        // ── Segment filter for perf table ────────────────────────────────
+        let obSegActive = 'todos';
+        window.filterOBSeg = function(seg, el) {
+          obSegActive = seg;
+          document.querySelectorAll('[id^="ob-seg-"]').forEach(b => {
+            b.style.background = 'transparent';
+            b.style.borderColor = 'var(--border)';
+            b.style.color = 'var(--gray-light)';
+            b.style.fontWeight = '500';
+          });
+          el.style.background = 'var(--orange-dim)';
+          el.style.borderColor = 'var(--salmon)';
+          el.style.color = 'var(--salmon-dark)';
+          el.style.fontWeight = '600';
+          renderPerfRows();
+        };
+
+        function renderPerfRows() {
+          const wrap = document.getElementById('perfRows');
+          if (!wrap) return;
+          wrap.innerHTML = '';
+          const filtered = obSegActive === 'todos' ? PERF : PERF.filter(s => s.seg === obSegActive);
+
+          // Consolidated row — only when showing all
+          if (obSegActive === 'todos') {
+            const active = PERF.filter(s => s.active);
+            const totContas  = PERF.reduce((s,p) => s+p.contas, 0);
+            const totTouches = active.reduce((s,p) => s+p.touches, 0);
+            const totResp    = active.reduce((s,p) => s+p.resp, 0);
+            const totCI      = active.reduce((s,p) => s+p.ci, 0);
+            const avgTaxa    = active.length ? Math.round(active.reduce((s,p) => s+p.taxa,0)/active.length) : 0;
+            const avgDmed    = active.length ? (active.reduce((s,p) => s+p.dmed,0)/active.length).toFixed(1) : 0;
+            const consRow = document.createElement('div');
+            consRow.style.cssText = 'display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.25);';
+            consRow.innerHTML = `
+              <div style="font-size:11px;font-weight:700;color:var(--dark);">Consolidado</div>
+              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totContas}</div>
+              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totTouches||'—'}</div>
+              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totResp||'—'}</div>
+              <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(66,153,82,0.1);color:var(--green);">${avgTaxa?avgTaxa+'%':'—'}</span></div>
+              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--blue-dark);">${totCI||'—'}</div>
+              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${avgDmed?avgDmed+'d':'—'}</div>
+              <div></div>`;
+            wrap.appendChild(consRow);
+          }
+
+          filtered.forEach(s => {
+            const row = document.createElement('div');
+            row.style.cssText = `display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
+            if (s.active) { row.onmouseenter = () => row.style.background='rgba(249,237,228,0.3)'; row.onmouseleave = () => row.style.background=''; row.onclick = () => toggleDrill(s); }
+            const taxaColor = s.taxa>=20?'var(--green)':s.taxa>=10?'var(--yellow)':s.taxa>0?'var(--red)':'var(--gray-light)';
+            row.innerHTML = `
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
+                ${s.active?'<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>':''}
+              </div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
+              <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
+              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
+              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Em andamento</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</span>'}</div>`;
+            wrap.appendChild(row);
+          });
+        }
+
+        // ── AB segment filter ─────────────────────────────────────────────
+        window.filterOBAB = function(seg, el) {
+          document.querySelectorAll('[id^="ob-ab-"]').forEach(b => {
+            if (!b.disabled) { b.style.background='transparent'; b.style.borderColor='var(--border)'; b.style.color='var(--gray-light)'; b.style.fontWeight='500'; }
+          });
+          el.style.background = 'var(--orange-dim)';
+          el.style.borderColor = 'var(--salmon)';
+          el.style.color = 'var(--salmon-dark)';
+          el.style.fontWeight = '600';
+          // Update consolidated label
+          const lbl = document.getElementById('ob-ab-cons-label');
+          if (lbl) lbl.textContent = 'CONSOLIDADO · ' + seg;
+        };
+
+        // Init perf rows
+        renderPerfRows();
+
         window.filterOB = function(f, el) {
           obSegFilter = f;
           document.querySelectorAll('[id^="ob-tab-"]').forEach(t => { t.style.color='var(--gray-light)'; t.style.borderBottom='2px solid transparent'; t.style.fontWeight='400'; });
@@ -2947,7 +3137,7 @@
             const abBg      = l.ab==='A'?'var(--blue-dim)':'var(--orange-dim)';
             const respColor = l.resp_s==='pos'?'var(--green)':l.resp_s==='neg'?'var(--red)':'var(--text-dim)';
             const row = document.createElement('div');
-            row.style.cssText = 'display:grid;grid-template-columns:200px 100px 70px 130px 110px 100px 90px 80px 52px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
+            row.style.cssText = 'display:grid;grid-template-columns:180px 90px 60px 120px 100px 110px 90px 70px 48px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
             row.onmouseenter = () => row.style.background='rgba(249,237,228,0.25)';
             row.onmouseleave = () => row.style.background='';
             row.innerHTML = `
@@ -2962,7 +3152,7 @@
               <div style="font-size:11.5px;color:var(--dark);">${l.resp2}</div>
               <div style="font-size:11.5px;color:var(--dark);">${l.closer}</div>
               <div><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${l.porte}</span></div>
-              <div style="font-size:12px;font-weight:700;color:${diasColor};">${l.dias===0?'hoje':l.dias+'d'}</div>`;
+              <div style="font-size:12px;font-weight:700;color:${diasColor};">${l.resp_s===''?(l.dias===0?'hoje':l.dias+'d'):'—'}</div>`;
             wrap.appendChild(row);
           });
 
@@ -2974,6 +3164,17 @@
           }
         }
         renderOBRows();
+
+        // A/B tab switcher
+        window.selectABTab = function(tab, el) {
+          document.querySelectorAll('[id^="ab-tab-"]').forEach(t => {
+            t.style.color = 'var(--gray-light)'; t.style.borderBottom = '2px solid transparent'; t.style.fontWeight = '400';
+          });
+          el.style.color = 'var(--salmon-dark)'; el.style.borderBottom = '2px solid var(--salmon)'; el.style.fontWeight = '600';
+          document.querySelectorAll('[id^="ab-content-"]').forEach(c => c.style.display = 'none');
+          const cont = document.getElementById('ab-content-' + tab);
+          if (cont) cont.style.display = 'block';
+        };
 
         // Intercept goPage
         const _gp = window.goPage;
