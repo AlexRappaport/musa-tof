@@ -1015,6 +1015,35 @@
         </div>
       </div>
 
+      <!-- Filtro de Pipeline -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-right:4px;">Pipeline</span>
+        <button onclick="filterVGPipeline('todos',this)" id="vgp-todos"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Todos
+        </button>
+        <button onclick="filterVGPipeline('pre-vendas',this)" id="vgp-pre"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Pré Vendas/MKT
+        </button>
+        <button onclick="filterVGPipeline('smb',this)" id="vgp-smb"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          SMB 3.0
+        </button>
+        <button onclick="filterVGPipeline('enterprise',this)" id="vgp-ent"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Enterprise 3.0
+        </button>
+        <button onclick="filterVGPipeline('expansao',this)" id="vgp-exp"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Expansão
+        </button>
+        <button onclick="filterVGPipeline('rcc',this)" id="vgp-rcc"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          RCC
+        </button>
+      </div>
+
       <!-- NOVOS LEADS POR PIPELINE -->
       <div class="sub-header" style="margin-bottom:12px;">NOVOS LEADS POR PIPELINE</div>
       <div style="display:grid;grid-template-columns:1.2fr repeat(5,1fr);gap:10px;margin-bottom:24px;">
@@ -1032,7 +1061,7 @@
         <!-- Pré Vendas/MKT -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--blue-dark);">Pré Vendas / MKT</div>
-          <div class="kpi-value medium">38</div>
+          <div class="kpi-value medium" id="vg-novos-leads">38</div>
           <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">41% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 8% <span class="compare-suffix"></span></span></div>
           <div class="kpi-bar"><div class="kpi-bar-fill" style="width:41%;background:var(--blue);"></div></div>
@@ -1123,17 +1152,17 @@
 
       <!-- Linha 2: Entrada de Leads -->
       <div class="sub-header">Entrada de Leads</div>
-      <div class="grid-3" style="margin-bottom:12px;">
+      <div class="grid-3" id="vg-entrada-block" style="margin-bottom:12px;">
 
         <div class="card animate-in">
           <div class="kpi-label">Novos leads</div>
-          <div class="kpi-value medium">38</div>
+          <div class="kpi-value medium" id="vg-novos-leads">38</div>
           <div class="kpi-meta" id="periodSubLabel" style="color:var(--gray-light);">no período selecionado</div>
         </div>
 
         <div class="card animate-in">
           <div class="kpi-label" id="compareLabel1">Evolução vs período anterior</div>
-          <div class="kpi-value small" style="color:#2A7A3B;">+14%</div>
+          <div class="kpi-value small" id="vg-wow-pct" style="color:#2A7A3B;">+14%</div>
           <div class="kpi-meta">
             <span class="delta up">↑ 5 leads a mais <span class="compare-suffix" id="compareSuffix1"></span></span>
           </div>
@@ -1150,7 +1179,7 @@
       </div>
 
       <!-- Origem dos Leads -->
-      <div class="sub-header" style="margin-bottom:14px;">ORIGEM DOS LEADS</div>
+      <div class="sub-header" style="margin-bottom:14px;" id="vg-origem-label">ORIGEM DOS LEADS</div>
       <div class="card no-hover" style="padding:24px 28px;margin-bottom:12px;">
         <div style="display:flex;gap:20px;align-items:flex-start;">
 
@@ -1447,7 +1476,7 @@
       </script>
 
       <!-- Perfil dos Leads -->
-      <div class="sub-header" style="margin-bottom:12px;">PERFIL DOS LEADS</div>
+      <div class="sub-header" style="margin-bottom:12px;" id="vg-perfil-label">PERFIL DOS LEADS</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
 
         <!-- Card 1: Top 5 Segmentos (wide) -->
@@ -1462,7 +1491,7 @@
           <div id="segmentoRows"></div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:10px;color:var(--gray-light);">Outros</span>
-            <span style="font-size:11px;font-weight:600;color:var(--gray-light);">11 leads · 29%</span>
+            <span style="font-size:11px;font-weight:600;color:var(--gray-light);" data-outros>11 leads · 29%</span>
           </div>
         </div>
 
@@ -1562,7 +1591,7 @@
       </script>
 
       <!-- Linha 3: Performance de qualificação -->
-      <div class="sub-header">Performance de qualificação</div>
+      <div class="sub-header" id="vg-perf-label">Performance de qualificação</div>
       <div class="grid-2" style="margin-bottom:12px;">
 
         <div class="card animate-in">
@@ -4141,6 +4170,184 @@
   });
   // Init with default
   updatePeriodLabels('Semana Atual');
+
+  // ── VG Pipeline filter ───────────────────────────────────────────────────
+  const VG_PIPELINE_DATA = {
+    'todos': {
+      label: 'Todos os Pipelines',
+      novos: 93, wow: '+11%', wowColor: '#2A7A3B',
+      origemLabel: 'ORIGEM DOS LEADS · Todos os Pipelines',
+      perfilLabel: 'PERFIL DOS LEADS · Todos os Pipelines',
+      perfLabel:   'Performance de qualificação · Todos',
+      cobertura: 58, tempo: 4.2,
+      qualif: { qualif:43, validar:35, recusar:22 },
+      segmentos: [
+        { nome:'Indústria', n:25, pct:27, color:'#8AA5FF' },
+        { nome:'Construção',n:18, pct:19, color:'#FFBA86' },
+        { nome:'Ambiental', n:14, pct:15, color:'#52A862' },
+        { nome:'Saúde',     n:9,  pct:10, color:'#9C88E8' },
+        { nome:'Logística', n:8,  pct:9,  color:'#E3C545' },
+      ],
+    },
+    'pre-vendas': {
+      label: 'Pré Vendas/MKT',
+      novos: 38, wow: '+14%', wowColor: '#2A7A3B',
+      origemLabel: 'ORIGEM DOS LEADS · Pré Vendas/MKT',
+      perfilLabel: 'PERFIL DOS LEADS · Pré Vendas/MKT',
+      perfLabel:   'Performance de qualificação · Pré Vendas/MKT',
+      cobertura: 61, tempo: 4.2,
+      qualif: { qualif:43, validar:35, recusar:22 },
+      segmentos: [
+        { nome:'Indústria', n:10, pct:26, color:'#8AA5FF' },
+        { nome:'Construção',n:6,  pct:16, color:'#FFBA86' },
+        { nome:'Ambiental', n:5,  pct:13, color:'#52A862' },
+        { nome:'Saúde',     n:3,  pct:8,  color:'#9C88E8' },
+        { nome:'Logística', n:3,  pct:8,  color:'#E3C545' },
+      ],
+    },
+    'smb': {
+      label: 'SMB 3.0',
+      novos: 22, wow: '+8%', wowColor: '#2A7A3B',
+      origemLabel: 'ORIGEM DOS LEADS · SMB 3.0',
+      perfilLabel: 'PERFIL DOS LEADS · SMB 3.0',
+      perfLabel:   'Performance de qualificação · SMB 3.0',
+      cobertura: 52, tempo: 3.8,
+      qualif: { qualif:38, validar:40, recusar:22 },
+      segmentos: [
+        { nome:'Construção',n:7,  pct:32, color:'#FFBA86' },
+        { nome:'Comércio',  n:5,  pct:23, color:'#8AA5FF' },
+        { nome:'Serviços',  n:4,  pct:18, color:'#52A862' },
+        { nome:'Logística', n:3,  pct:14, color:'#9C88E8' },
+        { nome:'Outros',    n:3,  pct:14, color:'#E3C545' },
+      ],
+    },
+    'enterprise': {
+      label: 'Enterprise 3.0',
+      novos: 12, wow: '+6%', wowColor: '#2A7A3B',
+      origemLabel: 'ORIGEM DOS LEADS · Enterprise 3.0',
+      perfilLabel: 'PERFIL DOS LEADS · Enterprise 3.0',
+      perfLabel:   'Performance de qualificação · Enterprise 3.0',
+      cobertura: 78, tempo: 6.1,
+      qualif: { qualif:58, validar:28, recusar:14 },
+      segmentos: [
+        { nome:'Indústria', n:5,  pct:42, color:'#8AA5FF' },
+        { nome:'Logística', n:3,  pct:25, color:'#E3C545' },
+        { nome:'Saúde',     n:2,  pct:17, color:'#9C88E8' },
+        { nome:'Ambiental', n:1,  pct:8,  color:'#52A862' },
+        { nome:'Outros',    n:1,  pct:8,  color:'#FFBA86' },
+      ],
+    },
+    'expansao': {
+      label: 'Expansão',
+      novos: 14, wow: '+2%', wowColor: '#C9A820',
+      origemLabel: 'ORIGEM DOS LEADS · Expansão',
+      perfilLabel: 'PERFIL DOS LEADS · Expansão',
+      perfLabel:   'Performance de qualificação · Expansão',
+      cobertura: 71, tempo: 3.5,
+      qualif: { qualif:50, validar:32, recusar:18 },
+      segmentos: [
+        { nome:'Logística', n:5,  pct:36, color:'#E3C545' },
+        { nome:'Indústria', n:4,  pct:29, color:'#8AA5FF' },
+        { nome:'Varejo',    n:3,  pct:21, color:'#FFBA86' },
+        { nome:'Saúde',     n:1,  pct:7,  color:'#9C88E8' },
+        { nome:'Outros',    n:1,  pct:7,  color:'#52A862' },
+      ],
+    },
+    'rcc': {
+      label: 'RCC',
+      novos: 7, wow: '-5%', wowColor: '#D12D2D',
+      origemLabel: 'ORIGEM DOS LEADS · RCC',
+      perfilLabel: 'PERFIL DOS LEADS · RCC',
+      perfLabel:   'Performance de qualificação · RCC',
+      cobertura: 43, tempo: 5.5,
+      qualif: { qualif:28, validar:43, recusar:29 },
+      segmentos: [
+        { nome:'Construção',n:4,  pct:57, color:'#FFBA86' },
+        { nome:'Indústria', n:2,  pct:29, color:'#8AA5FF' },
+        { nome:'Outros',    n:1,  pct:14, color:'#E3C545' },
+      ],
+    },
+  };
+
+  let vgActivePipeline = 'todos';
+
+  window.filterVGPipeline = function(pipe, el) {
+    vgActivePipeline = pipe;
+
+    // Update pills
+    document.querySelectorAll('[id^="vgp-"]').forEach(b => {
+      b.style.background   = 'transparent';
+      b.style.borderColor  = 'var(--border)';
+      b.style.color        = 'var(--gray-light)';
+      b.style.fontWeight   = '500';
+    });
+    el.style.background  = 'var(--orange-dim)';
+    el.style.borderColor = 'var(--salmon)';
+    el.style.color       = 'var(--salmon-dark)';
+    el.style.fontWeight  = '600';
+
+    const d = VG_PIPELINE_DATA[pipe];
+    if (!d) return;
+
+    // Update labels
+    const origemLbl = document.getElementById('vg-origem-label');
+    if (origemLbl) origemLbl.textContent = d.origemLabel;
+    const perfilLbl = document.getElementById('vg-perfil-label');
+    if (perfilLbl) perfilLbl.textContent = d.perfilLabel;
+    const perfLbl = document.getElementById('vg-perf-label');
+    if (perfLbl) perfLbl.textContent = d.perfLabel;
+
+    // Update Entrada de Leads
+    const novosEl = document.getElementById('vg-novos-leads');
+    if (novosEl) novosEl.textContent = d.novos;
+    const wowEl = document.getElementById('vg-wow-pct');
+    if (wowEl) { wowEl.textContent = d.wow; wowEl.style.color = d.wowColor; }
+    const subLbl = document.getElementById('periodSubLabel');
+    if (subLbl) subLbl.textContent = d.label + ' · ' + (subLbl.dataset.period || 'no período selecionado');
+
+    // Update donut total
+    const donutTotalEl = document.getElementById('donutTotal');
+    if (donutTotalEl) donutTotalEl.textContent = d.novos;
+
+    // Update top segments
+    const segWrap = document.getElementById('segmentoRows');
+    if (segWrap) {
+      segWrap.innerHTML = '';
+      const maxP = Math.max(...d.segmentos.map(s => s.pct));
+      d.segmentos.forEach(s => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
+        row.innerHTML = `
+          <span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">${s.nome}</span>
+          <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+            <div style="width:${(s.pct/maxP)*100}%;height:100%;background:${s.color};border-radius:10px;"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">${s.n}</span>
+          <span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">${s.pct}%</span>`;
+        segWrap.appendChild(row);
+      });
+      // Update Outros footer
+      const totalSeg = d.segmentos.reduce((s,x) => s+x.n, 0);
+      const outros = d.novos - totalSeg;
+      const outrosPct = Math.round(outros / d.novos * 100);
+      const footer = segWrap.parentElement.querySelector('[data-outros]');
+      if (footer) footer.textContent = outros + ' leads · ' + outrosPct + '%';
+    }
+
+    // Update total card label in segmentos
+    const segTotal = document.getElementById('seg-total-label');
+    if (segTotal) segTotal.textContent = d.novos;
+
+    // Update Performance bars
+    const cobEl = document.getElementById('vg-cobertura-val');
+    const cobBar = document.getElementById('vg-cobertura-bar');
+    if (cobEl) cobEl.textContent = d.cobertura + '%';
+    if (cobBar) cobBar.style.width = d.cobertura + '%';
+
+    const tempoEl = document.getElementById('vg-tempo-val');
+    if (tempoEl) tempoEl.textContent = d.tempo;
+  };
+
 </script>
 
 </body>
