@@ -2859,9 +2859,9 @@
                 </div>
                 <span style="font-size:11px;font-weight:700;color:${pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--red)'};width:34px;text-align:right;">${pct}%</span>
               </div>
-              <div style="text-align:right;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${s.total}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">${s.mapped}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);">${s.total-s.mapped}</div>
+              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${s.total}</div>
+              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">${s.mapped}</div>
+              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);">${s.total-s.mapped}</div>
             `;
             enrichWrap.appendChild(row);
           });
@@ -2898,15 +2898,15 @@
 
           const consolRow = document.createElement('div');
           consolRow.id = 'perf-consol';
-          consolRow.style.cssText = 'display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.3);';
+          consolRow.style.cssText = 'display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.3);';
           consolRow.innerHTML = `
             <div style="font-size:11px;font-weight:700;color:var(--dark);">Consolidado</div>
             <div style="font-size:13px;font-weight:700;color:var(--dark);">${totalContas}</div>
-            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalTouches||'—'}</div>
-            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalResp||'—'}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--dark);">${totalTouches||'—'}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--dark);">${totalResp||'—'}</div>
             <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(201,168,32,0.1);color:var(--yellow);">${avgTaxa>0?avgTaxa+'%':'—'}</span></div>
-            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--blue-dark);">${totalCI||'—'}</div>
-            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${avgDmed>0?avgDmed+'d':'—'}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--blue-dark);">${totalCI||'—'}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--dark);">${avgDmed>0?avgDmed+'d':'—'}</div>
             <div></div>`;
           perfWrap.appendChild(consolRow);
 
@@ -2924,12 +2924,12 @@
                 <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
                 ${s.active ? '<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>' : ''}
               </div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
               <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
               <div>${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>
             `;
             perfWrap.appendChild(row);
@@ -3064,22 +3064,22 @@
             const avgTaxa    = active.length ? Math.round(active.reduce((s,p) => s+p.taxa,0)/active.length) : 0;
             const avgDmed    = active.length ? (active.reduce((s,p) => s+p.dmed,0)/active.length).toFixed(1) : 0;
             const consRow = document.createElement('div');
-            consRow.style.cssText = 'display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.25);';
+            consRow.style.cssText = 'display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.25);';
             consRow.innerHTML = `
               <div style="font-size:11px;font-weight:700;color:var(--dark);">Consolidado</div>
-              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totContas}</div>
-              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totTouches||'—'}</div>
-              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totResp||'—'}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--dark);">${totContas}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--dark);">${totTouches||'—'}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--dark);">${totResp||'—'}</div>
               <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(66,153,82,0.1);color:var(--green);">${avgTaxa?avgTaxa+'%':'—'}</span></div>
-              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--blue-dark);">${totCI||'—'}</div>
-              <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${avgDmed?avgDmed+'d':'—'}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--blue-dark);">${totCI||'—'}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--dark);">${avgDmed?avgDmed+'d':'—'}</div>
               <div></div>`;
             wrap.appendChild(consRow);
           }
 
           filtered.forEach(s => {
             const row = document.createElement('div');
-            row.style.cssText = `display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
+            row.style.cssText = `display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
             if (s.active) { row.onmouseenter = () => row.style.background='rgba(249,237,228,0.3)'; row.onmouseleave = () => row.style.background=''; row.onclick = () => toggleDrill(s); }
             const taxaColor = s.taxa>=20?'var(--green)':s.taxa>=10?'var(--yellow)':s.taxa>0?'var(--red)':'var(--gray-light)';
             row.innerHTML = `
@@ -3087,12 +3087,12 @@
                 <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
                 ${s.active?'<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>':''}
               </div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
               <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
-              <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
+              <div style="font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
               <div>${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>`;
             wrap.appendChild(row);
           });
