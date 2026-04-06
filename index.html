@@ -3323,7 +3323,29 @@
           <div>
             <div class="section-label">Canal</div>
             <div class="section-name">Parcerias</div>
-            <div class="section-sub">Recrutamento de advisors · Performance das contas indicadas</div>
+            <div class="section-sub">Recrutamento de advisors · Performance das contas originadas</div>
+          </div>
+        </div>
+        <div class="period-filter" id="periodFilterParc">
+          <button class="period-btn" id="periodBtnParc" onclick="togglePeriodParc()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="periodLabelParc">Semana Atual</span>
+            <svg class="caret" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <div class="period-dropdown" id="periodDropdownParc">
+            <div class="period-opt active" onclick="selectPeriodParc(this,'Semana Atual')">Semana Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodParc(this,'Semana Anterior')">Semana Anterior<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodParc(this,'Mês Atual')">Mês Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodParc(this,'Trimestre')">Trimestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-opt" onclick="selectPeriodParc(this,'Semestre')">Semestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="period-divider"></div>
+            <div class="period-custom">
+              <div class="period-custom-label">Período personalizado</div>
+              <div class="period-dates">
+                <input type="date" id="dateFromParc"/><span>até</span><input type="date" id="dateToParc"/>
+              </div>
+              <button class="period-apply" onclick="applyCustomParc()">Aplicar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -3365,10 +3387,10 @@
 
         <!-- Dimensão 2: Performance das contas -->
         <div class="card no-hover" style="border-left:3px solid var(--salmon);">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--salmon-dark);margin-bottom:16px;">Contas indicadas pelos advisors</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--salmon-dark);margin-bottom:16px;">Contas originadas pelos advisors</div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
             <div>
-              <div class="kpi-label" style="margin-bottom:6px;">Total indicadas</div>
+              <div class="kpi-label" style="margin-bottom:6px;">Total originadas</div>
               <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;">18</div>
               <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">desde o início</div>
             </div>
@@ -3405,10 +3427,9 @@
           <colgroup>
             <col style="width:18%"> <!-- Advisor -->
             <col style="width:14%"> <!-- Empresa/Setor -->
-            <col style="width:11%"> <!-- Contas indicadas -->
+            <col style="width:11%"> <!-- Contas originadas -->
             <col style="width:14%"> <!-- → Reunião Diag. -->
             <col style="width:14%"> <!-- → Proposta Enviada -->
-            <col style="width:11%"> <!-- Taxa Conversão -->
             <col style="width:10%"> <!-- Última indicação -->
             <col style="width:8%">  <!-- Status -->
           </colgroup>
@@ -3416,10 +3437,9 @@
             <tr style="border-bottom:1px solid var(--border);">
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px 9px 20px;text-align:left;">Advisor</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Setor</th>
-              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Indicadas</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Originadas</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">→ Reunião Diag.</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">→ Proposta</th>
-              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Conversão</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Últ. indicação</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">Status</th>
             </tr>
@@ -3459,6 +3479,37 @@
       <script>
       (function(){
 
+        // ── Period filter ─────────────────────────────────────────────────
+        window.togglePeriodParc = function() {
+          document.getElementById('periodBtnParc').classList.toggle('open');
+          document.getElementById('periodDropdownParc').classList.toggle('open');
+        };
+        window.selectPeriodParc = function(el, label) {
+          document.querySelectorAll('#periodDropdownParc .period-opt').forEach(o => o.classList.remove('active'));
+          el.classList.add('active');
+          document.getElementById('periodLabelParc').textContent = label;
+          if (!el.closest('.period-custom')) {
+            document.getElementById('periodBtnParc').classList.remove('open');
+            document.getElementById('periodDropdownParc').classList.remove('open');
+          }
+        };
+        window.applyCustomParc = function() {
+          const f = document.getElementById('dateFromParc').value;
+          const t = document.getElementById('dateToParc').value;
+          if (!f || !t) return;
+          const fmt = d => new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+          document.getElementById('periodLabelParc').textContent = fmt(f) + ' – ' + fmt(t);
+          document.getElementById('periodBtnParc').classList.remove('open');
+          document.getElementById('periodDropdownParc').classList.remove('open');
+        };
+        document.addEventListener('click', e => {
+          const pf = document.getElementById('periodFilterParc');
+          if (pf && !pf.contains(e.target)) {
+            document.getElementById('periodBtnParc')?.classList.remove('open');
+            document.getElementById('periodDropdownParc')?.classList.remove('open');
+          }
+        });
+
         // ── Funil data ────────────────────────────────────────────────────
         const FUNIL = [
           { etapa:'Lead novo',           n:0,  color:'#C8C8D4' },
@@ -3491,9 +3542,9 @@
 
         // ── Advisor data ─────────────────────────────────────────────────
         const ADVISORS = [
-          { nome:'Norte',          setor:'Indústria',  indicadas:8, reuniao:5, proposta:3, diasUlt:12, status:'ativo' },
-          { nome:'Canary',         setor:'Logística',  indicadas:6, reuniao:4, proposta:3, diasUlt:24, status:'ativo' },
-          { nome:'Mauricio Cerrutti', setor:'Varejo',  indicadas:4, reuniao:2, proposta:1, diasUlt:30, status:'alerta' },
+          { nome:'Norte',          setor:'Indústria',  originadas:8, reuniao:5, proposta:3, diasUlt:12, status:'ativo' },
+          { nome:'Canary',         setor:'Logística',  originadas:6, reuniao:4, proposta:3, diasUlt:24, status:'ativo' },
+          { nome:'Mauricio Cerrutti', setor:'Varejo',  originadas:4, reuniao:2, proposta:1, diasUlt:30, status:'alerta' },
         ];
 
         const CONTAS = [
@@ -3511,8 +3562,6 @@
         const advisorTbody = document.getElementById('advisorRows');
         if (advisorTbody) {
           ADVISORS.forEach(a => {
-            const conv = Math.round(a.proposta / a.indicadas * 100);
-            const convColor = conv >= 40 ? 'var(--green)' : conv >= 20 ? 'var(--yellow)' : 'var(--red)';
             const diasColor = a.diasUlt <= 14 ? 'var(--green)' : a.diasUlt <= 21 ? 'var(--yellow)' : 'var(--red)';
             const statusBadge = a.status === 'ativo'
               ? '<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativo</span>'
@@ -3525,16 +3574,16 @@
             tr.innerHTML =
               TD(`<span style="font-size:12px;font-weight:600;color:var(--dark);">${a.nome}</span>`, 'padding-left:20px;') +
               TD(`<span style="font-size:11px;color:var(--gray-light);">${a.setor}</span>`) +
-              TD(`<span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${a.indicadas}</span>`) +
+              TD(`<span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${a.originadas}</span>`) +
               TD(`<div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue-dark);">${a.reuniao}</span>
-                    <span style="font-size:10px;color:var(--gray-light);">${Math.round(a.reuniao/a.indicadas*100)}%</span>
+                    <span style="font-size:10px;color:var(--gray-light);">${Math.round(a.reuniao/a.originadas*100)}%</span>
                   </div>`) +
               TD(`<div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--green);">${a.proposta}</span>
-                    <span style="font-size:10px;color:var(--gray-light);">${Math.round(a.proposta/a.indicadas*100)}%</span>
+                    <span style="font-size:10px;color:var(--gray-light);">${Math.round(a.proposta/a.originadas*100)}%</span>
                   </div>`) +
-              TD(`<span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${conv>=40?'rgba(66,153,82,0.1)':conv>=20?'rgba(201,168,32,0.1)':'rgba(209,45,45,0.1)'};color:${convColor};">${conv}%</span>`) +
+
               TD(`<span style="font-size:12px;font-weight:600;color:${diasColor};">${a.diasUlt}d atrás</span>`) +
               TD(statusBadge, 'padding-right:20px;');
             advisorTbody.appendChild(tr);
