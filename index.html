@@ -2606,14 +2606,27 @@
       <!-- Bloco 2: Enriquecimento -->
       <div class="sub-header" style="margin-bottom:12px;">ENRIQUECIMENTO DE CONTATOS <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· cobertura por segmento</span></div>
       <div class="card no-hover" style="margin-bottom:28px;padding:0;overflow:hidden;">
-        <div style="display:grid;grid-template-columns:180px 1fr 80px 80px 90px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Cobertura</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Total</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Com Contato</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Sem Contato</span>
-        </div>
-        <div id="enrichRows"></div>
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <colgroup>
+            <col style="width:22%">  <!-- Segmento -->
+            <col style="width:46%">  <!-- Cobertura -->
+            <col style="width:8%">   <!-- % -->
+            <col style="width:8%">   <!-- Total -->
+            <col style="width:8%">   <!-- Com Contato -->
+            <col style="width:8%">   <!-- Sem Contato -->
+          </colgroup>
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px 8px 20px;text-align:left;">Segmento</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px;text-align:left;">Cobertura</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px;text-align:left;">%</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px;text-align:left;">Total</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px;text-align:left;">Com Contato</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 20px 8px 8px;text-align:left;">Sem Contato</th>
+            </tr>
+          </thead>
+          <tbody id="enrichRows"></tbody>
+        </table>
       </div>
 
       <!-- Bloco Cadência: Big Numbers -->
@@ -2696,8 +2709,6 @@
       </div>
 
       <!-- Drill-down do segmento selecionado -->
-      <div id="drillDown" style="display:none;margin-bottom:28px;"></div>
-
       <!-- Bloco 4: A/B Test with tabs -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <div class="sub-header" style="margin-bottom:0;flex:1;">TESTE A/B DE CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· mensagem</span></div>
@@ -2863,24 +2874,25 @@
         if (enrichWrap) {
           ENRICH.forEach(s => {
             const pct = Math.round(s.mapped / s.total * 100);
-            const row = document.createElement('div');
-            row.style.cssText = 'display:grid;grid-template-columns:180px 1fr 80px 80px 90px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;';
-            row.innerHTML = `
-              <div style="display:flex;align-items:center;gap:8px;">
+            const pctColor = pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--red)';
+            const row = document.createElement('tr');
+            row.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);';
+            const TD = (html, extra='') => `<td style="padding:10px 8px;vertical-align:middle;${extra}">${html}</td>`;
+            row.innerHTML =
+              TD(`<div style="display:flex;align-items:center;gap:8px;">
                 <span style="width:7px;height:7px;border-radius:2px;background:${s.color};display:inline-block;flex-shrink:0;"></span>
                 <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
                 ${s.active ? '<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>' : '<span style="font-size:9px;padding:1px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</span>'}
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;">
+              </div>`, 'padding-left:20px;') +
+              TD(`<div style="display:flex;align-items:center;gap:10px;">
                 <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
                   <div style="width:${pct}%;height:100%;background:${s.color};border-radius:10px;"></div>
                 </div>
-                <span style="font-size:11px;font-weight:700;color:${pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--red)'};width:34px;text-align:right;">${pct}%</span>
-              </div>
-              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${s.total}</div>
-              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">${s.mapped}</div>
-              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);">${s.total-s.mapped}</div>
-            `;
+              </div>`) +
+              TD(`<span style="font-size:12px;font-weight:700;color:${pctColor};">${pct}%</span>`) +
+              TD(`<span style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);">${s.total}</span>`) +
+              TD(`<span style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);">${s.mapped}</span>`) +
+              TD(`<span style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);">${s.total-s.mapped}</span>`, 'padding-right:20px;');
             enrichWrap.appendChild(row);
           });
         }
@@ -2934,13 +2946,14 @@
             if (s.active) {
               row.onmouseenter = () => row.style.background = 'rgba(249,237,228,0.3)';
               row.onmouseleave = () => row.style.background = '';
-              row.onclick = () => toggleDrill(s);
+              row.onclick = () => toggleDrill(s, row);
             }
             const taxaColor = s.taxa >= 20 ? 'var(--green)' : s.taxa >= 10 ? 'var(--yellow)' : s.taxa > 0 ? 'var(--red)' : 'var(--gray-light)';
             row.innerHTML = `
               <div style="display:flex;align-items:center;gap:8px;">
                 <span style="font-size:12px;font-weight:500;color:var(--dark);">${s.seg}</span>
                 ${s.active ? '<span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Ativa</span>' : ''}
+                ${s.active ? '<svg style="margin-left:4px;opacity:0.3;" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>' : ''}
               </div>
               <div style="font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
               <div style="font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
@@ -2954,55 +2967,74 @@
           });
         }
 
-        // ── Drill-down ────────────────────────────────────────────────────
-        function toggleDrill(s) {
-          const dd = document.getElementById('drillDown');
-          if (dd.style.display === 'block' && dd.dataset.seg === s.seg) {
-            dd.style.display = 'none'; return;
+        // ── Drill-down inline ─────────────────────────────────────────────
+        let openDrillSeg = null;
+
+        function drillHTML(s) {
+          return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px;border-top:1px solid var(--border);background:rgba(249,237,228,0.15);">
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Canal que gerou resposta</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                    <span style="font-size:12px;color:var(--dark);">LinkedIn</span>
+                    <span style="font-size:13px;font-weight:700;color:var(--blue-dark);">6 respostas · 67%</span>
+                  </div>
+                  <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
+                    <div style="width:67%;height:100%;background:var(--blue);border-radius:10px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                    <span style="font-size:12px;color:var(--dark);">E-mail</span>
+                    <span style="font-size:13px;font-weight:700;color:var(--salmon-dark);">3 respostas · 33%</span>
+                  </div>
+                  <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
+                    <div style="width:33%;height:100%;background:var(--salmon);border-radius:10px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Destino das respostas</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(66,153,82,0.07);border-radius:8px;border:1px solid rgba(66,153,82,0.15);">
+                  <span style="font-size:12px;color:var(--dark);">✅ Positivo → Contato Inicial</span>
+                  <span style="font-size:14px;font-weight:700;color:var(--green);">5</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(209,45,45,0.05);border-radius:8px;border:1px solid rgba(209,45,45,0.12);">
+                  <span style="font-size:12px;color:var(--dark);">❌ Negativo → Encerrado</span>
+                  <span style="font-size:14px;font-weight:700;color:var(--red);">4</span>
+                </div>
+                <div style="font-size:10.5px;color:var(--gray-light);padding-top:4px;">Dia médio de resposta: <strong style="color:var(--dark);">8.4d</strong></div>
+              </div>
+            </div>
+          </div>`;
+        }
+
+        function toggleDrill(s, row) {
+          // Close if same row clicked again
+          const existing = row.nextSibling;
+          if (existing && existing.dataset && existing.dataset.drill === s.seg) {
+            existing.remove();
+            row.style.background = '';
+            openDrillSeg = null;
+            return;
           }
-          dd.dataset.seg = s.seg;
-          dd.style.display = 'block';
-          dd.innerHTML = `
-            <div class="sub-header" style="margin-bottom:12px;">${s.seg.toUpperCase()} · DETALHE DA CADÊNCIA</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div class="card no-hover">
-                <div class="sub-label" style="margin-bottom:14px;">CANAL QUE GEROU RESPOSTA</div>
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                  <div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                      <span style="font-size:12px;color:var(--dark);">LinkedIn</span>
-                      <span style="font-size:16px;font-weight:700;color:var(--blue-dark);">6 respostas</span>
-                    </div>
-                    <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
-                      <div style="width:67%;height:100%;background:var(--blue);border-radius:10px;"></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                      <span style="font-size:12px;color:var(--dark);">E-mail</span>
-                      <span style="font-size:16px;font-weight:700;color:var(--salmon-dark);">3 respostas</span>
-                    </div>
-                    <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
-                      <div style="width:33%;height:100%;background:var(--salmon);border-radius:10px;"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card no-hover">
-                <div class="sub-label" style="margin-bottom:14px;">DESTINO DAS RESPOSTAS</div>
-                <div style="display:flex;flex-direction:column;gap:10px;">
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(66,153,82,0.07);border-radius:8px;border:1px solid rgba(66,153,82,0.15);">
-                    <span style="font-size:12px;color:var(--dark);">✅ Positivo → Contato Inicial</span>
-                    <span style="font-size:16px;font-weight:700;color:var(--green);">5</span>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(209,45,45,0.05);border-radius:8px;border:1px solid rgba(209,45,45,0.12);">
-                    <span style="font-size:12px;color:var(--dark);">❌ Negativo → Encerrado</span>
-                    <span style="font-size:16px;font-weight:700;color:var(--red);">4</span>
-                  </div>
-                  <div style="font-size:10.5px;color:var(--gray-light);padding-top:4px;">Dia médio de resposta: <strong style="color:var(--dark);">8.4d</strong></div>
-                </div>
-              </div>
-            </div>`;
+          // Close any open drill
+          const prev = document.querySelector('[data-drill]');
+          if (prev) {
+            const prevRow = prev.previousSibling;
+            if (prevRow) prevRow.style.background = '';
+            prev.remove();
+          }
+          // Insert new drill row below
+          const dd = document.createElement('div');
+          dd.dataset.drill = s.seg;
+          dd.innerHTML = drillHTML(s);
+          row.after(dd);
+          row.style.background = 'rgba(249,237,228,0.3)';
+          openDrillSeg = s.seg;
         }
 
         // ── Lead data ─────────────────────────────────────────────────────
@@ -3101,7 +3133,7 @@
           filtered.forEach(s => {
             const row = document.createElement('div');
             row.style.cssText = `display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
-            if (s.active) { row.onmouseenter = () => row.style.background='rgba(249,237,228,0.3)'; row.onmouseleave = () => row.style.background=''; row.onclick = () => toggleDrill(s); }
+            if (s.active) { row.onmouseenter = () => row.style.background='rgba(249,237,228,0.3)'; row.onmouseleave = () => row.style.background=''; row.onclick = () => toggleDrill(s, row); }
             const taxaColor = s.taxa>=20?'var(--green)':s.taxa>=10?'var(--yellow)':s.taxa>0?'var(--red)':'var(--gray-light)';
             row.innerHTML = `
               <div style="display:flex;align-items:center;gap:8px;">
