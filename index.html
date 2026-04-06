@@ -3315,34 +3315,260 @@
 
 
     <div class="page" id="page-parcerias" style="display:none;">
-      <div style="padding:40px 0 24px;max-width:500px;">
-        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;">🤝</div>
-        <div style="font-family:'Libre Caslon Text',serif;font-size:22px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:6px;">Parcerias</div>
-        <div style="font-size:12.5px;color:var(--gray-light);margin-bottom:28px;">Dois funis: recrutamento de parceiros e performance por advisor</div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:4px;">Esta página conterá</div>
-          
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Funil de parceiros/advisors (quantos trouxemos)</span>
+
+      <!-- Header -->
+      <div class="section-header" style="margin-bottom:20px;">
+        <div class="section-title">
+          <div class="section-num">🤝</div>
+          <div>
+            <div class="section-label">Canal</div>
+            <div class="section-name">Parcerias</div>
+            <div class="section-sub">Recrutamento de advisors · Performance das contas indicadas</div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Performance por advisor (contas indicadas → qualificadas → diagnóstico)</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Comparativo entre advisors</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
-            <div style="width:7px;height:7px;border-radius:2px;background:var(--salmon);flex-shrink:0;"></div>
-            <span style="font-size:12.5px;color:var(--dark);">Tempo médio de maturação por parceiro</span>
-          </div>
-        </div>
-        <div style="margin-top:14px;padding:11px 16px;background:rgba(138,165,255,0.08);border:1px solid rgba(138,165,255,0.2);border-radius:8px;font-size:11px;color:var(--blue-dark);">
-          🔧 Em construção — estrutura definida, aguardando integração com HubSpot
         </div>
       </div>
+
+      <!-- Bloco 1: Big Numbers — duas dimensões -->
+      <div class="sub-header" style="margin-bottom:12px;">VISÃO GERAL</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+
+        <!-- Dimensão 1: Advisors -->
+        <div class="card no-hover" style="border-left:3px solid var(--blue);">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue-dark);margin-bottom:16px;">Advisors</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+            <div>
+              <div class="kpi-label" style="margin-bottom:6px;">Total no funil</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;">14</div>
+            </div>
+            <div>
+              <div class="kpi-label" style="color:var(--green);margin-bottom:6px;">Operando</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;">3</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">ativos</div>
+            </div>
+            <div>
+              <div class="kpi-label" style="color:var(--yellow);margin-bottom:6px;">Em negociação</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--yellow);letter-spacing:-0.03em;line-height:1;">9</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">em funil</div>
+            </div>
+            <div>
+              <div class="kpi-label" style="color:var(--red);margin-bottom:6px;">Perdidos</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);letter-spacing:-0.03em;line-height:1;">2</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">encerrados</div>
+            </div>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:16px;display:flex;gap:2px;">
+            <div style="width:21%;background:var(--green);border-radius:10px 0 0 10px;"></div>
+            <div style="width:65%;background:var(--yellow);"></div>
+            <div style="width:14%;background:var(--red);border-radius:0 10px 10px 0;"></div>
+          </div>
+        </div>
+
+        <!-- Dimensão 2: Performance das contas -->
+        <div class="card no-hover" style="border-left:3px solid var(--salmon);">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--salmon-dark);margin-bottom:16px;">Contas indicadas pelos advisors</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div>
+              <div class="kpi-label" style="margin-bottom:6px;">Total indicadas</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;">18</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">desde o início</div>
+            </div>
+            <div>
+              <div class="kpi-label" style="color:var(--blue-dark);margin-bottom:6px;">→ Reunião Diag.</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);letter-spacing:-0.03em;line-height:1;">11</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">61% de conversão</div>
+            </div>
+            <div>
+              <div class="kpi-label" style="color:var(--green);margin-bottom:6px;">→ Proposta Enviada</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;">7</div>
+              <div style="font-size:10px;color:var(--gray-light);margin-top:3px;">39% do total</div>
+            </div>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:16px;display:flex;gap:2px;">
+            <div style="width:39%;background:var(--green);border-radius:10px 0 0 10px;"></div>
+            <div style="width:22%;background:var(--blue);"></div>
+            <div style="width:39%;background:var(--border);border-radius:0 10px 10px 0;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco 2: Funil de recrutamento -->
+      <div class="sub-header" style="margin-bottom:12px;">FUNIL DE RECRUTAMENTO DE ADVISORS</div>
+      <div class="card no-hover" style="margin-bottom:28px;">
+        <div style="display:flex;align-items:flex-end;gap:0;width:100%;overflow-x:auto;" id="parcFunilWrap"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);" id="parcFunilLegend"></div>
+      </div>
+
+      <!-- Bloco 3: Performance por advisor -->
+      <div class="sub-header" style="margin-bottom:12px;">PERFORMANCE POR ADVISOR <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· advisors operando</span></div>
+      <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:24px;">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <colgroup>
+            <col style="width:18%"> <!-- Advisor -->
+            <col style="width:14%"> <!-- Empresa/Setor -->
+            <col style="width:11%"> <!-- Contas indicadas -->
+            <col style="width:14%"> <!-- → Reunião Diag. -->
+            <col style="width:14%"> <!-- → Proposta Enviada -->
+            <col style="width:11%"> <!-- Taxa Conversão -->
+            <col style="width:10%"> <!-- Última indicação -->
+            <col style="width:8%">  <!-- Status -->
+          </colgroup>
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px 9px 20px;text-align:left;">Advisor</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Setor</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Indicadas</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">→ Reunião Diag.</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">→ Proposta</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Conversão</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Últ. indicação</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="advisorRows"></tbody>
+        </table>
+      </div>
+
+      <!-- Bloco 4: Contas por advisor (dropdown) -->
+      <div class="sub-header" style="margin-bottom:12px;">CONTAS POR ADVISOR <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· clique para expandir</span></div>
+      <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:24px;">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <colgroup>
+            <col style="width:22%"> <!-- Empresa -->
+            <col style="width:15%"> <!-- Advisor -->
+            <col style="width:12%"> <!-- Entrada -->
+            <col style="width:18%"> <!-- Pipeline -->
+            <col style="width:15%"> <!-- Etapa -->
+            <col style="width:10%"> <!-- Porte -->
+            <col style="width:8%">  <!-- Dias -->
+          </colgroup>
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px 9px 20px;text-align:left;">Empresa</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Advisor</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Entrada</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Pipeline</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Etapa</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Porte</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">Dias</th>
+            </tr>
+          </thead>
+          <tbody id="contasAdvisorRows"></tbody>
+        </table>
+      </div>
+
+      <script>
+      (function(){
+
+        // ── Funil data ────────────────────────────────────────────────────
+        const FUNIL = [
+          { etapa:'Lead novo',           n:0,  color:'#C8C8D4' },
+          { etapa:'Def. de escopo',      n:3,  color:'#8AA5FF' },
+          { etapa:'Proposta enviada',    n:3,  color:'#7B96F5' },
+          { etapa:'Ajuste de proposta',  n:1,  color:'#6B88E0' },
+          { etapa:'Proposta aceita',     n:2,  color:'#FFBA86' },
+          { etapa:'Elab. de contrato',   n:0,  color:'#F5A56E' },
+          { etapa:'Ag. assinatura',      n:0,  color:'#EB9056' },
+          { etapa:'Operando',            n:3,  color:'#429952' },
+          { etapa:'Perdido',             n:2,  color:'#D12D2D' },
+        ];
+
+        const maxN = Math.max(...FUNIL.map(f => f.n), 1);
+        const wrap = document.getElementById('parcFunilWrap');
+        const legend = document.getElementById('parcFunilLegend');
+
+        if (wrap) {
+          FUNIL.forEach(f => {
+            const col = document.createElement('div');
+            col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:60px;';
+            const barH = f.n > 0 ? Math.max(Math.round((f.n / maxN) * 80), 8) : 4;
+            col.innerHTML = `
+              <div style="font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:${f.n>0?'var(--dark)':'var(--text-dim)'};">${f.n || '—'}</div>
+              <div style="width:100%;max-width:48px;height:${barH}px;background:${f.n>0?f.color:'var(--border)'};border-radius:4px 4px 0 0;transition:height 0.3s;"></div>
+              <div style="font-size:9px;color:var(--gray-light);text-align:center;line-height:1.3;">${f.etapa}</div>`;
+            wrap.appendChild(col);
+          });
+        }
+
+        // ── Advisor data ─────────────────────────────────────────────────
+        const ADVISORS = [
+          { nome:'Norte',          setor:'Indústria',  indicadas:8, reuniao:5, proposta:3, diasUlt:12, status:'ativo' },
+          { nome:'Canary',         setor:'Logística',  indicadas:6, reuniao:4, proposta:3, diasUlt:24, status:'ativo' },
+          { nome:'Mauricio Cerrutti', setor:'Varejo',  indicadas:4, reuniao:2, proposta:1, diasUlt:30, status:'alerta' },
+        ];
+
+        const CONTAS = [
+          { empresa:'Pilar Homes',      advisor:'Canary',           entrada:'10 Mar', pipeline:'Enterprise 3.0', etapa:'Proposta Enviada',   porte:'Enterprise', dias:24 },
+          { empresa:'Italac',           advisor:'Mauricio Cerrutti', entrada:'10 Mar', pipeline:'Enterprise 3.0', etapa:'Reunião de Diag.',   porte:'Enterprise', dias:30 },
+          { empresa:'Danone',           advisor:'Norte',             entrada:'03 Mar', pipeline:'Enterprise 3.0', etapa:'Proposta Aceita',    porte:'Enterprise', dias:18 },
+          { empresa:'Conta A',          advisor:'Norte',             entrada:'03 Mar', pipeline:'Pré Vendas/MKT', etapa:'Reunião de Diag.',   porte:'Mid',        dias:20 },
+          { empresa:'Conta B',          advisor:'Norte',             entrada:'03 Mar', pipeline:'Pré Vendas/MKT', etapa:'Aquecimento',        porte:'SMB',        dias:22 },
+          { empresa:'Conta C',          advisor:'Canary',            entrada:'03 Mar', pipeline:'Enterprise 3.0', etapa:'Reunião de Diag.',   porte:'Enterprise', dias:28 },
+          { empresa:'Conta D',          advisor:'Canary',            entrada:'03 Mar', pipeline:'Pré Vendas/MKT', etapa:'Backlog',            porte:'Mid',        dias:30 },
+          { empresa:'Conta E',          advisor:'Mauricio Cerrutti', entrada:'03 Mar', pipeline:'Pré Vendas/MKT', etapa:'A Validar',          porte:'SMB',        dias:32 },
+        ];
+
+        // Advisor rows
+        const advisorTbody = document.getElementById('advisorRows');
+        if (advisorTbody) {
+          ADVISORS.forEach(a => {
+            const conv = Math.round(a.proposta / a.indicadas * 100);
+            const convColor = conv >= 40 ? 'var(--green)' : conv >= 20 ? 'var(--yellow)' : 'var(--red)';
+            const diasColor = a.diasUlt <= 14 ? 'var(--green)' : a.diasUlt <= 21 ? 'var(--yellow)' : 'var(--red)';
+            const statusBadge = a.status === 'ativo'
+              ? '<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativo</span>'
+              : '<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(201,168,32,0.1);color:var(--yellow);white-space:nowrap;">Alerta</span>';
+            const tr = document.createElement('tr');
+            tr.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);transition:background 0.12s;';
+            tr.onmouseenter = () => tr.style.background = 'rgba(249,237,228,0.25)';
+            tr.onmouseleave = () => tr.style.background = '';
+            const TD = (h, e='') => `<td style="padding:10px 8px;vertical-align:middle;${e}">${h}</td>`;
+            tr.innerHTML =
+              TD(`<span style="font-size:12px;font-weight:600;color:var(--dark);">${a.nome}</span>`, 'padding-left:20px;') +
+              TD(`<span style="font-size:11px;color:var(--gray-light);">${a.setor}</span>`) +
+              TD(`<span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${a.indicadas}</span>`) +
+              TD(`<div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue-dark);">${a.reuniao}</span>
+                    <span style="font-size:10px;color:var(--gray-light);">${Math.round(a.reuniao/a.indicadas*100)}%</span>
+                  </div>`) +
+              TD(`<div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--green);">${a.proposta}</span>
+                    <span style="font-size:10px;color:var(--gray-light);">${Math.round(a.proposta/a.indicadas*100)}%</span>
+                  </div>`) +
+              TD(`<span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${conv>=40?'rgba(66,153,82,0.1)':conv>=20?'rgba(201,168,32,0.1)':'rgba(209,45,45,0.1)'};color:${convColor};">${conv}%</span>`) +
+              TD(`<span style="font-size:12px;font-weight:600;color:${diasColor};">${a.diasUlt}d atrás</span>`) +
+              TD(statusBadge, 'padding-right:20px;');
+            advisorTbody.appendChild(tr);
+          });
+        }
+
+        // Contas rows
+        const contasTbody = document.getElementById('contasAdvisorRows');
+        if (contasTbody) {
+          CONTAS.forEach(c => {
+            const diasColor = c.dias <= 14 ? 'var(--green)' : c.dias <= 21 ? 'var(--yellow)' : 'var(--red)';
+            const tr = document.createElement('tr');
+            tr.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);transition:background 0.12s;';
+            tr.onmouseenter = () => tr.style.background = 'rgba(249,237,228,0.25)';
+            tr.onmouseleave = () => tr.style.background = '';
+            const TD = (h, e='') => `<td style="padding:10px 8px;vertical-align:middle;${e}">${h}</td>`;
+            tr.innerHTML =
+              TD(`<div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-size:12px;font-weight:500;color:var(--dark);">${c.empresa}</span>
+                    <a href="https://app.hubspot.com/contacts/9035464/deal/" target="_blank" style="color:var(--blue-dark);opacity:0.4;flex-shrink:0;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  </div>`, 'padding-left:20px;') +
+              TD(`<span style="font-size:11px;font-weight:500;color:var(--blue-dark);">${c.advisor}</span>`) +
+              TD(`<span style="font-size:11px;color:var(--gray-light);">${c.entrada}</span>`) +
+              TD(`<span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--blue-dim);color:var(--blue-dark);font-weight:500;">${c.pipeline}</span>`) +
+              TD(`<span style="font-size:11px;color:var(--gray-light);">${c.etapa}</span>`) +
+              TD(`<span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${c.porte}</span>`) +
+              TD(`<span style="font-size:12px;font-weight:700;color:${diasColor};">${c.dias}d</span>`, 'padding-right:20px;');
+            contasTbody.appendChild(tr);
+          });
+        }
+
+      })();
+      </script>
+
     </div>
 
 
