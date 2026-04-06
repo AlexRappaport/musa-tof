@@ -2786,19 +2786,35 @@
             <div id="ob-filter-status"></div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1.8fr 60px 56px 1fr 90px 72px 1fr 1fr 62px 48px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Empresa</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Versão</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Touches</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Etapa</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Resposta</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Canal</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Responsável</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Closer</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Porte</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Últ. Toque</span>
-        </div>
-        <div id="obLeadRows"></div>
+        <table id="obLeadTable" style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <colgroup>
+            <col style="width:22%">  <!-- Empresa -->
+            <col style="width:7%">   <!-- Versão -->
+            <col style="width:7%">   <!-- Touches -->
+            <col style="width:12%">  <!-- Etapa -->
+            <col style="width:10%">  <!-- Resposta -->
+            <col style="width:8%">   <!-- Canal -->
+            <col style="width:12%">  <!-- Responsável -->
+            <col style="width:10%">  <!-- Closer -->
+            <col style="width:8%">   <!-- Porte -->
+            <col style="width:6%">   <!-- Dias -->
+          </colgroup>
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);background:transparent;">
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 20px 8px 20px;text-align:left;">Empresa</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Versão</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Touches</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Etapa</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Resposta</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Canal</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Responsável</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Closer</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 8px;text-align:left;">Porte</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:8px 20px 8px 8px;text-align:left;">Dias</th>
+            </tr>
+          </thead>
+          <tbody id="obLeadRows"></tbody>
+        </table>
       </div>
 
       <script>
@@ -3152,24 +3168,25 @@
             const canalHtml  = l.canal==='—'
               ? '<span style="color:var(--text-dim);">—</span>'
               : `<span style="font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:7px;background:${canalBg};color:${canalColor};white-space:nowrap;">${l.canal}</span>`;
-            const row = document.createElement('div');
-            row.style.cssText = 'display:grid;grid-template-columns:1.8fr 60px 56px 1fr 90px 72px 1fr 1fr 62px 48px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
+            const row = document.createElement('tr');
+            row.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);transition:background 0.12s;cursor:default;';
             row.onmouseenter = () => row.style.background='rgba(249,237,228,0.25)';
             row.onmouseleave = () => row.style.background='';
-            row.innerHTML = `
-              <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+            const TD = (content, extra='') => `<td style="padding:10px 8px;vertical-align:middle;${extra}">${content}</td>`;
+            row.innerHTML =
+              TD(`<div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
                 <span style="font-size:12px;font-weight:500;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.nome}</span>
-                <a href="https://app.hubspot.com/contacts/9035464/deal/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue-dark);opacity:0.4;flex-shrink:0;transition:opacity 0.14s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              </div>
-              <div><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;background:${abBg};color:${abColor};">Ver. ${l.ab}</span></div>
-              <div style="display:flex;gap:3px;align-items:center;">${dots}</div>
-              <div style="font-size:11px;color:var(--gray-light);">${l.etapa}</div>
-              <div style="font-size:11px;font-weight:500;color:${respColor};">${respLabel}</div>
-              <div>${canalHtml}</div>
-              <div style="font-size:11.5px;color:var(--dark);">${l.resp2}</div>
-              <div style="font-size:11.5px;color:var(--dark);">${l.closer}</div>
-              <div><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${l.porte}</span></div>
-              <div style="font-size:12px;font-weight:700;color:${diasColor};">${l.resp_s===''?(l.dias===0?'hoje':l.dias+'d'):'—'}</div>`;
+                <a href="https://app.hubspot.com/contacts/9035464/deal/" target="_blank" onclick="event.stopPropagation()" style="color:var(--blue-dark);opacity:0.4;flex-shrink:0;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              </div>`, 'padding-left:20px;') +
+              TD(`<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;background:${abBg};color:${abColor};">Ver. ${l.ab}</span>`) +
+              TD(`<div style="display:flex;gap:3px;align-items:center;">${dots}</div>`) +
+              TD(`<span style="font-size:11px;color:var(--gray-light);">${l.etapa}</span>`) +
+              TD(`<span style="font-size:11px;font-weight:500;color:${respColor};">${respLabel}</span>`) +
+              TD(canalHtml) +
+              TD(`<span style="font-size:11.5px;color:var(--dark);">${l.resp2}</span>`) +
+              TD(`<span style="font-size:11.5px;color:var(--dark);">${l.closer}</span>`) +
+              TD(`<span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${l.porte}</span>`) +
+              TD(`<span style="font-size:12px;font-weight:700;color:${diasColor};">${l.resp_s===''?(l.dias===0?'hoje':l.dias+'d'):'—'}</span>`, 'padding-right:20px;');
             wrap.appendChild(row);
           });
 
