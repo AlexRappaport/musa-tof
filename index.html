@@ -3448,18 +3448,26 @@
         </table>
       </div>
 
-      <!-- Bloco 4: Contas por advisor (dropdown) -->
-      <div class="sub-header" style="margin-bottom:12px;">CONTAS POR ADVISOR <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· clique para expandir</span></div>
+      <!-- Bloco 4: Contas por advisor -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sub-header" style="margin-bottom:0;">CONTAS POR ADVISOR</div>
+      </div>
       <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface-warm);">
+          <button onclick="filterContasAdv('todos',this)" id="cadv-tab-todos" style="font-size:11px;font-weight:600;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--salmon-dark);border-bottom:2px solid var(--salmon);font-family:'Inter',sans-serif;">Todos (8)</button>
+          <button onclick="filterContasAdv('Norte',this)" id="cadv-tab-norte" style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">Norte (5)</button>
+          <button onclick="filterContasAdv('Canary',this)" id="cadv-tab-canary" style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">Canary (6)</button>
+          <button onclick="filterContasAdv('Mauricio Cerrutti',this)" id="cadv-tab-mauricio" style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">Mauricio Cerrutti (4)</button>
+        </div>
         <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
           <colgroup>
             <col style="width:22%"> <!-- Empresa -->
-            <col style="width:15%"> <!-- Advisor -->
-            <col style="width:12%"> <!-- Entrada -->
+            <col style="width:14%"> <!-- Advisor -->
+            <col style="width:11%"> <!-- Entrada -->
             <col style="width:18%"> <!-- Pipeline -->
             <col style="width:15%"> <!-- Etapa -->
-            <col style="width:10%"> <!-- Porte -->
-            <col style="width:8%">  <!-- Dias -->
+            <col style="width:11%"> <!-- Porte -->
+            <col style="width:9%">  <!-- S/ interação -->
           </colgroup>
           <thead>
             <tr style="border-bottom:1px solid var(--border);">
@@ -3469,7 +3477,7 @@
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Pipeline</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Etapa</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Porte</th>
-              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">Dias</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">S/ interação</th>
             </tr>
           </thead>
           <tbody id="contasAdvisorRows"></tbody>
@@ -3592,9 +3600,19 @@
 
         // Contas rows
         const contasTbody = document.getElementById('contasAdvisorRows');
-        if (contasTbody) {
-          CONTAS.forEach(c => {
-            const diasColor = c.dias <= 14 ? 'var(--green)' : c.dias <= 21 ? 'var(--yellow)' : 'var(--red)';
+        window.filterContasAdv = function(adv, el) {
+          document.querySelectorAll('[id^="cadv-tab-"]').forEach(t => {
+            t.style.color = 'var(--gray-light)'; t.style.borderBottom = '2px solid transparent'; t.style.fontWeight = '400';
+          });
+          el.style.color = 'var(--salmon-dark)'; el.style.borderBottom = '2px solid var(--salmon)'; el.style.fontWeight = '600';
+          renderContasAdv(adv);
+        };
+
+        function renderContasAdv(filter) {
+          if (!contasTbody) return;
+          contasTbody.innerHTML = '';
+          const list = filter === 'todos' ? CONTAS : CONTAS.filter(c => c.advisor === filter);
+          list.forEach(c => {
             const tr = document.createElement('tr');
             tr.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);transition:background 0.12s;';
             tr.onmouseenter = () => tr.style.background = 'rgba(249,237,228,0.25)';
@@ -3610,10 +3628,11 @@
               TD(`<span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--blue-dim);color:var(--blue-dark);font-weight:500;">${c.pipeline}</span>`) +
               TD(`<span style="font-size:11px;color:var(--gray-light);">${c.etapa}</span>`) +
               TD(`<span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${c.porte}</span>`) +
-              TD(`<span style="font-size:12px;font-weight:700;color:${diasColor};">${c.dias}d</span>`, 'padding-right:20px;');
+              TD(`<span style="font-size:12px;font-weight:700;color:${c.dias<=14?'var(--green)':c.dias<=21?'var(--yellow)':'var(--red)'};">${c.dias}d</span>`, 'padding-right:20px;');
             contasTbody.appendChild(tr);
           });
         }
+        renderContasAdv('todos');
 
       })();
       </script>
