@@ -2786,7 +2786,7 @@
             <div id="ob-filter-status"></div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:180px 70px 60px 110px 90px 80px 100px 90px 68px 52px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:grid;grid-template-columns:1.8fr 60px 56px 1fr 90px 72px 1fr 1fr 62px 48px;gap:0;padding:8px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Empresa</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Versão</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Touches</span>
@@ -3153,7 +3153,7 @@
               ? '<span style="color:var(--text-dim);">—</span>'
               : `<span style="font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:7px;background:${canalBg};color:${canalColor};white-space:nowrap;">${l.canal}</span>`;
             const row = document.createElement('div');
-            row.style.cssText = 'display:grid;grid-template-columns:180px 70px 60px 110px 90px 80px 100px 90px 68px 52px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
+            row.style.cssText = 'display:grid;grid-template-columns:1.8fr 60px 56px 1fr 90px 72px 1fr 1fr 62px 48px;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;transition:background 0.12s;';
             row.onmouseenter = () => row.style.background='rgba(249,237,228,0.25)';
             row.onmouseleave = () => row.style.background='';
             row.innerHTML = `
