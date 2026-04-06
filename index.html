@@ -2610,15 +2610,23 @@
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Cobertura</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Total</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Mapeados</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Faltam</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Com Contato</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Sem Contato</span>
         </div>
         <div id="enrichRows"></div>
       </div>
 
       <!-- Bloco Cadência: Big Numbers -->
-      <div class="sub-header" style="margin-bottom:12px;">MÉTRICAS DA CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· Varejo Multisite · acumulado</span></div>
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:28px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sub-header" style="margin-bottom:0;flex:1;">MÉTRICAS DA CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;" id="ob-metrics-seg-label">· Varejo Multisite · acumulado</span></div>
+        <div style="display:flex;gap:6px;flex-shrink:0;margin-left:16px;">
+          <button onclick="filterOBMetrics('varejo',this)" id="ob-m-varejo" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Varejo Multisite</button>
+          <button onclick="filterOBMetrics('logistica',this)" id="ob-m-log" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Logística</button>
+          <button onclick="filterOBMetrics('industria',this)" id="ob-m-ind" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Indústria</button>
+          <button onclick="filterOBMetrics('construcao',this)" id="ob-m-cons" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Construção</button>
+        </div>
+      </div>
+      <div id="ob-metrics-cards" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:28px;">
 
         <div class="card">
           <div class="kpi-label" style="color:var(--blue-dark);">Em Cadência</div>
@@ -2674,7 +2682,7 @@
         </div>
       </div>
       <div class="card no-hover" style="margin-bottom:12px;padding:0;overflow:hidden;">
-        <div style="display:grid;grid-template-columns:200px 80px 100px 90px 100px 140px 120px 100px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:grid;grid-template-columns:180px 70px 90px 80px 90px 130px 110px 90px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Contas</span>
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Touchpoints</span>
@@ -2904,7 +2912,7 @@
 
           PERF.forEach(s => {
             const row = document.createElement('div');
-            row.style.cssText = `display:grid;grid-template-columns:200px 80px 100px 90px 100px 140px 120px 100px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
+            row.style.cssText = `display:grid;grid-template-columns:180px 70px 90px 80px 90px 130px 110px 90px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
             if (s.active) {
               row.onmouseenter = () => row.style.background = 'rgba(249,237,228,0.3)';
               row.onmouseleave = () => row.style.background = '';
@@ -2922,7 +2930,7 @@
               <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
-              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Em andamento</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</span>'}</div>
+              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>
             `;
             perfWrap.appendChild(row);
           });
@@ -3085,7 +3093,7 @@
               <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
-              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">Em andamento</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</span>'}</div>`;
+              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>`;
             wrap.appendChild(row);
           });
         }
@@ -3158,7 +3166,64 @@
         }
         renderOBRows();
 
-        // A/B tab switcher
+        // ── Metrics segment filter ────────────────────────────────────────
+        const OB_METRICS_DATA = {
+          varejo: { cadencia:42, semResp:33, comResp:9, pos:5, neg:4, ci:5 },
+        };
+
+        window.filterOBMetrics = function(seg, el) {
+          document.querySelectorAll('[id^="ob-m-"]').forEach(b => {
+            b.style.background = 'transparent'; b.style.borderColor = 'var(--border)';
+            b.style.color = 'var(--gray-light)'; b.style.fontWeight = '500';
+          });
+          el.style.background = 'var(--orange-dim)'; el.style.borderColor = 'var(--salmon)';
+          el.style.color = 'var(--salmon-dark)'; el.style.fontWeight = '600';
+
+          const NAMES = { varejo:'Varejo Multisite', logistica:'Logística', industria:'Indústria', construcao:'Construção' };
+          const lbl = document.getElementById('ob-metrics-seg-label');
+          if (lbl) lbl.textContent = '· ' + NAMES[seg] + ' · acumulado';
+
+          const cards = document.getElementById('ob-metrics-cards');
+          if (!cards) return;
+          const d = OB_METRICS_DATA[seg];
+
+          if (!d) {
+            cards.innerHTML = `<div class="card" style="grid-column:span 6;padding:32px;text-align:center;">
+              <div style="font-size:13px;font-weight:600;color:var(--gray-light);margin-bottom:6px;">Cadência não iniciada</div>
+              <div style="font-size:11px;color:var(--text-dim);">Os dados de ${NAMES[seg]} aparecerão aqui quando a cadência for ativada.</div>
+              <div style="margin-top:12px;display:inline-block;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;background:rgba(0,0,0,0.04);color:var(--gray-light);">Em breve</div>
+            </div>`;
+            return;
+          }
+
+          const taxaResp = Math.round(d.comResp/d.cadencia*100);
+          const taxaCI   = Math.round(d.ci/d.cadencia*100);
+          const pctPos   = Math.round(d.pos/d.comResp*100);
+          const pctNeg   = Math.round(d.neg/d.comResp*100);
+          cards.innerHTML = `
+            <div class="card"><div class="kpi-label" style="color:var(--blue-dark);">Em Cadência</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">${d.cadencia}</div>
+              <div style="font-size:10px;color:var(--gray-light);">contas ativas</div></div>
+            <div class="card"><div class="kpi-label" style="color:var(--gray);">Sem Resposta</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">${d.semResp}</div>
+              <div style="font-size:10px;color:var(--gray-light);">${Math.round(d.semResp/d.cadencia*100)}% das contas</div></div>
+            <div class="card"><div class="kpi-label" style="color:var(--green);">Com Resposta</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">${d.comResp}</div>
+              <div style="font-size:10px;color:var(--gray-light);">${taxaResp}% de taxa de resposta</div>
+              <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:${taxaResp}%;height:100%;background:var(--green);border-radius:10px;"></div></div></div>
+            <div class="card"><div class="kpi-label" style="color:var(--green);">Resp. Positiva</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">${d.pos}</div>
+              <div style="font-size:10px;color:var(--gray-light);">${pctPos}% das respostas</div>
+              <div style="height:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:${pctPos}%;height:100%;background:var(--green);border-radius:10px;"></div></div></div>
+            <div class="card"><div class="kpi-label" style="color:var(--red);">Resp. Negativa</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">${d.neg}</div>
+              <div style="font-size:10px;color:var(--gray-light);">${pctNeg}% das respostas</div>
+              <div style="height:2px;background:rgba(209,45,45,0.1);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:${pctNeg}%;height:100%;background:var(--red);border-radius:10px;"></div></div></div>
+            <div class="card" style="border-left:3px solid var(--blue);"><div class="kpi-label" style="color:var(--blue-dark);">→ Contato Inicial</div>
+              <div style="font-size:28px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);letter-spacing:-0.03em;line-height:1;margin-bottom:6px;">${d.ci}</div>
+              <div style="font-size:10px;color:var(--gray-light);">${taxaCI}% de conversão</div>
+              <div style="height:2px;background:var(--blue-dim);border-radius:10px;overflow:hidden;margin-top:8px;"><div style="width:${taxaCI}%;height:100%;background:var(--blue);border-radius:10px;"></div></div></div>`;
+        };
         window.selectABSeg = function(seg, el) {
           // pills pattern matching filterOBSeg
           document.querySelectorAll('[id^="ob-ab-"]').forEach(b => {
