@@ -2682,15 +2682,15 @@
         </div>
       </div>
       <div class="card no-hover" style="margin-bottom:12px;padding:0;overflow:hidden;">
-        <div style="display:grid;grid-template-columns:180px 70px 90px 80px 90px 130px 110px 90px;gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;padding:9px 20px;border-bottom:1px solid var(--border);">
           <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Segmento</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Contas</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Touchpoints</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Respostas</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Taxa Resp.</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">→ Contato Inicial</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">D. médio resp.</span>
-          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);text-align:right;">Status</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Contas</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Touchpoints</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Respostas</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Taxa Resp.</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">→ Contato Inicial</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">D. médio resp.</span>
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">Status</span>
         </div>
         <div id="perfRows"></div>
       </div>
@@ -2901,10 +2901,10 @@
           consolRow.style.cssText = 'display:grid;grid-template-columns:180px 70px 80px 80px 100px 110px 110px 80px;gap:0;padding:10px 20px;border-bottom:2px solid var(--border);align-items:center;background:rgba(249,237,228,0.3);';
           consolRow.innerHTML = `
             <div style="font-size:11px;font-weight:700;color:var(--dark);">Consolidado</div>
-            <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalContas}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--dark);">${totalContas}</div>
             <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalTouches||'—'}</div>
             <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totalResp||'—'}</div>
-            <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(201,168,32,0.1);color:var(--yellow);">${avgTaxa>0?avgTaxa+'%':'—'}</span></div>
+            <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(201,168,32,0.1);color:var(--yellow);">${avgTaxa>0?avgTaxa+'%':'—'}</span></div>
             <div style="text-align:right;font-size:13px;font-weight:700;color:var(--blue-dark);">${totalCI||'—'}</div>
             <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${avgDmed>0?avgDmed+'d':'—'}</div>
             <div></div>`;
@@ -2912,7 +2912,7 @@
 
           PERF.forEach(s => {
             const row = document.createElement('div');
-            row.style.cssText = `display:grid;grid-template-columns:180px 70px 90px 80px 90px 130px 110px 90px;gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
+            row.style.cssText = `display:grid;grid-template-columns:200px repeat(7,1fr);gap:0;padding:10px 20px;border-bottom:1px solid rgba(237,232,223,0.5);align-items:center;cursor:${s.active?'pointer':'default'};transition:background 0.12s;`;
             if (s.active) {
               row.onmouseenter = () => row.style.background = 'rgba(249,237,228,0.3)';
               row.onmouseleave = () => row.style.background = '';
@@ -2927,10 +2927,10 @@
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
-              <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
+              <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
-              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>
+              <div>${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>
             `;
             perfWrap.appendChild(row);
           });
@@ -3070,7 +3070,7 @@
               <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totContas}</div>
               <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totTouches||'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${totResp||'—'}</div>
-              <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(66,153,82,0.1);color:var(--green);">${avgTaxa?avgTaxa+'%':'—'}</span></div>
+              <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(66,153,82,0.1);color:var(--green);">${avgTaxa?avgTaxa+'%':'—'}</span></div>
               <div style="text-align:right;font-size:13px;font-weight:700;color:var(--blue-dark);">${totCI||'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:700;color:var(--dark);">${avgDmed?avgDmed+'d':'—'}</div>
               <div></div>`;
@@ -3090,10 +3090,10 @@
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.active?'var(--dark)':'var(--text-dim)'};">${s.contas}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.touches>0?'var(--dark)':'var(--text-dim)'};">${s.touches||'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.resp>0?'var(--dark)':'var(--text-dim)'};">${s.resp||'—'}</div>
-              <div style="text-align:right;"><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
+              <div><span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${s.taxa>0?`rgba(${s.taxa>=20?'66,153,82':s.taxa>=10?'201,168,32':'209,45,45'},0.1)`:'rgba(0,0,0,0.04)'};color:${taxaColor};">${s.taxa>0?s.taxa+'%':'—'}</span></div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.ci>0?'var(--blue-dark)':'var(--text-dim)'};">${s.ci>0?s.ci:'—'}</div>
               <div style="text-align:right;font-size:13px;font-weight:600;color:${s.dmed>0?'var(--dark)':'var(--text-dim)'};">${s.dmed>0?s.dmed+'d':'—'}</div>
-              <div style="text-align:right;">${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>`;
+              <div>${s.active?'<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);white-space:nowrap;">Ativa</span>':'<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);white-space:nowrap;">Em breve</span>'}</div>`;
             wrap.appendChild(row);
           });
         }
