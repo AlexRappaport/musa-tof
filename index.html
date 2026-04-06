@@ -2691,25 +2691,18 @@
       <div id="drillDown" style="display:none;margin-bottom:28px;"></div>
 
       <!-- Bloco 4: A/B Test with tabs -->
-      <div class="sub-header" style="margin-bottom:12px;">TESTE A/B DE CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· mensagem</span></div>
-      <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:28px;">
-
-        <!-- Cadence tabs -->
-        <div style="display:flex;border-bottom:1px solid var(--border);padding:0 20px;background:var(--surface-warm);">
-          <button onclick="selectABTab('varejo',this)" id="ab-tab-varejo"
-            style="font-size:11px;font-weight:600;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--salmon-dark);border-bottom:2px solid var(--salmon);font-family:'Inter',sans-serif;">
-            Varejo Multisite
-            <span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);margin-left:6px;">Ativa</span>
-          </button>
-          <button onclick="selectABTab('proxima',this)" id="ab-tab-proxima"
-            style="font-size:11px;font-weight:400;padding:11px 14px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">
-            Logística
-            <span style="font-size:9px;padding:1px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray-light);margin-left:6px;">Em breve</span>
-          </button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sub-header" style="margin-bottom:0;flex:1;">TESTE A/B DE CADÊNCIA <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:0.6;">· mensagem</span></div>
+        <div style="display:flex;gap:6px;flex-shrink:0;margin-left:16px;">
+          <button onclick="selectABSeg('varejo',this)" id="ob-ab-varejo" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">Varejo Multisite</button>
+          <button onclick="selectABSeg('logistica',this)" id="ob-ab-log" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:not-allowed;font-family:'Inter',sans-serif;opacity:0.5;" disabled>Logística</button>
+          <button onclick="selectABSeg('industria',this)" id="ob-ab-ind" style="height:26px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:not-allowed;font-family:'Inter',sans-serif;opacity:0.5;" disabled>Indústria</button>
         </div>
+      </div>
+      <div class="card no-hover" style="padding:20px;margin-bottom:10px;">
 
         <!-- Varejo A/B content -->
-        <div id="ab-content-varejo" style="padding:20px;">
+        <div id="ab-content-varejo">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
 
             <!-- Versão A -->
@@ -3166,14 +3159,18 @@
         renderOBRows();
 
         // A/B tab switcher
-        window.selectABTab = function(tab, el) {
-          document.querySelectorAll('[id^="ab-tab-"]').forEach(t => {
-            t.style.color = 'var(--gray-light)'; t.style.borderBottom = '2px solid transparent'; t.style.fontWeight = '400';
+        window.selectABSeg = function(seg, el) {
+          // pills pattern matching filterOBSeg
+          document.querySelectorAll('[id^="ob-ab-"]').forEach(b => {
+            b.style.background = 'transparent';
+            b.style.borderColor = 'var(--border)';
+            b.style.color = 'var(--gray-light)';
+            b.style.fontWeight = '500';
           });
-          el.style.color = 'var(--salmon-dark)'; el.style.borderBottom = '2px solid var(--salmon)'; el.style.fontWeight = '600';
-          document.querySelectorAll('[id^="ab-content-"]').forEach(c => c.style.display = 'none');
-          const cont = document.getElementById('ab-content-' + tab);
-          if (cont) cont.style.display = 'block';
+          el.style.background = 'var(--orange-dim)';
+          el.style.borderColor = 'var(--salmon)';
+          el.style.color = 'var(--salmon-dark)';
+          el.style.fontWeight = '600';
         };
 
         // Intercept goPage
