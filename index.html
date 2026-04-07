@@ -3829,9 +3829,8 @@
       <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:28px;">
         <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
           <colgroup>
-            <col style="width:18%"> <col style="width:12%"> <col style="width:12%">
-            <col style="width:12%"> <col style="width:12%"> <col style="width:12%">
-            <col style="width:10%"> <col style="width:12%">
+            <col style="width:22%"> <col style="width:13%"> <col style="width:18%">
+            <col style="width:18%"> <col style="width:16%"> <col style="width:13%">
           </colgroup>
           <thead>
             <tr style="border-bottom:1px solid var(--border);">
@@ -3840,9 +3839,7 @@
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">→ Contato Ini.</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">→ Reunião Diag.</th>
               <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Taxa Conversão</th>
-              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Seg. Principal</th>
-              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Porte</th>
-              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">S/ interação</th>
+              <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">Pior S/ interação</th>
             </tr>
           </thead>
           <tbody id="pdCloserRows"></tbody>
@@ -3927,7 +3924,7 @@
             TDC(`<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;font-weight:700;color:var(--blue-dark);">${totCI}</span><span style="font-size:10px;color:var(--gray-light);">${Math.round(totCI/totC*100)}%</span></div>`) +
             TDC(`<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;font-weight:700;color:var(--green);">${totRD}</span><span style="font-size:10px;color:var(--gray-light);">${Math.round(totRD/totC*100)}%</span></div>`) +
             TDC(`<span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:rgba(66,153,82,0.1);color:var(--green);">${Math.round(totRD/totC*100)}%</span>`) +
-            TDC(``) + TDC(``) + TDC(``, 'padding-right:20px;');
+            TDC(`—`, 'padding-right:20px;color:var(--text-dim);font-size:11px;');
           closerTbody.appendChild(consRow);
 
           CLOSERS.forEach(c => {
@@ -3946,8 +3943,6 @@
               TD(`<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;font-weight:600;color:var(--blue-dark);">${c.ci}</span><span style="font-size:10px;color:var(--gray-light);">${Math.round(c.ci/c.contas*100)}%</span></div>`) +
               TD(`<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;font-weight:600;color:var(--green);">${c.rd}</span><span style="font-size:10px;color:var(--gray-light);">${Math.round(c.rd/c.contas*100)}%</span></div>`) +
               TD(`<span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;background:${convBg};color:${convColor};">${conv}%</span>`) +
-              TD(`<span style="font-size:11px;color:var(--gray-light);">${c.seg}</span>`) +
-              TD(`<span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${c.porte}</span>`) +
               TD(`<span style="font-size:12px;font-weight:700;color:${diasColor};">${c.semToque}d</span>`,'padding-right:20px;');
             closerTbody.appendChild(tr);
           });
@@ -4023,139 +4018,233 @@
 
     </div>
     <div class="page" id="page-eventos" style="display:none;">
-<div class="block" id="b6">
-      <div class="section-header">
+
+      <!-- Header -->
+      <div class="section-header" style="margin-bottom:20px;">
         <div class="section-title">
-          <div class="section-num" style="background:#9C88E8;">6</div>
+          <div class="section-num" style="background:#9C88E8;color:#fff;font-size:12px;">EV</div>
           <div>
-            <div class="section-name">Eventos — Acelerador</div>
-            <div class="section-sub">Não é origem de lead. Mede aceleração de novas contas e upsell.</div>
+            <div class="section-label">Canal</div>
+            <div class="section-name">Eventos</div>
+            <div class="section-sub">Acelerador · não é origem de lead · mede show rate e resultado comercial pós-evento</div>
           </div>
         </div>
       </div>
 
-      <!-- 6A: Macro por Evento -->
-      <div class="card" style="margin-bottom:12px;">
-        <div class="sub-header">6A · Visão Macro por Evento</div>
-        <table class="event-table">
-          <thead>
-            <tr>
-              <th>Evento / Data</th>
-              <th>Tipo</th>
-              <th>Listadas</th>
-              <th>Convidadas</th>
-              <th>Recusaram</th>
-              <th>Confirmaram</th>
-              <th>Show</th>
-              <th>No-Show</th>
-              <th>Taxa Show (vs conv.)</th>
-              <th>Taxa Show (vs conf.)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Summit Resíduos SP</strong><br/><span style="font-size:10px;color:var(--gray-light);">15 Mar 2026</span></td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td class="event-num">48</td>
-              <td class="event-num">32</td>
-              <td class="event-num" style="color:var(--red);">6</td>
-              <td class="event-num">20</td>
-              <td class="event-num" style="color:var(--green);">17</td>
-              <td class="event-num" style="color:var(--red);">3</td>
-              <td><span class="show-rate show-high">53%</span></td>
-              <td><span class="show-rate show-high">85%</span></td>
-            </tr>
-            <tr>
-              <td><strong>Jantar Executivo RJ</strong><br/><span style="font-size:10px;color:var(--gray-light);">22 Mar 2026</span></td>
-              <td><span class="tag tag-salmon">Upsell</span></td>
-              <td class="event-num">18</td>
-              <td class="event-num">15</td>
-              <td class="event-num" style="color:var(--red);">2</td>
-              <td class="event-num">10</td>
-              <td class="event-num" style="color:var(--green);">6</td>
-              <td class="event-num" style="color:var(--red);">4</td>
-              <td><span class="show-rate show-mid">40%</span></td>
-              <td><span class="show-rate show-mid">60%</span></td>
-            </tr>
-            <tr>
-              <td><strong>Workshop ICP BH</strong><br/><span style="font-size:10px;color:var(--gray-light);">28 Mar 2026</span></td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td class="event-num">25</td>
-              <td class="event-num">20</td>
-              <td class="event-num" style="color:var(--red);">8</td>
-              <td class="event-num">9</td>
-              <td class="event-num" style="color:var(--yellow);">4</td>
-              <td class="event-num" style="color:var(--red);">5</td>
-              <td><span class="show-rate show-low">20%</span></td>
-              <td><span class="show-rate show-low">44%</span></td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Tabs de evento -->
+      <div style="display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;">
+        <button onclick="selectEvento('todos',this)" id="ev-tab-todos"
+          style="font-size:11px;font-weight:600;padding:10px 16px;border:none;background:none;cursor:pointer;color:var(--salmon-dark);border-bottom:2px solid var(--salmon);font-family:'Inter',sans-serif;">
+          Consolidado
+        </button>
+        <button onclick="selectEvento('sp',this)" id="ev-tab-sp"
+          style="font-size:11px;font-weight:400;padding:10px 16px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">
+          Lixo com Futuro 1 · SP
+          <span style="font-size:9px;color:var(--gray-light);margin-left:4px;">Fev 2026</span>
+        </button>
+        <button onclick="selectEvento('bsb',this)" id="ev-tab-bsb"
+          style="font-size:11px;font-weight:400;padding:10px 16px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">
+          Lixo com Futuro 2 · BSB
+          <span style="font-size:9px;color:var(--gray-light);margin-left:4px;">Mar 2026</span>
+        </button>
+        <button onclick="selectEvento('next',this)" id="ev-tab-next"
+          style="font-size:11px;font-weight:400;padding:10px 16px;border:none;background:none;cursor:pointer;color:var(--gray-light);border-bottom:2px solid transparent;font-family:'Inter',sans-serif;">
+          Lixo com Futuro 3 · SP
+          <span style="font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(138,165,255,0.12);color:var(--blue-dark);margin-left:4px;">Próximo</span>
+        </button>
       </div>
 
-      <!-- 6B: Acompanhamento por empresa -->
-      <div class="card">
-        <div class="sub-header">6B · Acompanhamento Pós-Evento por Empresa</div>
-        <table class="event-table">
-          <thead>
-            <tr>
-              <th>Empresa</th>
-              <th>Evento</th>
-              <th>Closer</th>
-              <th>Tipo</th>
-              <th>Touch pós</th>
-              <th>Último touch</th>
-              <th>Dias s/ touch</th>
-              <th>Etapa atual</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:600;">Votorantim Cimentos</td>
-              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
-              <td>Anderson F.</td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
-              <td style="font-size:11px;">29 Mar</td>
-              <td><span class="time-badge time-ok">3d</span></td>
-              <td><span class="tag tag-blue">Agendado</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">JSL Logística</td>
-              <td style="font-size:11px;color:var(--gray-light);">Summit SP</td>
-              <td>Mariana C.</td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td><span style="color:var(--green);font-weight:600;">✓ Sim</span></td>
-              <td style="font-size:11px;">27 Mar</td>
-              <td><span class="time-badge time-ok">5d</span></td>
-              <td><span class="tag tag-green">Reunião Diag.</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">Klabin S.A.</td>
-              <td style="font-size:11px;color:var(--gray-light);">Jantar RJ</td>
-              <td>Anderson F.</td>
-              <td><span class="tag tag-salmon">Upsell</span></td>
-              <td><span style="color:var(--red);font-weight:600;">✗ Não</span></td>
-              <td style="font-size:11px;color:var(--gray-light);">—</td>
-              <td><span class="time-badge time-crit">10d 🔴</span></td>
-              <td><span class="tag tag-gray">Contato Inicial</span></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">Gerdau</td>
-              <td style="font-size:11px;color:var(--gray-light);">Workshop BH</td>
-              <td>Rodrigo M.</td>
-              <td><span class="tag tag-blue">Nova Conta</span></td>
-              <td><span style="color:var(--yellow);font-weight:600;">⏳ Pendente</span></td>
-              <td style="font-size:11px;color:var(--gray-light);">—</td>
-              <td><span class="time-badge time-warn">5d ⚠</span></td>
-              <td><span class="tag tag-gray">Aquecimento</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    </div>
+      <!-- Big Numbers container -->
+      <div id="ev-bignumbers"></div>
 
+      <script>
+      (function(){
+
+        const EVENTOS = {
+          todos: {
+            label: 'Consolidado · 2 eventos',
+            convidados: 91, confirmados: 23, presentes: 12,
+            noShow: 11, custo: 11228, custoPorEmp: 936,
+            taxaConf: 25, taxaPresConf: 52, taxaPresConv: 13,
+            perfil: [
+              { tipo:'Cliente',         conv:28, pres:11, pct:39, color:'var(--green)'      },
+              { tipo:'Em Negociação',   conv:29, pres:2,  pct:7,  color:'var(--blue-dark)'  },
+              { tipo:'Lista Quente',    conv:10, pres:1,  pct:10, color:'var(--yellow)'     },
+              { tipo:'Pausado/Perdido', conv:21, pres:1,  pct:5,  color:'var(--red)'        },
+            ],
+          },
+          sp: {
+            label: 'Lixo com Futuro 1 · São Paulo · 13 Fev 2026',
+            convidados: 41, confirmados: 13, presentes: 7,
+            noShow: 6, custo: 6160, custoPorEmp: 880,
+            taxaConf: 32, taxaPresConf: 54, taxaPresConv: 17,
+            perfil: [
+              { tipo:'Cliente',         conv:15, pres:8,  pct:53, color:'var(--green)'      },
+              { tipo:'Em Negociação',   conv:14, pres:1,  pct:7,  color:'var(--blue-dark)'  },
+              { tipo:'Lista Quente',    conv:9,  pres:1,  pct:11, color:'var(--yellow)'     },
+              { tipo:'Pausado/Perdido', conv:2,  pres:0,  pct:0,  color:'var(--red)'        },
+            ],
+          },
+          bsb: {
+            label: 'Lixo com Futuro 2 · Brasília · 04 Mar 2026',
+            convidados: 50, confirmados: 10, presentes: 5,
+            noShow: 5, custo: 5068, custoPorEmp: 1014,
+            taxaConf: 20, taxaPresConf: 50, taxaPresConv: 10,
+            perfil: [
+              { tipo:'Cliente',         conv:13, pres:3,  pct:23, color:'var(--green)'      },
+              { tipo:'Em Negociação',   conv:15, pres:1,  pct:7,  color:'var(--blue-dark)'  },
+              { tipo:'Lista Quente',    conv:1,  pres:0,  pct:0,  color:'var(--yellow)'     },
+              { tipo:'Pausado/Perdido', conv:19, pres:1,  pct:5,  color:'var(--red)'        },
+            ],
+          },
+          next: null,
+        };
+
+        function renderBigNumbers(key) {
+          const wrap = document.getElementById('ev-bignumbers');
+          if (!wrap) return;
+
+          if (key === 'next') {
+            wrap.innerHTML = `
+              <div style="padding:48px 0 24px;max-width:520px;">
+                <div style="font-size:13px;font-weight:600;color:var(--gray-light);margin-bottom:6px;">Próximo evento</div>
+                <div style="font-family:'Libre Caslon Text',serif;font-size:28px;color:var(--dark);letter-spacing:-0.02em;margin-bottom:16px;">Lixo com Futuro 3 · São Paulo</div>
+                <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+                  <span style="font-size:12px;padding:4px 12px;border-radius:10px;background:var(--blue-dim);color:var(--blue-dark);font-weight:500;">📅 Abril 2026</span>
+                  <span style="font-size:12px;padding:4px 12px;border-radius:10px;background:rgba(66,153,82,0.1);color:var(--green);font-weight:500;">📍 São Paulo</span>
+                </div>
+                <div style="padding:20px 24px;background:#fff;border:1px solid var(--border);border-radius:12px;">
+                  <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Meta com base nos aprendizados</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div><div style="font-size:10px;color:var(--gray-light);margin-bottom:4px;">Convidados mínimos</div><div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">110</div></div>
+                    <div><div style="font-size:10px;color:var(--gray-light);margin-bottom:4px;">Meta de presentes</div><div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--green);">15</div></div>
+                    <div><div style="font-size:10px;color:var(--gray-light);margin-bottom:4px;">Meta de confirmação</div><div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue-dark);">≥ 40%</div></div>
+                    <div><div style="font-size:10px;color:var(--gray-light);margin-bottom:4px;">Composição da lista</div><div style="font-size:12px;font-weight:500;color:var(--dark);">≥50% clientes<br>≥30% leads ativos</div></div>
+                  </div>
+                </div>
+              </div>`;
+            return;
+          }
+
+          const d = EVENTOS[key];
+          if (!d) return;
+
+          // Funil widths
+          const fConf = Math.round(d.confirmados / d.convidados * 100);
+          const fPres  = Math.round(d.presentes  / d.convidados * 100);
+
+          wrap.innerHTML = `
+            <!-- Label do evento -->
+            <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;">${d.label}</div>
+
+            <!-- Big numbers grid -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:10px;margin-bottom:28px;">
+
+              <div class="card" style="background:var(--dark);border-color:var(--dark);">
+                <div class="kpi-label" style="color:rgba(255,255,255,0.35);">Convidadas</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.convidados}</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.3);">empresas na lista</div>
+              </div>
+
+              <div class="card">
+                <div class="kpi-label" style="color:var(--yellow);">Confirmaram</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:var(--yellow);letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.confirmados}</div>
+                <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+                  <div style="width:${d.taxaConf}%;height:100%;background:var(--yellow);border-radius:10px;"></div>
+                </div>
+                <div style="font-size:10px;color:var(--gray-light);">${d.taxaConf}% dos convidados</div>
+              </div>
+
+              <div class="card" style="border-left:3px solid var(--green);">
+                <div class="kpi-label" style="color:var(--green);">Presentes ✓</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.presentes}</div>
+                <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+                  <div style="width:${d.taxaPresConf}%;height:100%;background:var(--green);border-radius:10px;"></div>
+                </div>
+                <div style="font-size:10px;color:var(--gray-light);">${d.taxaPresConf}% dos confirmados · ${d.taxaPresConv}% dos convidados</div>
+              </div>
+
+              <div class="card" style="border-left:3px solid var(--red);">
+                <div class="kpi-label" style="color:var(--red);">No-show</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:var(--red);letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.noShow}</div>
+                <div style="height:4px;background:rgba(209,45,45,0.1);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+                  <div style="width:${Math.round(d.noShow/d.confirmados*100)}%;height:100%;background:var(--red);border-radius:10px;"></div>
+                </div>
+                <div style="font-size:10px;color:rgba(209,45,45,0.5);">${Math.round(d.noShow/d.confirmados*100)}% dos confirmados</div>
+              </div>
+
+              <div class="card">
+                <div class="kpi-label">Custo / empresa</div>
+                <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">R$${d.custoPorEmp.toLocaleString('pt-BR')}</div>
+                <div style="font-size:10px;color:var(--gray-light);">total R$ ${d.custo.toLocaleString('pt-BR')}</div>
+              </div>
+
+            </div>
+
+            <!-- Funil visual -->
+            <div class="sub-header" style="margin-bottom:12px;">FUNIL DO EVENTO</div>
+            <div class="card no-hover" style="margin-bottom:28px;">
+              <div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:12px;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--dark);">${d.convidados}</div>
+                  <div style="width:100%;height:70px;background:var(--border);border-radius:6px 6px 0 0;"></div>
+                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">Convidados</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--yellow);">${d.confirmados}</div>
+                  <div style="width:100%;height:${Math.max(Math.round(70*fConf/100),6)}px;background:var(--yellow);border-radius:6px 6px 0 0;margin-top:auto;"></div>
+                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">Confirmados<br>${d.taxaConf}%</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--green);">${d.presentes}</div>
+                  <div style="width:100%;height:${Math.max(Math.round(70*fPres/100),4)}px;background:var(--green);border-radius:6px 6px 0 0;margin-top:auto;"></div>
+                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">Presentes<br>${d.taxaPresConv}%</div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--red);">${d.noShow}</div>
+                  <div style="width:100%;height:${Math.max(Math.round(70*Math.round(d.noShow/d.convidados*100)/100),4)}px;background:rgba(209,45,45,0.3);border-radius:6px 6px 0 0;margin-top:auto;"></div>
+                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">No-show<br>${Math.round(d.noShow/d.convidados*100)}%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perfil dos presentes -->
+            <div class="sub-header" style="margin-bottom:12px;">PERFIL DOS PRESENTES</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;">
+              ${d.perfil.map(p => `
+                <div class="card no-hover">
+                  <div class="kpi-label" style="color:${p.color};margin-bottom:8px;">${p.tipo}</div>
+                  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
+                    <div style="font-size:28px;font-weight:700;font-family:'Inter',sans-serif;color:${p.color};letter-spacing:-0.03em;line-height:1;">${p.pres}</div>
+                    <div style="font-size:11px;color:var(--gray-light);">de ${p.conv} conv.</div>
+                  </div>
+                  <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
+                    <div style="width:${p.pct}%;height:100%;background:${p.color};border-radius:10px;"></div>
+                  </div>
+                  <div style="font-size:10px;color:var(--gray-light);margin-top:5px;">${p.pct}% de presença</div>
+                </div>`).join('')}
+            </div>`;
+        }
+
+        window.selectEvento = function(key, el) {
+          document.querySelectorAll('[id^="ev-tab-"]').forEach(b => {
+            b.style.color = 'var(--gray-light)';
+            b.style.borderBottom = '2px solid transparent';
+            b.style.fontWeight = '400';
+          });
+          el.style.color = 'var(--salmon-dark)';
+          el.style.borderBottom = '2px solid var(--salmon)';
+          el.style.fontWeight = '600';
+          renderBigNumbers(key);
+        };
+
+        // Init
+        renderBigNumbers('todos');
+
+      })();
+      </script>
+
+    </div>
     <div class="page" id="page-funil" style="display:none;">
 <div class="block" id="b5">
       <div class="section-header">
