@@ -4064,8 +4064,9 @@
           todos: {
             label: 'Consolidado · 2 eventos',
             convidados: 91, confirmados: 23, presentes: 12,
-            noShow: 11, custo: 11228, custoPorEmp: 936,
+            noShow: 11,
             taxaConf: 25, taxaPresConf: 52, taxaPresConv: 13,
+            interacao: 9, proposta: 5, aceite: 3,
             perfil: [
               { tipo:'Cliente',         conv:28, pres:11, pct:39, color:'var(--green)'      },
               { tipo:'Em Negociação',   conv:29, pres:2,  pct:7,  color:'var(--blue-dark)'  },
@@ -4076,8 +4077,9 @@
           sp: {
             label: 'Lixo com Futuro 1 · São Paulo · 13 Fev 2026',
             convidados: 41, confirmados: 13, presentes: 7,
-            noShow: 6, custo: 6160, custoPorEmp: 880,
+            noShow: 6,
             taxaConf: 32, taxaPresConf: 54, taxaPresConv: 17,
+            interacao: 5, proposta: 3, aceite: 2,
             perfil: [
               { tipo:'Cliente',         conv:15, pres:8,  pct:53, color:'var(--green)'      },
               { tipo:'Em Negociação',   conv:14, pres:1,  pct:7,  color:'var(--blue-dark)'  },
@@ -4088,8 +4090,9 @@
           bsb: {
             label: 'Lixo com Futuro 2 · Brasília · 04 Mar 2026',
             convidados: 50, confirmados: 10, presentes: 5,
-            noShow: 5, custo: 5068, custoPorEmp: 1014,
+            noShow: 5,
             taxaConf: 20, taxaPresConf: 50, taxaPresConv: 10,
+            interacao: 4, proposta: 2, aceite: 1,
             perfil: [
               { tipo:'Cliente',         conv:13, pres:3,  pct:23, color:'var(--green)'      },
               { tipo:'Em Negociação',   conv:15, pres:1,  pct:7,  color:'var(--blue-dark)'  },
@@ -4174,9 +4177,30 @@
               </div>
 
               <div class="card">
-                <div class="kpi-label">Custo / empresa</div>
-                <div style="font-size:32px;font-weight:600;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;margin-bottom:8px;">R$${d.custoPorEmp.toLocaleString('pt-BR')}</div>
-                <div style="font-size:10px;color:var(--gray-light);">total R$ ${d.custo.toLocaleString('pt-BR')}</div>
+                <div class="kpi-label" style="color:var(--blue-dark);">Interação comercial</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:var(--blue-dark);letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.interacao}</div>
+                <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+                  <div style="width:${Math.round(d.interacao/d.presentes*100)}%;height:100%;background:var(--blue);border-radius:10px;"></div>
+                </div>
+                <div style="font-size:10px;color:var(--gray-light);">${Math.round(d.interacao/d.presentes*100)}% dos presentes</div>
+              </div>
+
+              <div class="card">
+                <div class="kpi-label" style="color:var(--salmon-dark);">Proposta enviada</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:var(--salmon-dark);letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.proposta}</div>
+                <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+                  <div style="width:${Math.round(d.proposta/d.presentes*100)}%;height:100%;background:var(--salmon);border-radius:10px;"></div>
+                </div>
+                <div style="font-size:10px;color:var(--gray-light);">${Math.round(d.proposta/d.presentes*100)}% dos presentes</div>
+              </div>
+
+              <div class="card" style="border-left:3px solid var(--green);">
+                <div class="kpi-label" style="color:var(--green);">Proposta aceita</div>
+                <div style="font-size:40px;font-weight:600;font-family:'Inter',sans-serif;color:var(--green);letter-spacing:-0.04em;line-height:1;margin-bottom:8px;">${d.aceite}</div>
+                <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+                  <div style="width:${Math.round(d.aceite/d.presentes*100)}%;height:100%;background:var(--green);border-radius:10px;"></div>
+                </div>
+                <div style="font-size:10px;color:var(--gray-light);">${Math.round(d.aceite/d.presentes*100)}% dos presentes</div>
               </div>
 
             </div>
