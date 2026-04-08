@@ -346,7 +346,7 @@ module.exports = async function handler(req, res) {
       }
       case 'funil_kpis': {
         const PROSP_DIRETA_ONWARDS  = ['1292533286','1295430921','1295463995'];
-        const PROPOSTA_IDS_KPI      = ['1286486543','1181930496','1311051330','1331859375'];
+        const PROPOSTA_IDS_KPI      = ['1214475912','1224336643','1311051331','1331859376'];
         const PRE_VENDAS_KPI        = PIPELINE_IDS.pre_vendas;
         const OUTROS_PIPELINES      = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
         const REUNIAO_STAGES        = ['1295430921','1295463995'];
@@ -479,6 +479,11 @@ module.exports = async function handler(req, res) {
           });
           const total    = pDeals.length;
           const mkt      = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbmC(d); }).length;
+          // Debug: log April data
+          if (p.label === 'Abr' || p.label === 'Atual') {
+            const mktDeals = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbmC(d); });
+            console.log('[funil_chart] ' + p.label + ' total:', pDeals.length, 'mkt:', mkt, 'mktDeals:', JSON.stringify(mktDeals.map(function(d){ return {id:d.id, canal:d.properties.hub2_deal__canal_de_aquisicao, detalhe:d.properties.detalhamento_de_canal, stage:d.properties.dealstage, pipeline:d.properties.pipeline}; })));
+          }
           const mapeados = pDeals.filter(isAbmC).length;
           const reuniao  = pDeals.filter(function(d){ return (d.properties.pipeline===PIPELINE_IDS.pre_vendas&&REUN_C.includes(d.properties.dealstage))||OUTROS_C.includes(d.properties.pipeline); }).length;
           const contratos= pDeals.filter(function(d){ return CONTR_C.includes(d.properties.dealstage); }).length;
