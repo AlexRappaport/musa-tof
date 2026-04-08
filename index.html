@@ -1155,13 +1155,18 @@
         </button>
       </div>
 
-      <!-- Origem dos Leads -->
-      <div class="sub-header" style="margin-bottom:14px;" id="vg-origem-label">ORIGEM DOS LEADS</div>
-      <div class="card no-hover" style="padding:24px 28px;margin-bottom:12px;">
-        <div style="display:flex;gap:20px;align-items:flex-start;">
+      <!-- Origem dos Leads -->\n      <div class=\"sub-header\" style=\"margin-bottom:14px;\" id=\"vg-origem-label\">ORIGEM DOS LEADS</div>
+      <div class="card no-hover" style="padding:24px 28px;margin-bottom:12px;" id="origem-card">
+
+        <!-- Estado vazio -->
+        <div id="origem-empty" style="display:none;padding:32px 0;text-align:center;color:var(--gray-light);font-size:13px;">
+          Sem leads no período selecionado
+        </div>
+
+        <div id="origem-content" style="display:flex;gap:20px;align-items:flex-start;">
 
           <!-- Donut chart -->
-          <div style="flex-shrink:0;position:relative;width:170px;height:170px;overflow:hidden;">
+          <div id="donut-wrap" style="flex-shrink:0;position:relative;width:170px;height:170px;overflow:hidden;">
             <canvas id="donutCanvas" style="display:block;"></canvas>
             <div id="donutCenter" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
               <div style="font-size:26px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);line-height:1;" id="donutTotal">38</div>
@@ -1184,7 +1189,7 @@
 
             <div id="origemRows"></div>
           </div>
-        </div>
+        </div> <!-- /origem-content -->
       </div>
 
       <style>
@@ -1294,9 +1299,20 @@
         const wrap = document.getElementById("origemRows");
         if (!wrap) return;
         wrap.innerHTML = "";
-        renderDonut(canais);
 
-        if (!canais || !canais.length) return;
+        var emptyEl  = document.getElementById("origem-empty");
+        var donutWrap = document.getElementById("donut-wrap");
+
+        if (!canais || !canais.length) {
+          if (emptyEl)   emptyEl.style.display   = "block";
+          if (donutWrap) donutWrap.style.display  = "none";
+          return;
+        }
+
+        if (emptyEl)   emptyEl.style.display   = "none";
+        if (donutWrap) donutWrap.style.display  = "";
+
+        renderDonut(canais);
 
         console.log('[TOF] renderOrigemRows called, canais:', canais.length, JSON.stringify(canais.map(function(x){return {canal:x.canal,n:x.n};})));
         canais.forEach(function(c, idx) {
