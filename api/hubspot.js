@@ -340,6 +340,138 @@ export default async function handler(req, res) {
           scorecard: { ...sc, cobertura, total: totalNovos },
         });
       }
+      case 'funil_kpis': {
+        // ── Stage IDs ──────────────────────────────────────────────────────
+        const PROSP_DIRETA_ID   = '1292533286';
+        const REUNIAO_DIAG_ID   = '1295430921';
+        const PROPOSTA_IDS      = ['1286486543','1181930496','1311051330','1331859375'];
+        const SHOW_EVENTO_ID    = '1308097367';
+        const EVENTO_PIPELINE   = '872857629';
+        const PRE_VENDAS_ID     = PIPELINE_IDS.pre_vendas;
+
+        // Period filters: WTD, MTD, YTD
+        function getPeriodRange(p) {
+          const now = new Date();
+          switch(p) {
+            case 'wtd': {
+              const d = now.getDay();
+              const s = new Date(now); s.setDate(now.getDate() - (d === 0 ? 6 : d - 1)); s.setHours(0,0,0,0);
+              return [s.getTime().toString(), now.getTime().toString()];
+            }
+            case 'ytd': {
+              const s = new Date(now.getFullYear(), 0, 1);
+              return [s.getTime().toString(), now.getTime().toString()];
+            }
+            default: { // mtd
+              const s = new Date(now.getFullYear(), now.getMonth(), 1);
+              return [s.getTime().toString(), now.getTime().toString()];
+            }
+          }
+        }
+
+        const kpiPeriod = req.query.kpi_period || 'mtd';
+        const [pStart, pEnd] = getPeriodRange(kpiPeriod);
+        const dateFilter = [
+          { propertyName: 'createdate', operator: 'GTE', value: pStart },
+          { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
+        ];
+        const allPipeFilter = { propertyName: 'pipeline', operator: 'IN', values: ALL_PIPELINE_IDS };
+
+        // Fetch all active deals in period + tickets in Show no evento stage
+        const [allDeals, eventTickets] = await Promise.all([
+          fetchAllDeals(token, [...dateFilter, allPipeFilter]),
+          // Tickets na etapa Show no evento no período
+          (async () => {
+            try {
+              const body = {
+                filterGroups: [{ filters: [
+                  { propertyName: 'hs_pipeline',       operator: 'EQ', value: EVENTO_PIPELINE },
+                  { propertyName: 'hs_pipeline_stage', operator: 'EQ', value: SHOW_EVENTO_ID  },
+                  { propertyName: 'createdate',        operator: 'GTE', value: pStart         },
+                  { propertyName: 'createdate',        operator: 'LTE', value: pEnd           },
+                ]}],
+                properties: ['hs_object_id','hs_pipeline','hs_pipeline_stage'],
+                limit: 200,
+              };
+              const res = await fetch('https://api.hubapi.com/crm/v3/objects/tickets/search', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+              });
+              if (!res.ok) return [];
+              const d = await res.json();
+              return d.results || [];
+            } catch(e) { return []; }
+          })(),
+        ]);
+
+        // Get deal IDs associated with event tickets
+        let eventDealIds = new Set();
+        if (eventTickets.length > 0) {
+          try {
+            // Batch fetch associations: tickets → deals
+            const ticketIds = eventTickets.map(t => t.id);
+            const assocRes = await fetch(`https://api.hubapi.com/crm/v3/associations/tickets/deals/batch/read`, {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ inputs: ticketIds.slice(0, 100).map(id => ({ id })) }),
+            });
+            if (assocRes.ok) {
+              const assocData = await assocRes.json();
+              for (const result of (assocData.results || [])) {
+                for (const assoc of (result.to || [])) eventDealIds.add(assoc.id);
+              }
+            }
+          } catch(e) {}
+        }
+
+        // Filter out lost deals
+        const { labels: sMap, lostIds: lIds } = await fetchStageMap(token).catch(() => ({ labels: {}, lostIds: {} }));
+        const activeDeals = allDeals.filter(d => !lIds[d.properties.dealstage]);
+
+        const total = activeDeals.length;
+
+        // Marketing leads:
+        // 1. Inbound canal
+        // 2. ABM na etapa Prospecção Direta do Pré Vendas (detalhamento = OUT - Lista ABM)
+        // 3. Deals associados a tickets Show no evento
+        let mktLeads = 0;
+        const mktDealIds = new Set();
+        for (const d of activeDeals) {
+          const canal     = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
+          const detalhe   = d.properties.detalhamento_de_canal || '';
+          const stage     = d.properties.dealstage || '';
+          const pipeline  = d.properties.pipeline  || '';
+          const isInbound = canal.includes('inbound');
+          const isABM     = detalhe === 'OUT - Lista ABM' && stage === PROSP_DIRETA_ID && pipeline === PRE_VENDAS_ID;
+          const isEvento  = eventDealIds.has(d.id);
+          if (isInbound || isABM || isEvento) { mktLeads++; mktDealIds.add(d.id); }
+        }
+
+        // Mapeados: detalhamento = OUT - Lista ABM
+        const mapeados = activeDeals.filter(d => (d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM').length;
+
+        // Reunião de Diagnóstico: etapa REUNIAO_DIAG_ID no Pré Vendas
+        const reunioes = activeDeals.filter(d =>
+          d.properties.pipeline  === PRE_VENDAS_ID &&
+          d.properties.dealstage === REUNIAO_DIAG_ID
+        ).length;
+
+        // Proposta enviada: em qualquer dos 4 pipelines com etapa de proposta
+        const propostas = activeDeals.filter(d => PROPOSTA_IDS.includes(d.properties.dealstage)).length;
+
+        const pct = (n) => total > 0 ? Math.round(n / total * 100) : 0;
+
+        return res.status(200).json({
+          kpi_period: kpiPeriod,
+          total,
+          mkt:       { n: mktLeads, pct: pct(mktLeads) },
+          mapeados:  { n: mapeados, pct: pct(mapeados) },
+          reuniao:   { n: reunioes, pct: pct(reunioes) },
+          proposta:  { n: propostas, pct: pct(propostas) },
+        });
+      }
+
       default:
         return res.status(400).json({ error: `Unknown endpoint: ${endpoint}` });
     }
