@@ -4679,9 +4679,10 @@
     'Semestre':        'semestre',
   };
 
-  let vgCurrentPeriod  = 'semana_atual'; // deve bater com o period-opt active no HTML
+  let vgCurrentPeriod  = 'semana_atual';
   let vgCurrentPipeline = 'todos';
   let vgLoading = false;
+  let vgAbortController = null;
 
   function setVGLoading(on) {
     vgLoading = on;
@@ -4690,23 +4691,27 @@
   }
 
   async function fetchVGData() {
+    // Cancela qualquer fetch anterior em andamento
+    if (vgAbortController) vgAbortController.abort();
+    vgAbortController = new AbortController();
+    const signal = vgAbortController.signal;
+
     setVGLoading(true);
     try {
       const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}`;
       console.log('[Musa TOF] Fetching:', url);
-      const res = await fetch(url);
+      const res = await fetch(url, { signal });
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
       vgLiveData = d;
       applyVGData(d);
     } catch (err) {
-      // API unavailable (local preview or Vercel not configured) — keep simulated data silently
+      if (err.name === 'AbortError') return; // fetch cancelado — ignora silenciosamente
       console.warn('HubSpot API unavailable:', err.message, '— using simulated data');
       const badge = document.getElementById('vg-last-refresh');
       if (badge) badge.textContent = 'Dados simulados · API indisponível';
     } finally {
       setVGLoading(false);
-      // Always hide overlay regardless of outcome
       const overlay = document.getElementById('vg-loading-overlay');
       if (overlay) overlay.style.display = 'none';
     }
