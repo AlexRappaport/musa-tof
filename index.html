@@ -1023,16 +1023,22 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;" id="funil-kpi-grid">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:8px;" id="funil-kpi-grid">
         <!-- Total Leads -->
-        <div class="card animate-in" style="padding:16px 18px;">
-          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">TOTAL DE LEADS</div>
+        <div class="card animate-in" id="fk-card-total" onclick="toggleFunilChart('total')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">TOTAL DE LEADS</div>
+            <svg id="fk-chev-total" width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:0.3;transition:transform 0.18s;flex-shrink:0;margin-top:2px;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
           <div class="kpi-value medium" id="fk-total" style="font-size:22px;">—</div>
           <div style="font-size:10px;color:var(--gray-light);margin-top:4px;">no período</div>
         </div>
         <!-- Marketing -->
-        <div class="card animate-in" style="padding:16px 18px;">
-          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">MARKETING</div>
+        <div class="card animate-in" id="fk-card-mkt" onclick="toggleFunilChart('mkt')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">MARKETING</div>
+            <svg id="fk-chev-mkt" width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:0.3;transition:transform 0.18s;flex-shrink:0;margin-top:2px;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
           <div style="display:flex;align-items:baseline;gap:6px;">
             <div class="kpi-value medium" id="fk-mkt-n" style="font-size:22px;">—</div>
             <div id="fk-mkt-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
@@ -1040,8 +1046,11 @@
           <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">Inbound + ABM + Eventos</div>
         </div>
         <!-- Mapeados -->
-        <div class="card animate-in" style="padding:16px 18px;">
-          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">MAPEADOS</div>
+        <div class="card animate-in" id="fk-card-map" onclick="toggleFunilChart('map')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">MAPEADOS</div>
+            <svg id="fk-chev-map" width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:0.3;transition:transform 0.18s;flex-shrink:0;margin-top:2px;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
           <div style="display:flex;align-items:baseline;gap:6px;">
             <div class="kpi-value medium" id="fk-map-n" style="font-size:22px;">—</div>
             <div id="fk-map-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
@@ -1049,22 +1058,39 @@
           <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">OUT · Lista ABM</div>
         </div>
         <!-- Reunião de Diagnóstico -->
-        <div class="card animate-in" style="padding:16px 18px;">
-          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">REUNIÃO DE DIAG.</div>
+        <div class="card animate-in" id="fk-card-reu" onclick="toggleFunilChart('reu')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">REUNIÃO DE DIAG.</div>
+            <svg id="fk-chev-reu" width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:0.3;transition:transform 0.18s;flex-shrink:0;margin-top:2px;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
           <div style="display:flex;align-items:baseline;gap:6px;">
             <div class="kpi-value medium" id="fk-reu-n" style="font-size:22px;">—</div>
             <div id="fk-reu-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
           </div>
           <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">Pré Vendas / MKT</div>
         </div>
-        <!-- Proposta Enviada -->
-        <div class="card animate-in" style="padding:16px 18px;">
-          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">PROPOSTA ENVIADA</div>
+        <!-- Contratos Fechados -->
+        <div class="card animate-in" id="fk-card-contr" onclick="toggleFunilChart('contr')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">CONTRATOS FECHADOS</div>
+            <svg id="fk-chev-contr" width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:0.3;transition:transform 0.18s;flex-shrink:0;margin-top:2px;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
           <div style="display:flex;align-items:baseline;gap:6px;">
             <div class="kpi-value medium" id="fk-prop-n" style="font-size:22px;">—</div>
             <div id="fk-prop-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
           </div>
           <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">SMB · Ent · Exp · RCC</div>
+        </div>
+      </div>
+
+      <!-- Chart containers -->
+      <div id="funil-chart-area" style="margin-bottom:20px;display:none;">
+        <div class="card no-hover" style="padding:24px 28px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div id="funil-chart-title" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);">—</div>
+            <div id="funil-chart-legend" style="display:flex;gap:16px;font-size:10px;"></div>
+          </div>
+          <canvas id="funil-chart-canvas" style="width:100%;height:180px;display:block;"></canvas>
         </div>
       </div>
 
@@ -4980,6 +5006,217 @@
       const el2 = document.getElementById(id); if (el2) el2.textContent = '…';
     });
     fetchKpiData();
+  };
+
+  // ── Funil Charts ─────────────────────────────────────────────────────────
+  var funilChartOpen = null;
+  var funilChartAbort = null;
+  var funilChartData = null;
+
+  // Metas mensais hardcoded
+  var METAS_MENSAL = {
+    total:    { '2026-04': 38, '2026-05': 48, '2026-06': 38 },
+    reuniao:  { '2026-04': 37, '2026-05': 37, '2026-06': 40 },
+    contratos:{ '2026-04':  8, '2026-05':  8, '2026-06': 11 },
+  };
+
+  var CHART_CONFIG = {
+    total:  { title: 'TOTAL DE LEADS · EVOLUÇÃO', line1: { key: 'total', label: 'Leads', color: '#8AA5FF' }, meta: 'total', type: 'single' },
+    mkt:    { title: 'MARKETING VS NÃO-MARKETING · EVOLUÇÃO', line1: { key: 'mkt', label: 'Marketing', color: '#8AA5FF' }, line2: { key: 'naoMkt', label: 'Não-marketing', color: '#FFBA86' }, type: 'double' },
+    map:    { title: 'MAPEADOS VS NÃO-MAPEADOS · EVOLUÇÃO', line1: { key: 'mapeados', label: 'Mapeados', color: '#52B86A' }, line2: { key: 'naoMapeados', label: 'Não-mapeados', color: '#BBBBCC' }, type: 'double' },
+    reu:    { title: 'REUNIÃO DE DIAGNÓSTICO · EVOLUÇÃO', line1: { key: 'reuniao', label: 'Passaram', color: '#6B88E0' }, meta: 'reuniao', type: 'single' },
+    contr:  { title: 'CONTRATOS FECHADOS · EVOLUÇÃO', line1: { key: 'contratos', label: 'Contratos', color: '#429952' }, meta: 'contratos', type: 'single' },
+  };
+
+  function getMetaForPeriod(metaKey, mode, label) {
+    if (mode !== 'mtd') return null; // só meta para MTD
+    var metas = METAS_MENSAL[metaKey];
+    if (!metas) return null;
+    // label é 'Abr', 'Mai', etc — mapear para chave
+    var MAP = { 'Jan':'01','Fev':'02','Mar':'03','Abr':'04','Mai':'05','Jun':'06','Jul':'07','Ago':'08','Set':'09','Out':'10','Nov':'11','Dez':'12' };
+    var m = MAP[label];
+    if (!m) return null;
+    var year = new Date().getFullYear();
+    return metas[year + '-' + m] || null;
+  }
+
+  function drawFunilChart(data, cfg, mode) {
+    var canvas = document.getElementById('funil-chart-canvas');
+    if (!canvas) return;
+    var dpr = window.devicePixelRatio || 1;
+    var W = canvas.offsetWidth || 600;
+    var H = 180;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    var PAD = { top: 16, right: 20, bottom: 32, left: 36 };
+    var cW = W - PAD.left - PAD.right;
+    var cH = H - PAD.top  - PAD.bottom;
+
+    // Collect all values to find max
+    var allVals = [];
+    data.forEach(function(d) {
+      allVals.push(d[cfg.line1.key] || 0);
+      if (cfg.line2) allVals.push(d[cfg.line2.key] || 0);
+      if (cfg.meta) {
+        var mv = getMetaForPeriod(cfg.meta, mode, d.label);
+        if (mv) allVals.push(mv);
+      }
+    });
+    var maxVal = Math.max.apply(null, allVals.concat([1]));
+    var yMax = Math.ceil(maxVal * 1.2) || 5;
+
+    function xPos(i) { return PAD.left + (i / (data.length - 1)) * cW; }
+    function yPos(v) { return PAD.top + cH - (v / yMax) * cH; }
+
+    // Gridlines
+    ctx.strokeStyle = '#EDE8DF';
+    ctx.lineWidth = 0.5;
+    for (var g = 0; g <= 4; g++) {
+      var gy = PAD.top + (g / 4) * cH;
+      ctx.beginPath(); ctx.moveTo(PAD.left, gy); ctx.lineTo(W - PAD.right, gy); ctx.stroke();
+      ctx.fillStyle = '#9E9EAD';
+      ctx.font = '9px Inter,sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(yMax * (1 - g/4)), PAD.left - 4, gy + 3);
+    }
+
+    // X labels
+    ctx.fillStyle = '#9E9EAD';
+    ctx.font = '9px Inter,sans-serif';
+    ctx.textAlign = 'center';
+    data.forEach(function(d, i) {
+      ctx.fillText(d.label, xPos(i), H - 6);
+    });
+
+    function drawLine(key, color, dashed) {
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = dashed ? 1.5 : 2;
+      ctx.setLineDash(dashed ? [4, 3] : []);
+      data.forEach(function(d, i) {
+        var v = d[key] || 0;
+        if (i === 0) ctx.moveTo(xPos(i), yPos(v));
+        else ctx.lineTo(xPos(i), yPos(v));
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Dots
+      data.forEach(function(d, i) {
+        var v = d[key] || 0;
+        ctx.beginPath();
+        ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      });
+    }
+
+    // Draw lines
+    drawLine(cfg.line1.key, cfg.line1.color, false);
+    if (cfg.line2) drawLine(cfg.line2.key, cfg.line2.color, false);
+
+    // Draw meta line
+    if (cfg.meta && mode === 'mtd') {
+      var metaPoints = data.map(function(d) { return getMetaForPeriod(cfg.meta, mode, d.label); });
+      var hasAnyMeta = metaPoints.some(function(v) { return v !== null; });
+      if (hasAnyMeta) {
+        ctx.beginPath();
+        ctx.strokeStyle = '#D12D2D';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
+        var started = false;
+        metaPoints.forEach(function(mv, i) {
+          if (mv === null) return;
+          if (!started) { ctx.moveTo(xPos(i), yPos(mv)); started = true; }
+          else ctx.lineTo(xPos(i), yPos(mv));
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // Legend
+    var legendEl = document.getElementById('funil-chart-legend');
+    if (legendEl) {
+      var html = '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:' + cfg.line1.color + ';display:inline-block;border-radius:2px;"></span>' + cfg.line1.label + '</span>';
+      if (cfg.line2) html += '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:' + cfg.line2.color + ';display:inline-block;border-radius:2px;"></span>' + cfg.line2.label + '</span>';
+      if (cfg.meta && mode === 'mtd') html += '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:#D12D2D;display:inline-block;border-radius:2px;border-style:dashed;"></span>Meta</span>';
+      legendEl.innerHTML = html;
+    }
+  }
+
+  async function loadFunilChart(key) {
+    var cfg = CHART_CONFIG[key];
+    if (!cfg) return;
+    var mode = kpiCurrentPeriod === 'ytd' ? null : kpiCurrentPeriod;
+    if (!mode) return; // YTD sem gráfico
+
+    var area = document.getElementById('funil-chart-area');
+    var titleEl = document.getElementById('funil-chart-title');
+    if (area) area.style.display = 'block';
+    if (titleEl) titleEl.textContent = cfg.title;
+
+    if (funilChartAbort) funilChartAbort.abort();
+    funilChartAbort = new AbortController();
+    try {
+      var res = await fetch('/api/hubspot?endpoint=funil_chart&mode=' + mode, { signal: funilChartAbort.signal });
+      if (!res.ok) throw new Error('API error');
+      var d = await res.json();
+      funilChartData = d;
+      drawFunilChart(d.data, cfg, mode);
+    } catch(e) {
+      if (e.name === 'AbortError') return;
+      console.warn('[TOF] chart error:', e.message);
+    }
+  }
+
+  window.toggleFunilChart = function(key) {
+    var kpiMode = kpiCurrentPeriod;
+    if (kpiMode === 'ytd') return; // YTD sem gráfico
+
+    var area = document.getElementById('funil-chart-area');
+    var cards = ['total','mkt','map','reu','contr'];
+
+    // Reset all card styles
+    cards.forEach(function(k) {
+      var card = document.getElementById('fk-card-' + k);
+      var chev = document.getElementById('fk-chev-' + k);
+      if (card) { card.style.borderColor = ''; card.style.boxShadow = ''; }
+      if (chev) { chev.style.transform = ''; chev.style.opacity = '0.3'; }
+    });
+
+    if (funilChartOpen === key) {
+      // Close
+      funilChartOpen = null;
+      if (area) area.style.display = 'none';
+      return;
+    }
+
+    funilChartOpen = key;
+    var activeCard = document.getElementById('fk-card-' + key);
+    var activeChev = document.getElementById('fk-chev-' + key);
+    if (activeCard) { activeCard.style.borderColor = 'var(--salmon)'; activeCard.style.boxShadow = '0 0 0 1px var(--salmon)'; }
+    if (activeChev) { activeChev.style.transform = 'rotate(180deg)'; activeChev.style.opacity = '1'; }
+
+    loadFunilChart(key);
+  };
+
+  // Reload chart when period changes
+  var _origSelectKpiPeriod = window.selectKpiPeriod;
+  window.selectKpiPeriod = function(period, el) {
+    if (_origSelectKpiPeriod) _origSelectKpiPeriod(period, el);
+    if (funilChartOpen) {
+      if (period === 'ytd') {
+        var area = document.getElementById('funil-chart-area');
+        if (area) area.style.display = 'none';
+      } else {
+        loadFunilChart(funilChartOpen);
+      }
+    }
   };
 
   // ── Initial load ──────────────────────────────────────────────────────
