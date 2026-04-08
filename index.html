@@ -1402,9 +1402,7 @@
 
         renderDonut(canais);
 
-        console.log('[TOF] renderOrigemRows called, canais:', canais.length, JSON.stringify(canais.map(function(x){return {canal:x.canal,n:x.n};})));
         canais.forEach(function(c, idx) {
-          console.log('[TOF] rendering canal', idx, c.canal, c.n, 'deals:', (c.deals||[]).length);
           // Safe field extraction
           var nome      = (c.canal || c.nome || 'Não definido');
           var n         = c.n || 0;
@@ -1517,9 +1515,7 @@
           container.appendChild(row);
           container.appendChild(dd);
           wrap.appendChild(container);
-          console.log('[TOF] appended canal', idx, nome, '- origemRows children:', wrap.childNodes.length);
         });
-        console.log('[TOF] forEach complete, total rows:', wrap.childNodes.length);
       };
 
       // Render com dados estáticos de placeholder até API responder
@@ -4786,7 +4782,6 @@
     setVGLoading(true);
     try {
       const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}`;
-      console.log('[Musa TOF] Fetching:', url);
       const res = await fetch(url, { signal });
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
@@ -5041,7 +5036,6 @@
   }
 
   function drawFunilChart(data, cfg, mode) {
-    console.log('[TOF] drawFunilChart mode:', mode, 'cfg.meta:', cfg.meta);
     var canvas = document.getElementById('funil-chart-canvas');
     if (!canvas) return;
     var dpr = window.devicePixelRatio || 1;
@@ -5073,6 +5067,22 @@
 
     function xPos(i) { return PAD.left + (i / (data.length - 1)) * cW; }
     function yPos(v) { return PAD.top + cH - (v / yMax) * cH; }
+
+    // ── Compute metaVal early so drawLine can avoid label collisions ──────────
+    var metaVal = null;
+    if (cfg.meta) {
+      if (mode === 'mtd') {
+        var nowM = new Date();
+        var MK = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        metaVal = getMetaForPeriod(cfg.meta, 'mtd', MK[nowM.getMonth()]);
+      } else if (mode === 'wtd') {
+        var nowW = new Date();
+        var MK2 = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        var mMeta = getMetaForPeriod(cfg.meta, 'mtd', MK2[nowW.getMonth()]);
+        if (mMeta) metaVal = Math.round(mMeta / 4.33);
+      }
+    }
+    var metaLineY = (metaVal !== null && metaVal > 0) ? yPos(metaVal) : null;
 
     // Gridlines
     ctx.strokeStyle = '#EDE8DF';
@@ -5113,11 +5123,22 @@
         ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.fill();
-        // Value label above dot
+        // Value label — posiciona acima; corrige se perto do topo ou da linha de meta
+        var dotY  = yPos(v);
+        var labelY = dotY - 7;
+        // Se próximo ao topo, empurra para baixo
+        if (labelY < PAD.top + 8) labelY = dotY + 14;
+        // Se colidir com a linha de meta (±10px), empurra para o lado oposto
+        if (metaLineY !== null) {
+          if (Math.abs(labelY - metaLineY) < 10) {
+            // Label acima da linha → sobe mais; abaixo → desce mais
+            labelY = (dotY <= metaLineY) ? metaLineY - 11 : metaLineY + 11;
+          }
+        }
         ctx.fillStyle = color;
         ctx.font = 'bold 9px Inter,sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(v, xPos(i), yPos(v) - 7);
+        ctx.fillText(v, xPos(i), labelY);
       });
     }
 
@@ -5126,38 +5147,23 @@
     if (cfg.line2) drawLine(cfg.line2.key, cfg.line2.color, false);
 
     // Draw meta line — linha horizontal no nível da meta do mês/semana atual
-    if (cfg.meta) {
-      var metaVal = null;
-      if (mode === 'mtd') {
-        // Meta do mês atual
-        var now = new Date();
-        var MONTH_KEYS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-        var curLabel = MONTH_KEYS[now.getMonth()];
-        metaVal = getMetaForPeriod(cfg.meta, 'mtd', curLabel);
-      } else if (mode === 'wtd') {
-        // Meta semanal = meta do mês atual / 4.33
-        var now2 = new Date();
-        var MONTH_KEYS2 = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-        var curLabel2 = MONTH_KEYS2[now2.getMonth()];
-        var mMeta = getMetaForPeriod(cfg.meta, 'mtd', curLabel2);
-        if (mMeta) metaVal = Math.round(mMeta / 4.33);
-      }
-      if (metaVal !== null && metaVal > 0) {
-        var my = yPos(metaVal);
-        ctx.beginPath();
-        ctx.strokeStyle = '#D12D2D';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([5, 4]);
-        ctx.moveTo(PAD.left, my);
-        ctx.lineTo(W - PAD.right, my);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        // Label da meta
-        ctx.fillStyle = '#D12D2D';
-        ctx.font = 'bold 9px Inter,sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText('Meta ' + metaVal, W - PAD.right - 2, my - 4);
-      }
+    if (metaVal !== null && metaVal > 0) {
+      var my = metaLineY;
+      ctx.beginPath();
+      ctx.strokeStyle = '#D12D2D';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 4]);
+      ctx.moveTo(PAD.left, my);
+      ctx.lineTo(W - PAD.right, my);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Label da meta — posiciona abaixo da linha se perto do topo
+      var metaLabelY = my - 4;
+      if (metaLabelY < PAD.top + 8) metaLabelY = my + 11;
+      ctx.fillStyle = '#D12D2D';
+      ctx.font = 'bold 9px Inter,sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('Meta ' + metaVal, W - PAD.right - 2, metaLabelY);
     }
 
     // Legend
