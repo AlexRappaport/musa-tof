@@ -5120,23 +5120,38 @@
     drawLine(cfg.line1.key, cfg.line1.color, false);
     if (cfg.line2) drawLine(cfg.line2.key, cfg.line2.color, false);
 
-    // Draw meta line
-    if (cfg.meta && mode === 'mtd') {
-      var metaPoints = data.map(function(d) { return getMetaForPeriod(cfg.meta, mode, d.label); });
-      var hasAnyMeta = metaPoints.some(function(v) { return v !== null; });
-      if (hasAnyMeta) {
+    // Draw meta line — linha horizontal no nível da meta do mês/semana atual
+    if (cfg.meta) {
+      var metaVal = null;
+      if (mode === 'mtd') {
+        // Meta do mês atual
+        var now = new Date();
+        var MONTH_KEYS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        var curLabel = MONTH_KEYS[now.getMonth()];
+        metaVal = getMetaForPeriod(cfg.meta, 'mtd', curLabel);
+      } else if (mode === 'wtd') {
+        // Meta semanal = meta do mês atual / 4.33
+        var now2 = new Date();
+        var MONTH_KEYS2 = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        var curLabel2 = MONTH_KEYS2[now2.getMonth()];
+        var mMeta = getMetaForPeriod(cfg.meta, 'mtd', curLabel2);
+        if (mMeta) metaVal = Math.round(mMeta / 4.33);
+      }
+      if (metaVal !== null && metaVal > 0) {
+        var my = yPos(metaVal);
         ctx.beginPath();
         ctx.strokeStyle = '#D12D2D';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([5, 4]);
-        var started = false;
-        metaPoints.forEach(function(mv, i) {
-          if (mv === null) return;
-          if (!started) { ctx.moveTo(xPos(i), yPos(mv)); started = true; }
-          else ctx.lineTo(xPos(i), yPos(mv));
-        });
+        ctx.moveTo(PAD.left, my);
+        ctx.lineTo(W - PAD.right, my);
         ctx.stroke();
         ctx.setLineDash([]);
+        // Label da meta
+        ctx.fillStyle = '#D12D2D';
+        ctx.font = 'bold 9px Inter,sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('Meta ' + metaVal, W - PAD.right - 2, my - 4);
       }
     }
 
@@ -5145,7 +5160,7 @@
     if (legendEl) {
       var html = '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:' + cfg.line1.color + ';display:inline-block;border-radius:2px;"></span>' + cfg.line1.label + '</span>';
       if (cfg.line2) html += '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:' + cfg.line2.color + ';display:inline-block;border-radius:2px;"></span>' + cfg.line2.label + '</span>';
-      if (cfg.meta && mode === 'mtd') html += '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:#D12D2D;display:inline-block;border-radius:2px;border-style:dashed;"></span>Meta</span>';
+      if (cfg.meta) html += '<span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:2px;background:#D12D2D;display:inline-block;border-radius:2px;"></span>Meta</span>';
       legendEl.innerHTML = html;
     }
   }
