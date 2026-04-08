@@ -1035,6 +1035,64 @@
       </div>
 
 
+      <!-- ── BLOCO FUNIL KPIs ───────────────────────────────────────────── -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sub-header" style="margin-bottom:0;">FUNIL DE GERAÇÃO DE DEMANDA</div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="selectKpiPeriod('wtd',this)" id="kpi-wtd"
+            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">WTD</button>
+          <button onclick="selectKpiPeriod('mtd',this)" id="kpi-mtd"
+            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">MTD</button>
+          <button onclick="selectKpiPeriod('ytd',this)" id="kpi-ytd"
+            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">YTD</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;" id="funil-kpi-grid">
+        <!-- Total Leads -->
+        <div class="card animate-in" style="padding:16px 18px;">
+          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">TOTAL DE LEADS</div>
+          <div class="kpi-value medium" id="fk-total" style="font-size:22px;">—</div>
+          <div style="font-size:10px;color:var(--gray-light);margin-top:4px;">no período</div>
+        </div>
+        <!-- Marketing -->
+        <div class="card animate-in" style="padding:16px 18px;">
+          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">MARKETING</div>
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <div class="kpi-value medium" id="fk-mkt-n" style="font-size:22px;">—</div>
+            <div id="fk-mkt-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
+          </div>
+          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">Inbound + ABM + Eventos</div>
+        </div>
+        <!-- Mapeados -->
+        <div class="card animate-in" style="padding:16px 18px;">
+          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">MAPEADOS</div>
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <div class="kpi-value medium" id="fk-map-n" style="font-size:22px;">—</div>
+            <div id="fk-map-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
+          </div>
+          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">OUT · Lista ABM</div>
+        </div>
+        <!-- Reunião de Diagnóstico -->
+        <div class="card animate-in" style="padding:16px 18px;">
+          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">REUNIÃO DE DIAG.</div>
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <div class="kpi-value medium" id="fk-reu-n" style="font-size:22px;">—</div>
+            <div id="fk-reu-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
+          </div>
+          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">Pré Vendas / MKT</div>
+        </div>
+        <!-- Proposta Enviada -->
+        <div class="card animate-in" style="padding:16px 18px;">
+          <div class="kpi-label" style="font-size:9px;margin-bottom:6px;">PROPOSTA ENVIADA</div>
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <div class="kpi-value medium" id="fk-prop-n" style="font-size:22px;">—</div>
+            <div id="fk-prop-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
+          </div>
+          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">SMB · Ent · Exp · RCC</div>
+        </div>
+      </div>
+
       <!-- NOVOS LEADS POR PIPELINE -->
       <div class="sub-header" style="margin-bottom:12px;">NOVOS LEADS POR PIPELINE</div>
       <div style="display:grid;grid-template-columns:1.2fr repeat(5,1fr);gap:10px;margin-bottom:24px;">
@@ -4869,8 +4927,57 @@
   };
 
 
+  // ── Funil KPIs ───────────────────────────────────────────────────────────
+  let kpiCurrentPeriod = 'mtd';
+  let kpiAbortController = null;
+
+  async function fetchKpiData() {
+    if (kpiAbortController) kpiAbortController.abort();
+    kpiAbortController = new AbortController();
+    try {
+      const url = `/api/hubspot?endpoint=funil_kpis&kpi_period=${kpiCurrentPeriod}`;
+      const res = await fetch(url, { signal: kpiAbortController.signal });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const d = await res.json();
+      applyKpiData(d);
+    } catch(e) {
+      if (e.name === 'AbortError') return;
+      console.warn('[Musa TOF] KPI fetch failed:', e.message);
+    }
+  }
+
+  function applyKpiData(d) {
+    safeText('fk-total',    d.total ?? '—');
+    safeText('fk-mkt-n',   d.mkt?.n   ?? '—');
+    safeText('fk-mkt-pct', d.mkt?.pct != null  ? d.mkt.pct  + '%' : '—');
+    safeText('fk-map-n',   d.mapeados?.n   ?? '—');
+    safeText('fk-map-pct', d.mapeados?.pct != null ? d.mapeados.pct + '%' : '—');
+    safeText('fk-reu-n',   d.reuniao?.n   ?? '—');
+    safeText('fk-reu-pct', d.reuniao?.pct != null  ? d.reuniao.pct  + '%' : '—');
+    safeText('fk-prop-n',  d.proposta?.n   ?? '—');
+    safeText('fk-prop-pct',d.proposta?.pct != null  ? d.proposta.pct + '%' : '—');
+  }
+
+  window.selectKpiPeriod = function(period, el) {
+    kpiCurrentPeriod = period;
+    ['kpi-wtd','kpi-mtd','kpi-ytd'].forEach(function(id) {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.style.background   = 'transparent';
+      btn.style.borderColor  = 'var(--border)';
+      btn.style.color        = 'var(--gray-light)';
+      btn.style.fontWeight   = '500';
+    });
+    el.style.background  = 'var(--orange-dim)';
+    el.style.borderColor = 'var(--salmon)';
+    el.style.color       = 'var(--salmon-dark)';
+    el.style.fontWeight  = '600';
+    fetchKpiData();
+  };
+
   // ── Initial load ──────────────────────────────────────────────────────
   fetchVGData();
+  fetchKpiData();
 
   // ── VG Pipeline filter ───────────────────────────────────────────────────
   const VG_PIPELINE_DATA = {
