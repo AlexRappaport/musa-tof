@@ -1298,7 +1298,9 @@
 
         if (!canais || !canais.length) return;
 
+        console.log('[TOF] renderOrigemRows called, canais:', canais.length, JSON.stringify(canais.map(function(x){return {canal:x.canal,n:x.n};})));
         canais.forEach(function(c, idx) {
+          console.log('[TOF] rendering canal', idx, c.canal, c.n, 'deals:', (c.deals||[]).length);
           // Safe field extraction
           var nome      = (c.canal || c.nome || 'Não definido');
           var n         = c.n || 0;
@@ -1411,7 +1413,9 @@
           container.appendChild(row);
           container.appendChild(dd);
           wrap.appendChild(container);
+          console.log('[TOF] appended canal', idx, nome, '- origemRows children:', wrap.childNodes.length);
         });
+        console.log('[TOF] forEach complete, total rows:', wrap.childNodes.length);
       };
 
       // Render com dados estáticos de placeholder até API responder
