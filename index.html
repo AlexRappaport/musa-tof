@@ -1011,7 +1011,7 @@
         <div class="period-filter" id="periodFilter">
           <button class="period-btn" id="periodBtn" onclick="togglePeriod()">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            <span id="periodLabel">Mês Atual</span>
+            <span id="periodLabel">Semana Atual</span>
             <svg class="caret" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           </button>
           <div class="period-dropdown" id="periodDropdown">
@@ -1296,127 +1296,121 @@
         wrap.innerHTML = "";
         renderDonut(canais);
 
-        canais.forEach((c, idx) => {
-          try {
-          const color    = canalColor(c.canal || c.nome || '');
-          const nome     = c.canal || c.nome || '—';
-          const n        = c.n || 0;
-          const deltaPct = c.deltaPct;
-          const qualifPct = c.qualifPct || 0;
+        if (!canais || !canais.length) return;
 
-          const wowColor = deltaPct === null ? '#C9A820' : deltaPct > 0 ? '#429952' : deltaPct < 0 ? '#D12D2D' : '#C9A820';
-          const wowBg    = deltaPct === null ? 'rgba(201,168,32,0.1)' : deltaPct > 0 ? 'rgba(66,153,82,0.08)' : deltaPct < 0 ? 'rgba(209,45,45,0.08)' : 'rgba(201,168,32,0.1)';
-          const wowArrow = deltaPct === null ? '—' : deltaPct > 0 ? '↑ ' + deltaPct + '%' : deltaPct < 0 ? '↓ ' + Math.abs(deltaPct) + '%' : '→ 0%';
+        canais.forEach(function(c, idx) {
+          // Safe field extraction
+          var nome      = (c.canal || c.nome || 'Não definido');
+          var n         = c.n || 0;
+          var deltaPct  = (c.deltaPct !== undefined && c.deltaPct !== null) ? c.deltaPct : null;
+          var qualifPct = c.qualifPct || 0;
+          var portes    = Array.isArray(c.portes) ? c.portes : [];
+          var newPct    = (c.newLogo  && typeof c.newLogo.pct  === 'number') ? c.newLogo.pct  : 0;
+          var expPct    = (c.expansao && typeof c.expansao.pct === 'number') ? c.expansao.pct : 0;
+          var deals     = Array.isArray(c.deals) ? c.deals : [];
 
-          const qColor = qualifPct >= 60 ? '#429952' : qualifPct >= 40 ? '#C9A820' : '#D12D2D';
-          const qBg    = qualifPct >= 60 ? 'rgba(66,153,82,0.08)' : qualifPct >= 40 ? 'rgba(201,168,32,0.1)' : 'rgba(209,45,45,0.08)';
+          var color    = canalColor(nome);
+          var icon     = canalIcon(nome);
+          var chevId   = "canal-chev-" + idx;
+          var ddId     = "canal-dd-"   + idx;
 
-          // Porte bars — usa dados reais
-          const portes = c.portes || [];
-          const porteBarHtml = (() => {
-            if (!portes.length) return '<span style="font-size:10px;color:var(--gray-light);">—</span>';
-            const bars = portes.map(p => {
-              const pc = ['SMB','Mid','Small'].some(s => p.label.includes(s)) ? '#8AA5FF'
-                       : ['Enterprise','Ent'].some(s => p.label.includes(s)) ? '#6B88E0'
-                       : '#FFBA86';
-              return `<div style="width:${p.pct}%;background:${pc};"></div>`;
-            }).join('');
-            const labels = portes.map(p => `<span style="font-size:8.5px;color:var(--gray-light);">${p.label.replace('Não definido','—')} ${p.pct}%</span>`).join(' ');
-            return `<div style="padding-left:12px;">
-              <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">${bars}</div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">${labels}</div></div>`;
-          })();
+          // WOW badge
+          var wowColor = deltaPct === null ? '#C9A820' : deltaPct > 0 ? '#429952' : deltaPct < 0 ? '#D12D2D' : '#C9A820';
+          var wowBg    = deltaPct === null ? 'rgba(201,168,32,0.1)' : deltaPct > 0 ? 'rgba(66,153,82,0.08)' : deltaPct < 0 ? 'rgba(209,45,45,0.08)' : 'rgba(201,168,32,0.1)';
+          var wowTxt   = deltaPct === null ? '—' : deltaPct > 0 ? ('↑ ' + deltaPct + '%') : deltaPct < 0 ? ('↓ ' + Math.abs(deltaPct) + '%') : '→ 0%';
 
-          // New Logo vs Expansão bars — dados reais
-          const newPct = (c.newLogo || {}).pct || 0;
-          const expPct = (c.expansao || {}).pct || 0;
-          const splitBarHtml = (() => {
-            if (!newPct && !expPct) return '<span style="font-size:10px;color:var(--gray-light);padding-left:12px;">—</span>';
-            return `<div style="padding-left:12px;">
-              <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
-                <div style="width:${newPct}%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div>
-                <div style="width:${expPct}%;background:#FFBA86;border-radius:0 3px 3px 0;"></div>
-              </div>
-              <div style="display:flex;gap:8px;">
-                <span style="font-size:8.5px;color:#6B88E0;font-weight:600;">New ${newPct}%</span>
-                <span style="font-size:8.5px;color:var(--salmon-dark);font-weight:600;">Exp ${expPct}%</span>
-              </div></div>`;
-          })();
+          // Qualif badge
+          var qColor = qualifPct >= 60 ? '#429952' : qualifPct >= 40 ? '#C9A820' : '#D12D2D';
+          var qBg    = qualifPct >= 60 ? 'rgba(66,153,82,0.08)' : qualifPct >= 40 ? 'rgba(201,168,32,0.1)' : 'rgba(209,45,45,0.08)';
 
-          const container = document.createElement("div");
-          container.style.cssText = "margin-bottom:2px;";
+          // Porte bar
+          var porteBars = '', porteLabels = '';
+          for (var pi = 0; pi < portes.length; pi++) {
+            var p = portes[pi];
+            var lbl = (p && typeof p.label === 'string') ? p.label : '—';
+            var pct = (p && typeof p.pct === 'number') ? p.pct : 0;
+            var pc = (lbl.indexOf('SMB') >= 0 || lbl.indexOf('Mid') >= 0 || lbl.indexOf('Small') >= 0) ? '#8AA5FF'
+                   : (lbl.indexOf('Enterprise') >= 0 || lbl.indexOf('Ent') >= 0) ? '#6B88E0' : '#FFBA86';
+            porteBars   += '<div style="width:' + pct + '%;background:' + pc + ';"></div>';
+            porteLabels += '<span style="font-size:8.5px;color:var(--gray-light);">' + lbl.replace('Não definido','—') + ' ' + pct + '%</span> ';
+          }
+          var porteHTML = portes.length
+            ? '<div style="padding-left:12px;"><div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">' + porteBars + '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">' + porteLabels + '</div></div>'
+            : '<span style="font-size:10px;color:var(--gray-light);">—</span>';
 
-          const rowId = "canal-row-" + idx;
-          const ddId  = "canal-dd-"  + idx;
-          const chevId = "canal-chev-" + idx;
+          // Split bar
+          var splitHTML = (newPct || expPct)
+            ? '<div style="padding-left:12px;"><div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;"><div style="width:' + newPct + '%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div><div style="width:' + expPct + '%;background:#FFBA86;border-radius:0 3px 3px 0;"></div></div><div style="display:flex;gap:8px;"><span style="font-size:8.5px;color:#6B88E0;font-weight:600;">New ' + newPct + '%</span><span style="font-size:8.5px;color:var(--salmon-dark);font-weight:600;">Exp ' + expPct + '%</span></div></div>'
+            : '<span style="font-size:10px;color:var(--gray-light);padding-left:12px;">—</span>';
 
-          const row = document.createElement("div");
-          row.className = "origem-row";
-          row.id = rowId;
-          row.style.cssText = "display:grid;grid-template-columns:155px 36px 62px 95px 170px 155px;gap:0;padding:9px 4px;align-items:center;";
-          row.innerHTML = `
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:center;color:${color};flex-shrink:0;">${canalIcon(nome)}</div>
-              <span style="font-size:12px;font-weight:500;color:var(--dark);">${nome}</span>
-              <svg id="${chevId}" width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left:auto;opacity:0.35;transition:transform 0.18s;flex-shrink:0;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
-            </div>
-            <div style="text-align:right;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${n}</div>
-            <div style="text-align:right;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${wowBg};color:${wowColor};font-family:'Inter',sans-serif;">${wowArrow}</span></div>
-            <div style="text-align:right;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${qBg};color:${qColor};font-family:'Inter',sans-serif;">${qualifPct}%</span></div>
-            ${porteBarHtml}
-            ${splitBarHtml}`;
+          // Build row
+          var container = document.createElement('div');
+          container.style.marginBottom = '2px';
 
-          // Drill-down
-          const dd = document.createElement("div");
-          dd.className = "origem-dropdown";
+          var row = document.createElement('div');
+          row.className = 'origem-row';
+          row.style.cssText = 'display:grid;grid-template-columns:155px 36px 62px 95px 170px 155px;gap:0;padding:9px 4px;align-items:center;';
+          row.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+              '<div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:center;color:' + color + ';flex-shrink:0;">' + icon + '</div>' +
+              '<span style="font-size:12px;font-weight:500;color:var(--dark);">' + nome + '</span>' +
+              '<svg id="' + chevId + '" width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left:auto;opacity:0.35;transition:transform 0.18s;flex-shrink:0;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+            '</div>' +
+            '<div style="text-align:right;font-size:15px;font-weight:700;font-family:Inter,sans-serif;color:var(--dark);">' + n + '</div>' +
+            '<div style="text-align:right;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:' + wowBg + ';color:' + wowColor + ';font-family:Inter,sans-serif;">' + wowTxt + '</span></div>' +
+            '<div style="text-align:right;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:' + qBg + ';color:' + qColor + ';font-family:Inter,sans-serif;">' + qualifPct + '%</span></div>' +
+            porteHTML +
+            splitHTML;
+
+          // Build drill-down
+          var dd = document.createElement('div');
+          dd.className = 'origem-dropdown';
           dd.id = ddId;
 
-          const deals = c.deals || [];
-          const dealRowsHtml = deals.map(d => {
-            const diasClass = d.diasUltInt <= 2 ? "deal-dias-ok" : d.diasUltInt <= 7 ? "deal-dias-warn" : "deal-dias-crit";
-            const linkHtml = d.hubspotUrl
-              ? `<a href="${d.hubspotUrl}" target="_blank" rel="noopener" style="font-size:10px;color:var(--blue-dark);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>HubSpot</a>`
-              : `<span style="font-size:10px;color:var(--gray-light);">—</span>`;
-            return `<tr>
-              <td style="font-weight:500;">${d.nome}</td>
-              <td style="color:var(--gray-light);">${d.entrada}</td>
-              <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(138,165,255,0.12);color:var(--blue-dark);font-weight:600;">${d.pipeline}</span></td>
-              <td style="color:var(--gray-light);">${d.etapa}</td>
-              <td>${d.responsavel}</td>
-              <td>${d.closer}</td>
-              <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${d.porte}</span></td>
-              <td class="${diasClass}">${d.ultimaInteracao}</td>
-              <td>${linkHtml}</td>
-            </tr>`;
-          }).join("");
+          var dealRows = '';
+          for (var di = 0; di < deals.length; di++) {
+            var d = deals[di];
+            var diasClass = (d.diasUltInt <= 2) ? 'deal-dias-ok' : (d.diasUltInt <= 7) ? 'deal-dias-warn' : 'deal-dias-crit';
+            var linkHtml = d.hubspotUrl
+              ? '<a href="' + d.hubspotUrl + '" target="_blank" rel="noopener" style="font-size:10px;color:var(--blue-dark);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>HubSpot</a>'
+              : '<span style="font-size:10px;color:var(--gray-light);">—</span>';
+            dealRows +=
+              '<tr>' +
+              '<td style="font-weight:500;">' + (d.nome || '—') + '</td>' +
+              '<td style="color:var(--gray-light);">' + (d.entrada || '—') + '</td>' +
+              '<td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(138,165,255,0.12);color:var(--blue-dark);font-weight:600;">' + (d.pipeline || '—') + '</span></td>' +
+              '<td style="color:var(--gray-light);">' + (d.etapa || '—') + '</td>' +
+              '<td>' + (d.responsavel || '—') + '</td>' +
+              '<td>' + (d.closer || '—') + '</td>' +
+              '<td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">' + (d.porte || '—') + '</span></td>' +
+              '<td class="' + diasClass + '">' + (d.ultimaInteracao || '—') + '</td>' +
+              '<td>' + linkHtml + '</td>' +
+              '</tr>';
+          }
 
           dd.innerHTML = deals.length
-            ? `<table class="deal-table" style="margin-top:8px;min-width:760px;">
-                <thead><tr>
-                  <th>Negociação</th><th>Entrada</th><th>Pipeline</th><th>Etapa</th>
-                  <th>Proprietário</th><th>Closer</th><th>Porte</th><th>Últ. interação</th><th></th>
-                </tr></thead>
-                <tbody>${dealRowsHtml}</tbody>
-              </table>`
-            : `<p style="font-size:12px;color:var(--gray-light);padding:12px 4px;">Nenhum deal neste canal no período.</p>`;
+            ? '<table class="deal-table" style="margin-top:8px;min-width:760px;"><thead><tr><th>Negociação</th><th>Entrada</th><th>Pipeline</th><th>Etapa</th><th>Proprietário</th><th>Closer</th><th>Porte</th><th>Últ. interação</th><th></th></tr></thead><tbody>' + dealRows + '</tbody></table>'
+            : '<p style="font-size:12px;color:var(--gray-light);padding:12px 4px;">Nenhum deal neste canal no período.</p>';
 
-          row.addEventListener("click", () => {
-            const isOpen = dd.classList.contains("open");
-            document.querySelectorAll(".origem-dropdown.open").forEach(el => el.classList.remove("open"));
-            document.querySelectorAll(".origem-row.open").forEach(el => el.classList.remove("open"));
-            document.querySelectorAll("[id^='canal-chev-']").forEach(el => el.style.transform = "");
-            if (!isOpen) {
-              dd.classList.add("open");
-              row.classList.add("open");
-              const chev = document.getElementById(chevId);
-              if (chev) chev.style.transform = "rotate(180deg)";
-            }
-          });
+          // Toggle click
+          (function(rowEl, ddEl, cId) {
+            rowEl.addEventListener('click', function() {
+              var isOpen = ddEl.classList.contains('open');
+              document.querySelectorAll('.origem-dropdown.open').forEach(function(el){ el.classList.remove('open'); });
+              document.querySelectorAll('.origem-row.open').forEach(function(el){ el.classList.remove('open'); });
+              document.querySelectorAll('[id^="canal-chev-"]').forEach(function(el){ el.style.transform = ''; });
+              if (!isOpen) {
+                ddEl.classList.add('open');
+                rowEl.classList.add('open');
+                var chev = document.getElementById(cId);
+                if (chev) chev.style.transform = 'rotate(180deg)';
+              }
+            });
+          })(row, dd, chevId);
 
           container.appendChild(row);
           container.appendChild(dd);
           wrap.appendChild(container);
-          } catch(e) { console.error('[TOF] canal error:', (c && c.canal) || idx, e); }
         });
       };
 
