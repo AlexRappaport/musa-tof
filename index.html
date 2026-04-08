@@ -705,6 +705,8 @@
   .animate-in:nth-child(6) { animation-delay: 0.30s; }
 
   /* ── Period filter (Bloco 1) ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
   .period-filter { position: relative; }
   .period-btn {
     height: 30px; padding: 0 12px;
@@ -976,6 +978,23 @@
 
     <div class="page" id="page-visao-geral" style="display:block;opacity:1;transform:none;">
 
+    <!-- Loading overlay -->
+    <div id="vg-loading-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,245,245,0.75);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(2px);">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px 32px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        <div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--salmon);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px;"></div>
+        <div style="font-size:12px;color:var(--gray-light);">Carregando dados do HubSpot...</div>
+      </div>
+    </div>
+
+    <!-- Last refresh + live badge -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:rgba(66,153,82,0.1);color:var(--green);">
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;"></span>
+        Live · HubSpot
+      </span>
+      <span id="vg-last-refresh" style="font-size:10px;color:var(--text-dim);"></span>
+    </div>
+
     <!-- ══════════════════════════════════════════
          BLOCO 1 — VISÃO GERAL
     ══════════════════════════════════════════ -->
@@ -1051,7 +1070,7 @@
         <!-- Total -->
         <div class="card" style="background:var(--dark);border-color:var(--dark);">
           <div class="kpi-label" style="color:rgba(255,255,255,0.4);">Total de Negócios</div>
-          <div class="kpi-value large" style="color:#fff;">93</div>
+          <div class="kpi-value large" id="vg-count-total" style="color:#fff;">93</div>
           <div class="kpi-meta">
             <span class="delta up" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">↑ 11% <span class="compare-suffix"></span></span>
           </div>
@@ -1061,46 +1080,46 @@
         <!-- Pré Vendas/MKT -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--blue-dark);">Pré Vendas / MKT</div>
-          <div class="kpi-value medium" id="vg-pipe-pre">38</div>
-          <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">41% do total</span></div>
+          <div class="kpi-value medium" id="vg-count-pre">38</div>
+          <div class="kpi-meta" style="margin-top:2px;"><span id="vg-pct-pre" style="font-size:10px;color:var(--gray-light);">41% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 8% <span class="compare-suffix"></span></span></div>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:41%;background:var(--blue);"></div></div>
+          <div class="kpi-bar"><div id="vg-bar-pre" class="kpi-bar-fill" style="width:41%;background:var(--blue);"></div></div>
         </div>
 
         <!-- SMB 3.0 -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--salmon-dark);">SMB 3.0</div>
-          <div class="kpi-value medium">22</div>
-          <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">24% do total</span></div>
+          <div class="kpi-value medium" id="vg-count-smb">22</div>
+          <div class="kpi-meta" style="margin-top:2px;"><span id="vg-pct-smb" style="font-size:10px;color:var(--gray-light);">24% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 14% <span class="compare-suffix"></span></span></div>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:24%;background:var(--salmon);"></div></div>
+          <div class="kpi-bar"><div id="vg-bar-smb" class="kpi-bar-fill" style="width:24%;background:var(--salmon);"></div></div>
         </div>
 
         <!-- Enterprise 3.0 -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:#6B88E0;">Enterprise 3.0</div>
-          <div class="kpi-value medium">12</div>
-          <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">13% do total</span></div>
+          <div class="kpi-value medium" id="vg-count-enterprise">12</div>
+          <div class="kpi-meta" style="margin-top:2px;"><span id="vg-pct-ent" style="font-size:10px;color:var(--gray-light);">13% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta up" style="font-size:10px;">↑ 6% <span class="compare-suffix"></span></span></div>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:13%;background:#6B88E0;"></div></div>
+          <div class="kpi-bar"><div id="vg-bar-ent" class="kpi-bar-fill" style="width:13%;background:#6B88E0;"></div></div>
         </div>
 
         <!-- Expansão -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:var(--green);">Expansão</div>
-          <div class="kpi-value medium">14</div>
-          <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">15% do total</span></div>
+          <div class="kpi-value medium" id="vg-count-expansao">14</div>
+          <div class="kpi-meta" style="margin-top:2px;"><span id="vg-pct-exp" style="font-size:10px;color:var(--gray-light);">15% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta flat" style="font-size:10px;">→ 2% <span class="compare-suffix"></span></span></div>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:15%;background:var(--green);"></div></div>
+          <div class="kpi-bar"><div id="vg-bar-exp" class="kpi-bar-fill" style="width:15%;background:var(--green);"></div></div>
         </div>
 
         <!-- RCC -->
         <div class="card animate-in">
           <div class="kpi-label" style="color:#7C68CC;">RCC</div>
-          <div class="kpi-value medium">7</div>
-          <div class="kpi-meta" style="margin-top:2px;"><span style="font-size:10px;color:var(--gray-light);">7% do total</span></div>
+          <div class="kpi-value medium" id="vg-count-rcc">7</div>
+          <div class="kpi-meta" style="margin-top:2px;"><span id="vg-pct-rcc" style="font-size:10px;color:var(--gray-light);">7% do total</span></div>
           <div style="margin-top:6px;margin-bottom:8px;"><span class="delta down" style="font-size:10px;">↓ 5% <span class="compare-suffix"></span></span></div>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:7%;background:#7C68CC;"></div></div>
+          <div class="kpi-bar"><div id="vg-bar-rcc" class="kpi-bar-fill" style="width:7%;background:#7C68CC;"></div></div>
         </div>
 
       </div>
@@ -1634,7 +1653,7 @@
             <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="var(--blue)" stroke-width="1.5"/></svg>
             Total de Negócios
           </div>
-          <div class="kpi-value large">247</div>
+          <div class="kpi-value large" id="vg-pv-total">247</div>
           <div class="kpi-meta">
             <span class="delta up">↑ 8% vs mês ant.</span>
             <span>negócios ativos</span>
@@ -1647,7 +1666,7 @@
             <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Qualificados
           </div>
-          <div class="kpi-value" style="color:var(--green);">89</div>
+          <div class="kpi-value" id="vg-pv-qualif" style="color:var(--green);">89</div>
           <div class="kpi-meta">
             <span class="delta up" style="background:var(--green-light);color:#2A7A3B;">36% do total</span>
             <span>aprovados no scorecard</span>
@@ -4067,11 +4086,26 @@
             noShow: 11,
             taxaConf: 25, taxaPresConf: 52, taxaPresConv: 13,
             interacao: 9, proposta: 5, aceite: 3,
+            presentes: [
+              { empresa:'Plano & Plano',       evento:'sp',  perfil:'Cliente',       seg:'Construção',   pipeline:'Expansão',       etapa:'Proposta Aceita',    status:'evoluindo', diasEvento:51, resp:'Anderson F.' },
+              { empresa:'Teixeira Duarte',      evento:'sp',  perfil:'Cliente',       seg:'Construção',   pipeline:'Expansão',       etapa:'Reunião de Diag.',   status:'evoluindo', diasEvento:51, resp:'Anderson F.' },
+              { empresa:'Urbia',                evento:'sp',  perfil:'Cliente',       seg:'Lazer',        pipeline:'Expansão',       etapa:'Proposta Enviada',   status:'evoluindo', diasEvento:51, resp:'Martin J.'   },
+              { empresa:'Iguatemi',             evento:'sp',  perfil:'Cliente',       seg:'Lazer',        pipeline:'Enterprise 3.0', etapa:'Contato Inicial',   status:'parada',    diasEvento:51, resp:'Gabriel B.'  },
+              { empresa:'Viveo',                evento:'sp',  perfil:'Lista Quente',  seg:'Logística',    pipeline:'Pré Vendas/MKT', etapa:'Aquecimento',       status:'parada',    diasEvento:51, resp:'Denis R.'    },
+              { empresa:'Shopee',               evento:'sp',  perfil:'Em Negociação', seg:'Logística',    pipeline:'Enterprise 3.0', etapa:'Reunião de Diag.',  status:'evoluindo', diasEvento:51, resp:'Anderson F.' },
+              { empresa:'dr.consulta',          evento:'sp',  perfil:'Em Negociação', seg:'Saúde',        pipeline:'Enterprise 3.0', etapa:'Proposta Enviada',  status:'evoluindo', diasEvento:51, resp:'Gabriel B.'  },
+              { empresa:'Fort Atacadista',      evento:'bsb', perfil:'Cliente',       seg:'Atacarejo',    pipeline:'Expansão',       etapa:'Reunião de Diag.',  status:'evoluindo', diasEvento:33, resp:'Vitor K.'    },
+              { empresa:'Gran Mercure / Accor', evento:'bsb', perfil:'Cliente',       seg:'Hotel',        pipeline:'Expansão',       etapa:'Proposta Enviada',  status:'evoluindo', diasEvento:33, resp:'Anderson F.' },
+              { empresa:'Dona',                 evento:'bsb', perfil:'Cliente',       seg:'Supermercado', pipeline:'Pré Vendas/MKT', etapa:'Aquecimento',       status:'sem_inter', diasEvento:33, resp:'Vitor K.'    },
+              { empresa:'UniCEUB',              evento:'bsb', perfil:'Em Negociação', seg:'Ensino',       pipeline:'Enterprise 3.0', etapa:'Reunião de Diag.',  status:'evoluindo', diasEvento:33, resp:'Anderson F.' },
+              { empresa:'Nubank',               evento:'bsb', perfil:'Em Negociação', seg:'Finanças',     pipeline:'Pré Vendas/MKT', etapa:'Backlog',           status:'sem_inter', diasEvento:33, resp:'Mauricio C.' },
+            ],
             perfil: [
-              { tipo:'Cliente',         conv:28, pres:11, pct:39, color:'var(--green)'      },
-              { tipo:'Em Negociação',   conv:29, pres:2,  pct:7,  color:'var(--blue-dark)'  },
-              { tipo:'Lista Quente',    conv:10, pres:1,  pct:10, color:'var(--yellow)'     },
-              { tipo:'Pausado/Perdido', conv:21, pres:1,  pct:5,  color:'var(--red)'        },
+              { tipo:'Cliente',         conv:28, conf:11, pres:8,  pct:29, color:'var(--green)'      },
+              { tipo:'Em Negociação',   conv:29, conf:7,  pres:2,  pct:7,  color:'var(--blue-dark)'  },
+              { tipo:'Lista Quente',    conv:10, conf:2,  pres:1,  pct:10, color:'var(--yellow)'     },
+              { tipo:'Pausado/Perdido', conv:21, conf:2,  pres:1,  pct:5,  color:'var(--red)'        },
+              { tipo:'Lista Fria',      conv:3,  conf:1,  pres:0,  pct:0,  color:'var(--text-dim)'   },
             ],
           },
           sp: {
@@ -4079,12 +4113,13 @@
             convidados: 41, confirmados: 13, presentes: 7,
             noShow: 6,
             taxaConf: 32, taxaPresConf: 54, taxaPresConv: 17,
-            interacao: 5, proposta: 3, aceite: 2,
+            interacao: 5, proposta: 3, aceite: 2, _filtro: 'sp',
             perfil: [
-              { tipo:'Cliente',         conv:15, pres:8,  pct:53, color:'var(--green)'      },
-              { tipo:'Em Negociação',   conv:14, pres:1,  pct:7,  color:'var(--blue-dark)'  },
-              { tipo:'Lista Quente',    conv:9,  pres:1,  pct:11, color:'var(--yellow)'     },
-              { tipo:'Pausado/Perdido', conv:2,  pres:0,  pct:0,  color:'var(--red)'        },
+              { tipo:'Cliente',         conv:15, conf:8,  pres:5,  pct:33, color:'var(--green)'      },
+              { tipo:'Em Negociação',   conv:14, conf:3,  pres:1,  pct:7,  color:'var(--blue-dark)'  },
+              { tipo:'Lista Quente',    conv:9,  conf:2,  pres:1,  pct:11, color:'var(--yellow)'     },
+              { tipo:'Pausado/Perdido', conv:2,  conf:0,  pres:0,  pct:0,  color:'var(--red)'        },
+              { tipo:'Lista Fria',      conv:1,  conf:0,  pres:0,  pct:0,  color:'var(--text-dim)'   },
             ],
           },
           bsb: {
@@ -4092,16 +4127,145 @@
             convidados: 50, confirmados: 10, presentes: 5,
             noShow: 5,
             taxaConf: 20, taxaPresConf: 50, taxaPresConv: 10,
-            interacao: 4, proposta: 2, aceite: 1,
+            interacao: 4, proposta: 2, aceite: 1, _filtro: 'bsb',
             perfil: [
-              { tipo:'Cliente',         conv:13, pres:3,  pct:23, color:'var(--green)'      },
-              { tipo:'Em Negociação',   conv:15, pres:1,  pct:7,  color:'var(--blue-dark)'  },
-              { tipo:'Lista Quente',    conv:1,  pres:0,  pct:0,  color:'var(--yellow)'     },
-              { tipo:'Pausado/Perdido', conv:19, pres:1,  pct:5,  color:'var(--red)'        },
+              { tipo:'Cliente',         conv:13, conf:3,  pres:3,  pct:23, color:'var(--green)'      },
+              { tipo:'Em Negociação',   conv:15, conf:4,  pres:1,  pct:7,  color:'var(--blue-dark)'  },
+              { tipo:'Lista Quente',    conv:1,  conf:0,  pres:0,  pct:0,  color:'var(--yellow)'     },
+              { tipo:'Pausado/Perdido', conv:19, conf:2,  pres:1,  pct:5,  color:'var(--red)'        },
+              { tipo:'Lista Fria',      conv:2,  conf:1,  pres:0,  pct:0,  color:'var(--text-dim)'   },
             ],
           },
           next: null,
         };
+
+        function renderPerfilTable(perfil) {
+          var tbody = document.getElementById('ev-perfil-tbody');
+          if (!tbody) return;
+          tbody.innerHTML = '';
+
+          // Consolidated row
+          var totConv  = perfil.reduce(function(s,p){return s+p.conv;},0);
+          var totConf  = perfil.reduce(function(s,p){return s+p.conf;},0);
+          var totPres  = perfil.reduce(function(s,p){return s+p.pres;},0);
+          var pctConf  = totConv > 0 ? Math.round(totConf/totConv*100) : 0;
+          var pctPres  = totConv > 0 ? Math.round(totPres/totConv*100) : 0;
+          var ctr = document.createElement('tr');
+          ctr.style.cssText = 'border-bottom:2px solid var(--border);background:rgba(249,237,228,0.25);';
+          var ctd1 = document.createElement('td'); ctd1.style.cssText='padding:10px 8px 10px 20px;font-size:11px;font-weight:700;color:var(--dark);'; ctd1.textContent = 'Total';
+          var ctd2 = document.createElement('td'); ctd2.style.cssText='padding:10px 8px;font-size:13px;font-weight:700;color:var(--dark);'; ctd2.textContent = totConv;
+          var ctd3 = document.createElement('td'); ctd3.style.cssText='padding:10px 8px;font-size:13px;font-weight:700;color:var(--dark);'; ctd3.textContent = totConf;
+          var ctd4 = document.createElement('td'); ctd4.style.cssText='padding:10px 8px;font-size:11px;font-weight:600;color:var(--gray-light);'; ctd4.textContent = pctConf+'%';
+          var ctd5 = document.createElement('td'); ctd5.style.cssText='padding:10px 8px;font-size:13px;font-weight:700;color:var(--dark);'; ctd5.textContent = totPres;
+          var ctd6 = document.createElement('td'); ctd6.style.cssText='padding:10px 8px;font-size:11px;font-weight:700;color:var(--dark);'; ctd6.textContent = pctPres+'%';
+          var ctd7 = document.createElement('td'); ctd7.style.cssText='padding:10px 20px 10px 8px;';
+          ctd7.innerHTML = '<div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="width:'+Math.min(pctPres*2,100)+'%;height:100%;background:var(--dark);border-radius:10px;opacity:0.3;"></div></div>';
+          [ctd1,ctd2,ctd3,ctd4,ctd5,ctd6,ctd7].forEach(function(td){ctr.appendChild(td);});
+          tbody.appendChild(ctr);
+
+          perfil.forEach(function(p) {
+            var pctConf = p.conv > 0 ? Math.round(p.conf/p.conv*100) : 0;
+            var tr = document.createElement('tr');
+            tr.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);';
+            var td1 = document.createElement('td');
+            td1.style.cssText = 'padding:11px 8px 11px 20px;';
+            td1.innerHTML = '<div style="display:flex;align-items:center;gap:7px;"><span style="width:8px;height:8px;border-radius:2px;background:'+p.color+';flex-shrink:0;display:inline-block;"></span><span style="font-size:12px;font-weight:500;color:var(--dark);">'+p.tipo+'</span></div>';
+            var td2 = document.createElement('td');
+            td2.style.cssText = 'padding:11px 8px;font-size:13px;font-weight:600;color:var(--dark);';
+            td2.textContent = p.conv;
+            var td3 = document.createElement('td');
+            td3.style.cssText = 'padding:11px 8px;font-size:13px;font-weight:600;color:var(--dark);';
+            td3.textContent = p.conf;
+            var td4 = document.createElement('td');
+            td4.style.cssText = 'padding:11px 8px;';
+            td4.innerHTML = '<span style="font-size:11px;font-weight:600;color:var(--gray-light);">'+pctConf+'%</span>';
+            var td5 = document.createElement('td');
+            td5.style.cssText = 'padding:11px 8px;font-size:13px;font-weight:700;color:'+p.color+';';
+            td5.textContent = p.pres;
+            var td6 = document.createElement('td');
+            td6.style.cssText = 'padding:11px 8px;';
+            td6.innerHTML = '<span style="font-size:11px;font-weight:700;color:'+p.color+';">'+p.pct+'%</span>';
+            var td7 = document.createElement('td');
+            td7.style.cssText = 'padding:11px 20px 11px 8px;';
+            td7.innerHTML = '<div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="width:'+Math.min(p.pct*2,100)+'%;height:100%;background:'+p.color+';border-radius:10px;"></div></div>';
+            tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+            tr.appendChild(td4); tr.appendChild(td5); tr.appendChild(td6);
+            tr.appendChild(td7);
+            tbody.appendChild(tr);
+          });
+        }
+
+        // Status labels
+        var STATUS_CONFIG = {
+          'evoluindo': { label:'✅ Evoluindo',     color:'var(--green)',       bg:'rgba(66,153,82,0.1)'    },
+          'parada':    { label:'⚠️ Parada',        color:'var(--yellow)',      bg:'rgba(201,168,32,0.1)'   },
+          'sem_inter': { label:'❌ Sem interação', color:'var(--red)',         bg:'rgba(209,45,45,0.08)'   },
+        };
+        // Sort order: sem_inter first, parada, evoluindo
+        var STATUS_ORDER = { 'sem_inter':0, 'parada':1, 'evoluindo':2 };
+
+        function renderPresentesTable(key) {
+          var tbody = document.getElementById('ev-presentes-tbody');
+          if (!tbody) return;
+          tbody.innerHTML = '';
+          var allData = (EVENTOS['todos'] && EVENTOS['todos'].presentes) ? EVENTOS['todos'].presentes : [];
+          var list = (key === 'todos') ? allData : allData.filter(function(p){ return p.evento === key; });
+          list = list.slice().sort(function(a,b){ return STATUS_ORDER[a.status] - STATUS_ORDER[b.status]; });
+          if (!list.length) {
+            var empty = document.createElement('tr');
+            empty.innerHTML = '<td colspan="9" style="padding:28px;text-align:center;font-size:12px;color:var(--gray-light);">Nenhum dado disponível.</td>';
+            tbody.appendChild(empty); return;
+          }
+          list.forEach(function(p) {
+            var sc = STATUS_CONFIG[p.status] || STATUS_CONFIG['sem_inter'];
+            var pc = (p.perfil === 'Cliente') ? 'var(--green)' :
+                     (p.perfil === 'Em Negociação') ? 'var(--blue-dark)' :
+                     (p.perfil === 'Lista Quente') ? 'var(--yellow)' : 'var(--red)';
+            var tr = document.createElement('tr');
+            tr.style.cssText = 'border-bottom:1px solid rgba(237,232,223,0.5);transition:background 0.12s;';
+            tr.onmouseenter = function(){ tr.style.background = 'rgba(249,237,228,0.25)'; };
+            tr.onmouseleave = function(){ tr.style.background = ''; };
+
+            function TD(html, extra) {
+              var td = document.createElement('td');
+              td.style.cssText = 'padding:10px 8px;vertical-align:middle;' + (extra || '');
+              td.innerHTML = html;
+              return td;
+            }
+
+            var hsLink = document.createElement('a');
+            hsLink.href = 'https://app.hubspot.com/contacts/9035464/deal/';
+            hsLink.target = '_blank';
+            hsLink.style.cssText = 'color:var(--blue-dark);opacity:0.4;flex-shrink:0;';
+            hsLink.onmouseenter = function(){ this.style.opacity = '1'; };
+            hsLink.onmouseleave = function(){ this.style.opacity = '0.4'; };
+            hsLink.innerHTML = '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+            var nameSpan = document.createElement('span');
+            nameSpan.style.cssText = 'font-size:12px;font-weight:500;color:var(--dark);';
+            nameSpan.textContent = p.empresa;
+
+            var nameDiv = document.createElement('div');
+            nameDiv.style.cssText = 'display:flex;align-items:center;gap:6px;';
+            nameDiv.appendChild(nameSpan);
+            nameDiv.appendChild(hsLink);
+
+            var td1 = document.createElement('td');
+            td1.style.cssText = 'padding:10px 8px 10px 20px;vertical-align:middle;';
+            td1.appendChild(nameDiv);
+
+            tr.appendChild(td1);
+            tr.appendChild(TD('<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:' + pc + '22;color:' + pc + ';white-space:nowrap;">' + p.perfil + '</span>'));
+            tr.appendChild(TD('<span style="font-size:11px;color:var(--gray-light);">' + p.seg + '</span>'));
+            tr.appendChild(TD('<span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--blue-dim);color:var(--blue-dark);font-weight:500;">' + p.pipeline + '</span>'));
+            tr.appendChild(TD('<span style="font-size:11px;color:var(--gray-light);">' + p.etapa + '</span>'));
+            tr.appendChild(TD('<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:8px;background:' + sc.bg + ';color:' + sc.color + ';white-space:nowrap;">' + sc.label + '</span>'));
+            tr.appendChild(TD('<span style="font-size:12px;font-weight:600;color:var(--gray-light);">' + p.diasEvento + 'd</span>'));
+            tr.appendChild(TD('<span style="font-size:11.5px;color:var(--dark);">' + p.resp + '</span>'));
+            tr.appendChild(TD('', 'padding-right:20px;'));
+            tbody.appendChild(tr);
+          });
+        }
 
         function renderBigNumbers(key) {
           const wrap = document.getElementById('ev-bignumbers');
@@ -4205,49 +4369,35 @@
 
             </div>
 
-            <!-- Funil visual -->
-            <div class="sub-header" style="margin-bottom:12px;">FUNIL DO EVENTO</div>
-            <div class="card no-hover" style="margin-bottom:28px;">
-              <div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:12px;">
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                  <div style="font-size:12px;font-weight:700;color:var(--dark);">${d.convidados}</div>
-                  <div style="width:100%;height:70px;background:var(--border);border-radius:6px 6px 0 0;"></div>
-                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">Convidados</div>
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                  <div style="font-size:12px;font-weight:700;color:var(--yellow);">${d.confirmados}</div>
-                  <div style="width:100%;height:${Math.max(Math.round(70*fConf/100),6)}px;background:var(--yellow);border-radius:6px 6px 0 0;margin-top:auto;"></div>
-                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">Confirmados<br>${d.taxaConf}%</div>
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                  <div style="font-size:12px;font-weight:700;color:var(--green);">${d.presentes}</div>
-                  <div style="width:100%;height:${Math.max(Math.round(70*fPres/100),4)}px;background:var(--green);border-radius:6px 6px 0 0;margin-top:auto;"></div>
-                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">Presentes<br>${d.taxaPresConv}%</div>
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                  <div style="font-size:12px;font-weight:700;color:var(--red);">${d.noShow}</div>
-                  <div style="width:100%;height:${Math.max(Math.round(70*Math.round(d.noShow/d.convidados*100)/100),4)}px;background:rgba(209,45,45,0.3);border-radius:6px 6px 0 0;margin-top:auto;"></div>
-                  <div style="font-size:9px;color:var(--gray-light);text-align:center;">No-show<br>${Math.round(d.noShow/d.convidados*100)}%</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Perfil dos presentes -->
-            <div class="sub-header" style="margin-bottom:12px;">PERFIL DOS PRESENTES</div>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;">
-              ${d.perfil.map(p => `
-                <div class="card no-hover">
-                  <div class="kpi-label" style="color:${p.color};margin-bottom:8px;">${p.tipo}</div>
-                  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
-                    <div style="font-size:28px;font-weight:700;font-family:'Inter',sans-serif;color:${p.color};letter-spacing:-0.03em;line-height:1;">${p.pres}</div>
-                    <div style="font-size:11px;color:var(--gray-light);">de ${p.conv} conv.</div>
-                  </div>
-                  <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden;">
-                    <div style="width:${p.pct}%;height:100%;background:${p.color};border-radius:10px;"></div>
-                  </div>
-                  <div style="font-size:10px;color:var(--gray-light);margin-top:5px;">${p.pct}% de presença</div>
-                </div>`).join('')}
-            </div>`;
+            <!-- Perfil comparativo -->
+            <div class="sub-header" style="margin-bottom:12px;">PERFIL · CONVIDADOS VS PRESENTES</div>
+            <div class="card no-hover" style="padding:0;overflow:hidden;margin-bottom:28px;">
+              <table style="width:100%;border-collapse:collapse;table-layout:fixed;" id="ev-perfil-table">
+                <colgroup>
+                  <col style="width:22%">
+                  <col style="width:13%">
+                  <col style="width:13%">
+                  <col style="width:10%">
+                  <col style="width:13%">
+                  <col style="width:10%">
+                  <col style="width:19%">
+                </colgroup>
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px 9px 20px;text-align:left;">Perfil</th>
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Convidados</th>
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Confirmaram</th>
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">% conf.</th>
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">Presentes</th>
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 8px;text-align:left;">% pres.</th>
+                    <th style="font-size:8.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);padding:9px 20px 9px 8px;text-align:left;">Barra</th>
+                  </tr>
+                </thead>
+                <tbody id="ev-perfil-tbody"></tbody>
+              </table>
+            </div>           </div>`;
+          if (d && d.perfil) renderPerfilTable(d.perfil);
+          renderPresentesTable(key);
         }
 
         window.selectEvento = function(key, el) {
@@ -4521,6 +4671,196 @@
   // Init with default
   updatePeriodLabels('Semana Atual');
 
+  // ── HubSpot live data ───────────────────────────────────────────────────
+  let vgLiveData = null; // cache da última resposta da API
+
+  const PIPELINE_KEY_MAP = {
+    'todos':      'todos',
+    'pre-vendas': 'pre_vendas',
+    'smb':        'smb',
+    'enterprise': 'enterprise',
+    'expansao':   'expansao',
+    'rcc':        'rcc',
+  };
+
+  const PERIOD_KEY_MAP = {
+    'Semana Atual':    'semana_atual',
+    'Semana Anterior': 'semana_anterior',
+    'Mês Atual':       'mes_atual',
+    'Trimestre':       'trimestre',
+    'Semestre':        'semestre',
+  };
+
+  let vgCurrentPeriod  = 'mes_atual';
+  let vgCurrentPipeline = 'todos';
+  let vgLoading = false;
+
+  function setVGLoading(on) {
+    vgLoading = on;
+    const overlay = document.getElementById('vg-loading-overlay');
+    if (overlay) overlay.style.display = on ? 'flex' : 'none';
+  }
+
+  async function fetchVGData() {
+    if (vgLoading) return;
+    setVGLoading(true);
+    try {
+      const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const d = await res.json();
+      vgLiveData = d;
+      applyVGData(d);
+    } catch (err) {
+      // API unavailable (local preview or Vercel not configured) — keep simulated data silently
+      console.warn('HubSpot API unavailable:', err.message, '— using simulated data');
+      const badge = document.getElementById('vg-last-refresh');
+      if (badge) badge.textContent = 'Dados simulados · API indisponível';
+    } finally {
+      setVGLoading(false);
+      // Always hide overlay regardless of outcome
+      const overlay = document.getElementById('vg-loading-overlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+  }
+
+  function applyVGData(d) {
+    // ── Novos Leads por Pipeline ──────────────────────────────────────────
+    const bp = d.byPipeline;
+    if (bp) {
+      safeText('vg-count-total',      bp.total);
+      safeText('vg-count-pre',        bp.pre_vendas);
+      safeText('vg-count-smb',        bp.smb);
+      safeText('vg-count-enterprise', bp.enterprise);
+      safeText('vg-count-expansao',   bp.expansao);
+      safeText('vg-count-rcc',        bp.rcc);
+      // Atualiza % e barras dos cards de pipeline
+      if (bp.total > 0) {
+        updatePipelineCard('vg-pct-pre',  'vg-bar-pre',  bp.pre_vendas,  bp.total);
+        updatePipelineCard('vg-pct-smb',  'vg-bar-smb',  bp.smb,         bp.total);
+        updatePipelineCard('vg-pct-ent',  'vg-bar-ent',  bp.enterprise,  bp.total);
+        updatePipelineCard('vg-pct-exp',  'vg-bar-exp',  bp.expansao,    bp.total);
+        updatePipelineCard('vg-pct-rcc',  'vg-bar-rcc',  bp.rcc,         bp.total);
+      }
+    }
+
+    // ── Pipeline Pré Vendas/MKT ───────────────────────────────────────────
+    const pv = d.preVendas;
+    if (pv) {
+      safeText('vg-pv-total',      pv.total);
+      safeText('vg-pv-qualif',     pv.qualificados);
+      safeText('vg-pv-ativados',   pv.ativados);
+      safeText('vg-pv-pct-qualif', Math.round(pv.qualificados / pv.total * 100) + '%');
+      safeText('vg-pv-pct-ativ',   Math.round(pv.ativados     / pv.total * 100) + '%');
+    }
+
+    // ── Entrada de Leads ──────────────────────────────────────────────────
+    const en = d.entrada;
+    if (en) {
+      safeText('vg-novos-leads', en.total);
+    }
+
+    // ── Origem dos Leads ──────────────────────────────────────────────────
+    const or = d.origem;
+    if (or) {
+      safeText('donutTotal', or.total || d.entrada?.total || 0);
+      // rebuild canal table rows
+      const tbody = document.getElementById('canalTableBody');
+      if (tbody && or.canais) {
+        tbody.innerHTML = '';
+        or.canais.forEach(function(c) {
+          const pct = d.entrada?.total > 0 ? Math.round(c.n / d.entrada.total * 100) : 0;
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td style="padding:8px 0;font-size:12px;color:var(--dark);">'+c.canal+'</td>'
+            + '<td style="padding:8px 0;font-size:13px;font-weight:600;color:var(--dark);text-align:right;">'+c.n+'</td>'
+            + '<td style="padding:8px 0;font-size:11px;color:var(--gray-light);text-align:right;">'+pct+'%</td>';
+          tbody.appendChild(tr);
+        });
+      }
+      // Mapeado vs Orgânico
+      safeText('vg-mapeados',  or.mapeados);
+      safeText('vg-organicos', or.organicos);
+      const tot = (or.mapeados || 0) + (or.organicos || 0);
+      safeBar('vg-bar-mapeados',  tot > 0 ? Math.round(or.mapeados / tot * 100) : 0);
+      safeBar('vg-bar-organicos', tot > 0 ? Math.round(or.organicos / tot * 100) : 0);
+    }
+
+    // ── Perfil ────────────────────────────────────────────────────────────
+    const pe = d.perfil;
+    if (pe && pe.segmentos) {
+      const segWrap = document.getElementById('segmentoRows');
+      if (segWrap) {
+        segWrap.innerHTML = '';
+        const maxPct = Math.max(...pe.segmentos.map(function(s){ return s.pct; }), 1);
+        const colors = ['#8AA5FF','#FFBA86','#52A862','#9C88E8','#E3C545'];
+        pe.segmentos.forEach(function(s, i) {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
+          row.innerHTML = '<span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">'+s.seg+'</span>'
+            + '<div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="width:'+(s.pct/maxPct*100)+'%;height:100%;background:'+colors[i % colors.length]+';border-radius:10px;"></div></div>'
+            + '<span style="font-size:11px;font-weight:700;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">'+s.n+'</span>'
+            + '<span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">'+s.pct+'%</span>';
+          segWrap.appendChild(row);
+        });
+      }
+    }
+
+    // ── Scorecard ─────────────────────────────────────────────────────────
+    const sc = d.scorecard;
+    if (sc) {
+      safeText('vg-cobertura-val',  sc.cobertura + '%');
+      safeBar('vg-cobertura-bar-el', sc.cobertura);
+      // Qualificados / A Validar / Recusar bars
+      const total = sc.total || 1;
+      safeText('vg-sc-qualif',   sc.qualificado);
+      safeText('vg-sc-validar',  sc.a_validar);
+      safeText('vg-sc-recusar',  sc.recusar);
+      safeBar('vg-sc-qualif-bar',  Math.round(sc.qualificado / total * 100));
+      safeBar('vg-sc-validar-bar', Math.round(sc.a_validar   / total * 100));
+      safeBar('vg-sc-recusar-bar', Math.round(sc.recusar     / total * 100));
+    }
+
+    // Update last refreshed timestamp
+    const ts = document.getElementById('vg-last-refresh');
+    if (ts) {
+      const now = new Date();
+      ts.textContent = 'Atualizado às ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    }
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────
+  function safeText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+  function safeBar(id, pct) {
+    const el = document.getElementById(id);
+    if (el) el.style.width = Math.min(pct, 100) + '%';
+  }
+  function updatePipelineCard(pctId, barId, n, total) {
+    const pct = Math.round(n / total * 100);
+    safeText(pctId, pct + '% do total');
+    safeBar(barId, pct);
+  }
+
+  // ── Hook into existing period + pipeline filters ───────────────────────
+  const _origSelectPeriod = window.selectPeriod;
+  window.selectPeriod = function(el, label) {
+    if (_origSelectPeriod) _origSelectPeriod(el, label);
+    vgCurrentPeriod = PERIOD_KEY_MAP[label] || 'mes_atual';
+    fetchVGData();
+  };
+
+  const _origFilterVG = window.filterVGPipeline;
+  window.filterVGPipeline = function(pipe, el) {
+    if (_origFilterVG) _origFilterVG(pipe, el);
+    vgCurrentPipeline = PIPELINE_KEY_MAP[pipe] || 'todos';
+    fetchVGData();
+  };
+
+  // ── Initial load ──────────────────────────────────────────────────────
+  fetchVGData();
+
   // ── VG Pipeline filter ───────────────────────────────────────────────────
   const VG_PIPELINE_DATA = {
     'todos': {
@@ -4647,56 +4987,51 @@
     const perfLbl = document.getElementById('vg-perf-label');
     if (perfLbl) perfLbl.textContent = d.perfLabel;
 
-    // Update Entrada de Leads
-    const novosEl = document.getElementById('vg-novos-leads');
-    if (novosEl) novosEl.textContent = d.novos;
-    // Also update Pré Vendas card in pipeline block when showing all
-    const prePipeEl = document.getElementById('vg-pipe-pre');
-    if (prePipeEl && pipe === 'todos') prePipeEl.textContent = '38';
-    else if (prePipeEl && pipe === 'pre-vendas') prePipeEl.textContent = '38';
-    const wowEl = document.getElementById('vg-wow-pct');
-    if (wowEl) { wowEl.textContent = d.wow; wowEl.style.color = d.wowColor; }
-    const subLbl = document.getElementById('periodSubLabel');
-    if (subLbl) subLbl.textContent = d.label + ' · ' + (subLbl.dataset.period || 'no período selecionado');
-
-    // Update donut total
-    const donutTotalEl = document.getElementById('donutTotal');
-    if (donutTotalEl) donutTotalEl.textContent = d.novos;
-
-    // Update top segments
-    const segWrap = document.getElementById('segmentoRows');
-    if (segWrap) {
-      segWrap.innerHTML = '';
-      const maxP = Math.max(...d.segmentos.map(s => s.pct));
-      d.segmentos.forEach(s => {
-        const row = document.createElement('div');
-        row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
-        row.innerHTML = `
-          <span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">${s.nome}</span>
-          <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
-            <div style="width:${(s.pct/maxP)*100}%;height:100%;background:${s.color};border-radius:10px;"></div>
-          </div>
-          <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">${s.n}</span>
-          <span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">${s.pct}%</span>`;
-        segWrap.appendChild(row);
-      });
-      // Update Outros footer
-      const totalSeg = d.segmentos.reduce((s,x) => s+x.n, 0);
-      const outros = d.novos - totalSeg;
-      const outrosPct = Math.round(outros / d.novos * 100);
-      const footer = segWrap.parentElement.querySelector('[data-outros]');
-      if (footer) footer.textContent = outros + ' leads · ' + outrosPct + '%';
+    // Só sobrescreve com dado estático se não houver dado live
+    if (!vgLiveData) {
+      // Update Entrada de Leads
+      const novosEl = document.getElementById('vg-novos-leads');
+      if (novosEl) novosEl.textContent = d.novos;
+      // Update donut total
+      const donutTotalEl = document.getElementById('donutTotal');
+      if (donutTotalEl) donutTotalEl.textContent = d.novos;
+      // Update top segments
+      const segWrap = document.getElementById('segmentoRows');
+      if (segWrap) {
+        segWrap.innerHTML = '';
+        const maxP = Math.max(...d.segmentos.map(s => s.pct));
+        d.segmentos.forEach(s => {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
+          row.innerHTML = `
+            <span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">${s.nome}</span>
+            <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+              <div style="width:${(s.pct/maxP)*100}%;height:100%;background:${s.color};border-radius:10px;"></div>
+            </div>
+            <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">${s.n}</span>
+            <span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">${s.pct}%</span>`;
+          segWrap.appendChild(row);
+        });
+        // Update Outros footer
+        const totalSeg = d.segmentos.reduce((s,x) => s+x.n, 0);
+        const outros = d.novos - totalSeg;
+        const outrosPct = Math.round(outros / d.novos * 100);
+        const footer = segWrap.parentElement.querySelector('[data-outros]');
+        if (footer) footer.textContent = outros + ' leads · ' + outrosPct + '%';
+      }
+      // Update total card label in segmentos
+      const segTotal = document.getElementById('seg-total-label');
+      if (segTotal) segTotal.textContent = d.novos;
     }
 
-    // Update total card label in segmentos
-    const segTotal = document.getElementById('seg-total-label');
-    if (segTotal) segTotal.textContent = d.novos;
-
     // Update Performance bars
-    const cobEl = document.getElementById('vg-cobertura-val');
-    const cobBar = document.getElementById('vg-cobertura-bar');
-    if (cobEl) cobEl.textContent = d.cobertura + '%';
-    if (cobBar) cobBar.style.width = d.cobertura + '%';
+    // Só sobrescreve cobertura com dado estático se não houver dado live
+    if (!vgLiveData) {
+      const cobEl = document.getElementById('vg-cobertura-val');
+      const cobBar = document.getElementById('vg-cobertura-bar-el');
+      if (cobEl) cobEl.textContent = d.cobertura + '%';
+      if (cobBar) cobBar.style.width = d.cobertura + '%';
+    }
 
     const tempoEl = document.getElementById('vg-tempo-val');
     if (tempoEl) tempoEl.textContent = d.tempo;
