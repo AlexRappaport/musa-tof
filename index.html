@@ -4975,6 +4975,10 @@
     el.style.borderColor = 'var(--salmon)';
     el.style.color       = 'var(--salmon-dark)';
     el.style.fontWeight  = '600';
+    // Feedback imediato: zera os valores enquanto carrega
+    ['fk-total','fk-mkt-n','fk-mkt-pct','fk-map-n','fk-map-pct','fk-reu-n','fk-reu-pct','fk-prop-n','fk-prop-pct'].forEach(function(id) {
+      const el2 = document.getElementById(id); if (el2) el2.textContent = '…';
+    });
     fetchKpiData();
   };
 
@@ -5107,6 +5111,10 @@
       const perfLbl = document.getElementById('vg-perf-label');
       if (perfLbl) perfLbl.textContent = d.perfLabel;
     }
+
+    // Feedback imediato: zera origem enquanto carrega
+    const origemWrap = document.getElementById('origemRows');
+    if (origemWrap) origemWrap.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--gray-light);">Carregando…</div>';
 
     // Fetch dados reais da API para o pipeline selecionado
     vgCurrentPipeline = PIPELINE_KEY_MAP[pipe] || 'todos';
