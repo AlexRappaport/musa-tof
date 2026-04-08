@@ -12,6 +12,21 @@ const PIPELINE_NAMES = {
 const BACKLOG_STAGE  = 'backlog';
 const ATIVADO_STAGES = ['contato_inicial','agendado','reuniao_diagnostico','concluido'];
 
+// ── Regra ABM Qualificado (fonte única de verdade) ───────────────────────────
+// Deal com detalhamento_de_canal = 'OUT - Lista ABM' SÓ conta se:
+//   a) está nos pipelines SMB / Enterprise / Expansão / RCC (qualquer etapa)
+//   b) OU está no Pré Vendas em etapa ≥ Prospecção Direta
+const ABM_PROSP_STAGES = ['1292533286','1295430921','1295463995'];
+const ABM_OUTROS_PIPES = ['821308952','795451392','874756940','885602211']; // smb, enterprise, expansao, rcc
+function isAbm(d) {
+  if ((d.properties.detalhamento_de_canal || '') !== 'OUT - Lista ABM') return false;
+  const pip   = d.properties.pipeline  || '';
+  const stage = d.properties.dealstage || '';
+  if (ABM_OUTROS_PIPES.includes(pip)) return true;
+  if (pip === '863330820') return ABM_PROSP_STAGES.includes(stage); // pre_vendas
+  return false;
+}
+
 const DEAL_PROPS = [
   'dealname','pipeline','dealstage','createdate','hs_lastmodifieddate',
   'hubspot_owner_id','hub2_deal__canal_de_aquisicao','detalhamento_de_canal',
@@ -345,12 +360,10 @@ module.exports = async function handler(req, res) {
         });
       }
       case 'funil_kpis': {
-        const PROSP_DIRETA_ONWARDS  = ['1292533286','1295430921','1295463995'];
         const PROPOSTA_IDS_KPI      = ['1214475912','1224336643','1311051331','1331859376'];
         const PRE_VENDAS_KPI        = PIPELINE_IDS.pre_vendas;
         const OUTROS_PIPELINES      = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
         const REUNIAO_STAGES        = ['1295430921','1295463995'];
-        const LOST_LABELS           = ['perdido','lost'];
 
         function getKpiRange(p) {
           const now = new Date();
@@ -380,19 +393,10 @@ module.exports = async function handler(req, res) {
 
         const kpiLostIds = stageData.lostIds || {};
 
-        function isAbmOk(d) {
-          if ((d.properties.detalhamento_de_canal || '') !== 'OUT - Lista ABM') return false;
-          const pip   = d.properties.pipeline  || '';
-          const stage = d.properties.dealstage || '';
-          if (OUTROS_PIPELINES.includes(pip)) return true;
-          if (pip === PRE_VENDAS_KPI) return PROSP_DIRETA_ONWARDS.includes(stage);
-          return false;
-        }
-
         const kpiDeals = rawDeals.filter(d => {
-          if (kpiLostIds[d.properties.dealstage]) return false; // exclui Perdidos
+          if (kpiLostIds[d.properties.dealstage]) return false;
           const detalhe = d.properties.detalhamento_de_canal || '';
-          if (detalhe === 'OUT - Lista ABM') return isAbmOk(d);
+          if (detalhe === 'OUT - Lista ABM') return isAbm(d);
           return true;
         });
 
@@ -401,10 +405,10 @@ module.exports = async function handler(req, res) {
 
         const mkt = kpiDeals.filter(d => {
           const canal = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
-          return canal.includes('inbound') || isAbmOk(d);
+          return canal.includes('inbound') || isAbm(d);
         }).length;
 
-        const mapeados  = kpiDeals.filter(d => isAbmOk(d)).length;
+        const mapeados  = kpiDeals.filter(d => isAbm(d)).length;
         const reunioes  = kpiDeals.filter(d =>
           (d.properties.pipeline === PRE_VENDAS_KPI && REUNIAO_STAGES.includes(d.properties.dealstage)) ||
           OUTROS_PIPELINES.includes(d.properties.pipeline)
@@ -424,8 +428,6 @@ module.exports = async function handler(req, res) {
         const chartMode = req.query.mode || 'wtd';
         const now = new Date();
         const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-        const PROSP_C  = ['1292533286','1295430921','1295463995'];
-        const OUTROS_C = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
         const REUN_C   = ['1295430921','1295463995'];
         const CONTR_C  = ['1214475912','1224336643','1311051331','1331859376'];
 
@@ -461,31 +463,18 @@ module.exports = async function handler(req, res) {
 
         const lostC = (stageD && stageD.lostIds) || {};
 
-        function isAbmC(d) {
-          if ((d.properties.detalhamento_de_canal || '') !== 'OUT - Lista ABM') return false;
-          const pip = d.properties.pipeline || '', stage = d.properties.dealstage || '';
-          if (OUTROS_C.includes(pip)) return true;
-          if (pip === PIPELINE_IDS.pre_vendas) return PROSP_C.includes(stage);
-          return false;
-        }
-
         const chartData = periods.map(function(p) {
           const pDeals = rawAll.filter(function(d) {
             const t = new Date(d.properties.createdate).getTime();
             if (t < p.start || t > p.end) return false;
             if (lostC[d.properties.dealstage]) return false;
-            if ((d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM') return isAbmC(d);
+            if ((d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM') return isAbm(d);
             return true;
           });
           const total    = pDeals.length;
-          const mkt      = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbmC(d); }).length;
-          // Debug: log April data
-          if (p.label === 'Abr' || p.label === 'Atual') {
-            const mktDeals = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbmC(d); });
-            console.log('[funil_chart] ' + p.label + ' total:', pDeals.length, 'mkt:', mkt, 'mktDeals:', JSON.stringify(mktDeals.map(function(d){ return {id:d.id, canal:d.properties.hub2_deal__canal_de_aquisicao, detalhe:d.properties.detalhamento_de_canal, stage:d.properties.dealstage, pipeline:d.properties.pipeline}; })));
-          }
-          const mapeados = pDeals.filter(isAbmC).length;
-          const reuniao  = pDeals.filter(function(d){ return (d.properties.pipeline===PIPELINE_IDS.pre_vendas&&REUN_C.includes(d.properties.dealstage))||OUTROS_C.includes(d.properties.pipeline); }).length;
+          const mkt      = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbm(d); }).length;
+          const mapeados = pDeals.filter(isAbm).length;
+          const reuniao  = pDeals.filter(function(d){ return (d.properties.pipeline===PIPELINE_IDS.pre_vendas&&REUN_C.includes(d.properties.dealstage))||ABM_OUTROS_PIPES.includes(d.properties.pipeline); }).length;
           const contratos= pDeals.filter(function(d){ return CONTR_C.includes(d.properties.dealstage); }).length;
           return { label: p.label, month: p.month||null, total, mkt, naoMkt: total-mkt, mapeados, naoMapeados: total-mapeados, reuniao, naoReuniao: total-reuniao, contratos, semContrato: total-contratos };
         });
