@@ -5041,6 +5041,7 @@
   }
 
   function drawFunilChart(data, cfg, mode) {
+    console.log('[TOF] drawFunilChart mode:', mode, 'cfg.meta:', cfg.meta);
     var canvas = document.getElementById('funil-chart-canvas');
     if (!canvas) return;
     var dpr = window.devicePixelRatio || 1;
