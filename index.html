@@ -1034,34 +1034,6 @@
         </div>
       </div>
 
-      <!-- Filtro de Pipeline -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-        <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-right:4px;">Pipeline</span>
-        <button onclick="filterVGPipeline('todos',this)" id="vgp-todos"
-          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
-          Todos
-        </button>
-        <button onclick="filterVGPipeline('pre-vendas',this)" id="vgp-pre"
-          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
-          Pré Vendas/MKT
-        </button>
-        <button onclick="filterVGPipeline('smb',this)" id="vgp-smb"
-          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
-          SMB 3.0
-        </button>
-        <button onclick="filterVGPipeline('enterprise',this)" id="vgp-ent"
-          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
-          Enterprise 3.0
-        </button>
-        <button onclick="filterVGPipeline('expansao',this)" id="vgp-exp"
-          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
-          Expansão
-        </button>
-        <button onclick="filterVGPipeline('rcc',this)" id="vgp-rcc"
-          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
-          RCC
-        </button>
-      </div>
 
       <!-- NOVOS LEADS POR PIPELINE -->
       <div class="sub-header" style="margin-bottom:12px;">NOVOS LEADS POR PIPELINE</div>
@@ -1154,6 +1126,35 @@
 
       </div>
 
+      <!-- Filtro de Pipeline — segmenta Origem, Perfil e Scorecard -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-light);margin-right:4px;">Filtrar por pipeline</span>
+        <button onclick="filterVGPipeline('todos',this)" id="vgp-todos"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Todos
+        </button>
+        <button onclick="filterVGPipeline('pre-vendas',this)" id="vgp-pre"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Pré Vendas/MKT
+        </button>
+        <button onclick="filterVGPipeline('smb',this)" id="vgp-smb"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          SMB 3.0
+        </button>
+        <button onclick="filterVGPipeline('enterprise',this)" id="vgp-ent"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Enterprise 3.0
+        </button>
+        <button onclick="filterVGPipeline('expansao',this)" id="vgp-exp"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          Expansão
+        </button>
+        <button onclick="filterVGPipeline('rcc',this)" id="vgp-rcc"
+          style="height:26px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">
+          RCC
+        </button>
+      </div>
+
       <!-- Origem dos Leads -->
       <div class="sub-header" style="margin-bottom:14px;" id="vg-origem-label">ORIGEM DOS LEADS</div>
       <div class="card no-hover" style="padding:24px 28px;margin-bottom:12px;">
@@ -1216,239 +1217,208 @@
       </style>
 
       <script>
-      (function(){
-        const CANAIS = [
-          {
-            id:"inbound-site", nome:"Inbound Site", color:"#8AA5FF",
-            n:10, wow:+12, qualif:45, small:50, mid:30, ent:20, newlogo:80, exp:20,
-            deals:[
-              { nome:"Acme Indústrias",      entrada:"28 Mar", pipeline:"Pré Vendas/MKT", etapa:"Aquecimento",   resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:3  },
-              { nome:"Beta Construções",     entrada:"27 Mar", pipeline:"Pré Vendas/MKT", etapa:"A Validar",     resp:"Lucas T.",    closer:"Mariana C.",  porte:"SMB",        dias:4  },
-              { nome:"Gama Logística",       entrada:"26 Mar", pipeline:"Pré Vendas/MKT", etapa:"Backlog",       resp:"Carla M.",    closer:"—",           porte:"Mid",        dias:6  },
-              { nome:"Delta Saúde",          entrada:"25 Mar", pipeline:"SMB 3.0",        etapa:"Prosp. Direta", resp:"Pedro A.",    closer:"Rodrigo M.",  porte:"SMB",        dias:2  },
-              { nome:"Épsilon Energia",      entrada:"24 Mar", pipeline:"Pré Vendas/MKT", etapa:"Recusar",       resp:"Lucas T.",    closer:"—",           porte:"SMB",        dias:8  },
-            ]
-          },
-          {
-            id:"inbound-wa", nome:"Inbound WA", color:"#52B86A",
-            n:6, wow:+5, qualif:40, small:60, mid:25, ent:15, newlogo:90, exp:10,
-            deals:[
-              { nome:"Zeta Ambiental",       entrada:"29 Mar", pipeline:"Pré Vendas/MKT", etapa:"A Validar",     resp:"Ana R.",      closer:"Anderson F.", porte:"SMB",        dias:2  },
-              { nome:"Eta Comércio",         entrada:"27 Mar", pipeline:"Pré Vendas/MKT", etapa:"Backlog",       resp:"Ana R.",      closer:"—",           porte:"SMB",        dias:4  },
-              { nome:"Theta Alimentos",      entrada:"25 Mar", pipeline:"SMB 3.0",        etapa:"Contato Inicial",resp:"Pedro A.",   closer:"Mariana C.",  porte:"Mid",        dias:6  },
-            ]
-          },
-          {
-            id:"outbound", nome:"Outbound", color:"#FFBA86",
-            n:9, wow:0, qualif:72, small:30, mid:35, ent:35, newlogo:55, exp:45,
-            deals:[
-              { nome:"Iota Mineração",       entrada:"30 Mar", pipeline:"Enterprise 3.0", etapa:"Agendado",      resp:"Bruno S.",    closer:"Anderson F.", porte:"Enterprise", dias:1  },
-              { nome:"Kappa Siderurgia",     entrada:"28 Mar", pipeline:"Enterprise 3.0", etapa:"Aquecimento",   resp:"Bruno S.",    closer:"Anderson F.", porte:"Enterprise", dias:3  },
-              { nome:"Lambda Transporte",    entrada:"26 Mar", pipeline:"Pré Vendas/MKT", etapa:"Prosp. Direta", resp:"Fernanda O.", closer:"Rodrigo M.",  porte:"Mid",        dias:5  },
-              { nome:"Mu Farmacêutica",      entrada:"24 Mar", pipeline:"Enterprise 3.0", etapa:"Def. Canal",    resp:"Bruno S.",    closer:"Mariana C.",  porte:"Enterprise", dias:7  },
-            ]
-          },
-          {
-            id:"prosp-direta", nome:"Prosp. Direta", color:"#6B88E0",
-            n:8, wow:+9, qualif:68, small:25, mid:40, ent:35, newlogo:60, exp:40,
-            deals:[
-              { nome:"Nu Papel e Celulose",  entrada:"31 Mar", pipeline:"Enterprise 3.0", etapa:"Reunião Diag.", resp:"Anderson F.", closer:"Anderson F.", porte:"Enterprise", dias:0  },
-              { nome:"Xi Embalagens",        entrada:"29 Mar", pipeline:"Pré Vendas/MKT", etapa:"Aquecimento",   resp:"Fernanda O.", closer:"Rodrigo M.",  porte:"Mid",        dias:2  },
-              { nome:"Ômicron Têxtil",       entrada:"27 Mar", pipeline:"SMB 3.0",        etapa:"Prosp. Direta", resp:"Pedro A.",    closer:"Mariana C.",  porte:"SMB",        dias:4  },
-            ]
-          },
-          {
-            id:"bid", nome:"Bid", color:"#E3C545",
-            n:3, wow:-20, qualif:30, small:70, mid:20, ent:10, newlogo:100, exp:0,
-            deals:[
-              { nome:"Pi Obras Públicas",    entrada:"28 Mar", pipeline:"RCC",            etapa:"A Validar",     resp:"Lucas T.",    closer:"—",           porte:"SMB",        dias:4  },
-              { nome:"Rho Infraestrutura",   entrada:"25 Mar", pipeline:"RCC",            etapa:"Backlog",       resp:"Lucas T.",    closer:"—",           porte:"SMB",        dias:7  },
-            ]
-          },
-          {
-            id:"parceria", nome:"Parceria / Adv.", color:"#9C88E8",
-            n:2, wow:+33, qualif:75, small:20, mid:30, ent:50, newlogo:50, exp:50,
-            deals:[
-              { nome:"Sigma Química",        entrada:"30 Mar", pipeline:"Enterprise 3.0", etapa:"Def. Canal",    resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:1  },
-              { nome:"Tau Petroquímica",     entrada:"29 Mar", pipeline:"Expansão",       etapa:"Aquecimento",   resp:"Carla M.",    closer:"Anderson F.", porte:"Enterprise", dias:2  },
-            ]
-          },
-        ];
-
-        // ── Donut ────────────────────────────────────────────────────────────
-        const canvas = document.getElementById("donutCanvas");
-        if (canvas) {
-          const dpr = window.devicePixelRatio || 1;
-          canvas.width        = 170 * dpr;
-          canvas.height       = 170 * dpr;
-          canvas.style.width  = "170px";
-          canvas.style.height = "170px";
-          const ctx = canvas.getContext("2d");
-          ctx.scale(dpr, dpr);
-          const cx = 85, cy = 85, r = 72, inner = 48;
-          const total = CANAIS.reduce((s,c) => s+c.n, 0);
-          let angle = -Math.PI / 2;
-          const slices = [];
-          CANAIS.forEach(c => {
-            const slice = (c.n / total) * 2 * Math.PI;
-            slices.push({ c, start: angle, slice });
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.arc(cx, cy, r, angle, angle + slice);
-            ctx.closePath();
-            ctx.fillStyle = c.color;
-            ctx.fill();
-            angle += slice;
-          });
-          // inner hole
-          ctx.beginPath();
-          ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-          ctx.fillStyle = "#ffffff";
-          ctx.fill();
-          // % labels on slices (only if slice > 8%)
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          slices.forEach(({ c, start, slice }) => {
-            const pct = (c.n / total) * 100;
-            if (pct < 8) return;
-            const mid = start + slice / 2;
-            const labelR = (r + inner) / 2;
-            const lx = cx + Math.cos(mid) * labelR;
-            const ly = cy + Math.sin(mid) * labelR;
-            ctx.font = "bold 9px Inter,sans-serif";
-            ctx.fillStyle = "rgba(255,255,255,0.92)";
-            ctx.fillText(Math.round(pct) + "%", lx, ly);
-          });
+      // ── Canal colors por nome ──────────────────────────────────────────────
+      const CANAL_COLORS = {
+        'Inbound':              '#8AA5FF',
+        'Outbound':             '#FFBA86',
+        'Indicação':            '#52B86A',
+        'Expansão':             '#6B88E0',
+        'Bid':                  '#E3C545',
+        'Parcerias':            '#9C88E8',
+        'Prospecção Direta':    '#E07B3A',
+        'Aquisição de Carteiras':'#64C8C8',
+      };
+      function canalColor(nome) {
+        for (const [k, v] of Object.entries(CANAL_COLORS)) {
+          if (nome.toLowerCase().includes(k.toLowerCase())) return v;
         }
+        return '#BBBBCC';
+      }
+      function canalIcon(nome) {
+        const n = nome.toLowerCase();
+        if (n.includes('inbound'))    return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5M8 1.5C8 1.5 10.5 4 10.5 8s-2.5 6.5-2.5 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.3"/></svg>`;
+        if (n.includes('outbound'))   return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8h10M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3v10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+        if (n.includes('indicação') || n.includes('indicacao')) return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M5.5 7.5C5.5 6.12 6.62 5 8 5s2.5 1.12 2.5 2.5S9.38 10 8 10 5.5 8.88 5.5 7.5Z" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 2.69-4 6-4s6 1.79 6 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+        if (n.includes('expansão') || n.includes('expansao'))   return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 10l4-4 3 3 5-6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        if (n.includes('bid'))        return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 4V3a3 3 0 0 1 6 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+        if (n.includes('parceria'))   return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M11 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM2 14c0-2.76 2.69-5 6-5s6 2.24 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+        if (n.includes('aquisição') || n.includes('carteira')) return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="5" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 5V3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5V5" stroke="currentColor" stroke-width="1.3"/></svg>`;
+        return `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/></svg>`;
+      }
 
-        // ── Rows ─────────────────────────────────────────────────────────────
+      // ── Render donut ──────────────────────────────────────────────────────
+      function renderDonut(canais) {
+        const canvas = document.getElementById("donutCanvas");
+        if (!canvas) return;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = 170 * dpr; canvas.height = 170 * dpr;
+        canvas.style.width = "170px"; canvas.style.height = "170px";
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+        const cx = 85, cy = 85, r = 72, inner = 48;
+        const total = canais.reduce((s, c) => s + c.n, 0);
+        let angle = -Math.PI / 2;
+        const slices = [];
+        canais.forEach(c => {
+          const color = canalColor(c.canal || c.nome || '');
+          const slice = total > 0 ? (c.n / total) * 2 * Math.PI : 0;
+          slices.push({ c, start: angle, slice, color });
+          ctx.beginPath(); ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, angle, angle + slice); ctx.closePath();
+          ctx.fillStyle = color; ctx.fill();
+          angle += slice;
+        });
+        ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
+        ctx.fillStyle = "#ffffff"; ctx.fill();
+        // % labels
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        slices.forEach(({ c, start, slice, color }) => {
+          const pct = total > 0 ? (c.n / total) * 100 : 0;
+          if (pct < 8) return;
+          const mid = start + slice / 2;
+          const labelR = (r + inner) / 2;
+          const lx = cx + Math.cos(mid) * labelR;
+          const ly = cy + Math.sin(mid) * labelR;
+          ctx.font = "bold 9px Inter,sans-serif";
+          ctx.fillStyle = "rgba(255,255,255,0.92)";
+          ctx.fillText(Math.round(pct) + "%", lx, ly);
+        });
+        // Update center total
+        const tot = document.getElementById("donutTotal");
+        if (tot) tot.textContent = total;
+      }
+
+      // ── Render rows ───────────────────────────────────────────────────────
+      window.renderOrigemRows = function(canais) {
         const wrap = document.getElementById("origemRows");
         if (!wrap) return;
+        wrap.innerHTML = "";
+        renderDonut(canais);
 
-        CANAIS.forEach(c => {
-          const wowColor = c.wow > 0 ? "#429952" : c.wow < 0 ? "#D12D2D" : "#C9A820";
-          const wowBg    = c.wow > 0 ? "rgba(66,153,82,0.08)" : c.wow < 0 ? "rgba(209,45,45,0.08)" : "rgba(201,168,32,0.1)";
-          const wowArrow = c.wow > 0 ? "↑" : c.wow < 0 ? "↓" : "→";
-          const wowTxt   = wowArrow + " " + Math.abs(c.wow) + "%";
-          const qColor   = c.qualif >= 60 ? "#429952" : c.qualif >= 40 ? "#C9A820" : "#D12D2D";
-          const qBg      = c.qualif >= 60 ? "rgba(66,153,82,0.08)" : c.qualif >= 40 ? "rgba(201,168,32,0.1)" : "rgba(209,45,45,0.08)";
+        canais.forEach((c, idx) => {
+          const color    = canalColor(c.canal || c.nome || '');
+          const nome     = c.canal || c.nome || '—';
+          const n        = c.n || 0;
+          const deltaPct = c.deltaPct;
+          const qualifPct = c.qualifPct || 0;
 
-          // channel icon SVG by id
-          const ICONS = {
-            "inbound-site": `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5M8 1.5C8 1.5 10.5 4 10.5 8s-2.5 6.5-2.5 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.3"/></svg>`,
-            "inbound-wa":   `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13.5 2.5A6.96 6.96 0 0 0 8 0C3.58 0 0 3.58 0 8c0 1.41.37 2.73 1.01 3.88L0 16l4.24-1.11A7.94 7.94 0 0 0 8 16c4.42 0 8-3.58 8-8 0-2.14-.83-4.15-2.5-5.5Z" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M5.5 6s.5-1 1.5-1 1.5 1 1.5 2-1 2.5-1 2.5 1.5 1.5 3 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
-            "outbound":     `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8h10M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3v10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`,
-            "prosp-direta": `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
-            "bid":          `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 4V3a3 3 0 0 1 6 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 9v2M8 8h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`,
-            "parceria":     `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M5.5 7.5C5.5 6.12 6.62 5 8 5s2.5 1.12 2.5 2.5S9.38 10 8 10 5.5 8.88 5.5 7.5Z" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 2.69-4 6-4s6 1.79 6 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12.5 2.5a2.5 2.5 0 1 0 0 5" stroke="currentColor" stroke-width="1.3"/><path d="M14 10c1.5.5 2 1.5 2 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
-          };
+          const wowColor = deltaPct === null ? '#C9A820' : deltaPct > 0 ? '#429952' : deltaPct < 0 ? '#D12D2D' : '#C9A820';
+          const wowBg    = deltaPct === null ? 'rgba(201,168,32,0.1)' : deltaPct > 0 ? 'rgba(66,153,82,0.08)' : deltaPct < 0 ? 'rgba(209,45,45,0.08)' : 'rgba(201,168,32,0.1)';
+          const wowArrow = deltaPct === null ? '—' : deltaPct > 0 ? '↑ ' + deltaPct + '%' : deltaPct < 0 ? '↓ ' + Math.abs(deltaPct) + '%' : '→ 0%';
+
+          const qColor = qualifPct >= 60 ? '#429952' : qualifPct >= 40 ? '#C9A820' : '#D12D2D';
+          const qBg    = qualifPct >= 60 ? 'rgba(66,153,82,0.08)' : qualifPct >= 40 ? 'rgba(201,168,32,0.1)' : 'rgba(209,45,45,0.08)';
+
+          // Porte bars — usa dados reais
+          const portes = c.portes || [];
+          const porteBarHtml = (() => {
+            if (!portes.length) return '<span style="font-size:10px;color:var(--gray-light);">—</span>';
+            const bars = portes.map(p => {
+              const pc = ['SMB','Mid','Small'].some(s => p.label.includes(s)) ? '#8AA5FF'
+                       : ['Enterprise','Ent'].some(s => p.label.includes(s)) ? '#6B88E0'
+                       : '#FFBA86';
+              return `<div style="width:${p.pct}%;background:${pc};"></div>`;
+            }).join('');
+            const labels = portes.map(p => `<span style="font-size:8.5px;color:var(--gray-light);">${p.label.replace('Não definido','—')} ${p.pct}%</span>`).join(' ');
+            return `<div style="padding-left:12px;">
+              <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">${bars}</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">${labels}</div></div>`;
+          })();
+
+          // New Logo vs Expansão bars — dados reais
+          const newPct = (c.newLogo || {}).pct || 0;
+          const expPct = (c.expansao || {}).pct || 0;
+          const splitBarHtml = (() => {
+            if (!newPct && !expPct) return '<span style="font-size:10px;color:var(--gray-light);padding-left:12px;">—</span>';
+            return `<div style="padding-left:12px;">
+              <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
+                <div style="width:${newPct}%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div>
+                <div style="width:${expPct}%;background:#FFBA86;border-radius:0 3px 3px 0;"></div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <span style="font-size:8.5px;color:#6B88E0;font-weight:600;">New ${newPct}%</span>
+                <span style="font-size:8.5px;color:var(--salmon-dark);font-weight:600;">Exp ${expPct}%</span>
+              </div></div>`;
+          })();
 
           const container = document.createElement("div");
           container.style.cssText = "margin-bottom:2px;";
 
-          // Summary row
+          const rowId = "canal-row-" + idx;
+          const ddId  = "canal-dd-"  + idx;
+          const chevId = "canal-chev-" + idx;
+
           const row = document.createElement("div");
           row.className = "origem-row";
+          row.id = rowId;
           row.style.cssText = "display:grid;grid-template-columns:155px 36px 62px 95px 170px 155px;gap:0;padding:9px 4px;align-items:center;";
-
-          const porteBar = `<div style="padding-left:12px;">
-            <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
-              <div style="width:${c.small}%;background:#8AA5FF;"></div>
-              <div style="width:${c.mid}%;background:#FFBA86;"></div>
-              <div style="width:${c.ent}%;background:#6B88E0;"></div>
-            </div>
-            <div style="display:flex;gap:6px;">
-              <span style="font-size:8.5px;color:var(--gray-light);">S ${c.small}%</span>
-              <span style="font-size:8.5px;color:var(--gray-light);">M ${c.mid}%</span>
-              <span style="font-size:8.5px;color:var(--gray-light);">E ${c.ent}%</span>
-            </div>
-          </div>`;
-
-          const splitBar = `<div style="padding-left:12px;">
-            <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;width:100px;gap:1px;margin-bottom:3px;">
-              <div style="width:${c.newlogo}%;background:#8AA5FF;border-radius:3px 0 0 3px;"></div>
-              <div style="width:${c.exp}%;background:#FFBA86;border-radius:0 3px 3px 0;"></div>
-            </div>
-            <div style="display:flex;gap:8px;">
-              <span style="font-size:8.5px;color:#6B88E0;font-weight:600;">New ${c.newlogo}%</span>
-              <span style="font-size:8.5px;color:var(--salmon-dark);font-weight:600;">Exp ${c.exp}%</span>
-            </div>
-          </div>`;
-
           row.innerHTML = `
             <div style="display:flex;align-items:center;gap:8px;">
-              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:center;color:${c.color};flex-shrink:0;">
-                ${ICONS[c.id]||""}
-              </div>
-              <span style="font-size:12px;font-weight:500;color:var(--dark);">${c.nome}</span>
-              <svg id="chevron-${c.id}" width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left:auto;opacity:0.35;transition:transform 0.18s;flex-shrink:0;">
-                <path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/>
-              </svg>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:center;color:${color};flex-shrink:0;">${canalIcon(nome)}</div>
+              <span style="font-size:12px;font-weight:500;color:var(--dark);">${nome}</span>
+              <svg id="${chevId}" width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left:auto;opacity:0.35;transition:transform 0.18s;flex-shrink:0;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
             </div>
-            <div style="text-align:right;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${c.n}</div>
-            <div style="text-align:right;">
-              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${wowBg};color:${wowColor};font-family:'Inter',sans-serif;">${wowTxt}</span>
-            </div>
-            <div style="text-align:right;">
-              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${qBg};color:${qColor};font-family:'Inter',sans-serif;">${c.qualif}%</span>
-            </div>
-            ${porteBar}
-            ${splitBar}
-          `;
+            <div style="text-align:right;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);">${n}</div>
+            <div style="text-align:right;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${wowBg};color:${wowColor};font-family:'Inter',sans-serif;">${wowArrow}</span></div>
+            <div style="text-align:right;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${qBg};color:${qColor};font-family:'Inter',sans-serif;">${qualifPct}%</span></div>
+            ${porteBarHtml}
+            ${splitBarHtml}`;
 
-          // Dropdown
+          // Drill-down
           const dd = document.createElement("div");
           dd.className = "origem-dropdown";
-          dd.style.overflowX = "auto";
-          dd.id = "dd-" + c.id;
+          dd.id = ddId;
 
-          const dealRows = c.deals.map(d => {
-            const diasClass = d.dias <= 2 ? "deal-dias-ok" : d.dias <= 5 ? "deal-dias-warn" : "deal-dias-crit";
-            const hsUrl = `https://app.hubspot.com/contacts/9035464/deal/`;
+          const deals = c.deals || [];
+          const dealRowsHtml = deals.map(d => {
+            const diasClass = d.diasUltInt <= 2 ? "deal-dias-ok" : d.diasUltInt <= 7 ? "deal-dias-warn" : "deal-dias-crit";
+            const linkHtml = d.hubspotUrl
+              ? `<a href="${d.hubspotUrl}" target="_blank" rel="noopener" style="font-size:10px;color:var(--blue-dark);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>HubSpot</a>`
+              : `<span style="font-size:10px;color:var(--gray-light);">—</span>`;
             return `<tr>
               <td style="font-weight:500;">${d.nome}</td>
               <td style="color:var(--gray-light);">${d.entrada}</td>
-              <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--blue-dim);color:var(--blue-dark);font-weight:600;">${d.pipeline}</span></td>
+              <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(138,165,255,0.12);color:var(--blue-dark);font-weight:600;">${d.pipeline}</span></td>
               <td style="color:var(--gray-light);">${d.etapa}</td>
-              <td>${d.resp}</td>
+              <td>${d.responsavel}</td>
               <td>${d.closer}</td>
               <td><span style="font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,0.04);color:var(--gray);">${d.porte}</span></td>
-              <td class="${diasClass}">${d.dias}d</td>
-              <td><a href="${hsUrl}" target="_blank" style="font-size:10px;color:var(--blue-dark);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;">
-                <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M6.5 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.5 2H14v4.5M14 2L7.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                HubSpot
-              </a></td>
+              <td class="${diasClass}">${d.ultimaInteracao}</td>
+              <td>${linkHtml}</td>
             </tr>`;
           }).join("");
 
-          dd.innerHTML = `<table class="deal-table" style="margin-top:8px;min-width:700px;">
-            <thead><tr>
-              <th>Negociação</th>
-              <th>Entrada</th>
-              <th>Pipeline</th>
-              <th>Etapa</th>
-              <th>Responsável</th>
-              <th>Closer</th>
-              <th>Porte</th>
-              <th>Últ. interação</th>
-              <th></th>
-            </tr></thead>
-            <tbody>${dealRows}</tbody>
-          </table>`;
+          dd.innerHTML = deals.length
+            ? `<table class="deal-table" style="margin-top:8px;min-width:760px;">
+                <thead><tr>
+                  <th>Negociação</th><th>Entrada</th><th>Pipeline</th><th>Etapa</th>
+                  <th>Responsável</th><th>Closer</th><th>Porte</th><th>Últ. interação</th><th></th>
+                </tr></thead>
+                <tbody>${dealRowsHtml}</tbody>
+              </table>`
+            : `<p style="font-size:12px;color:var(--gray-light);padding:12px 4px;">Nenhum deal neste canal no período.</p>`;
 
           row.addEventListener("click", () => {
             const isOpen = dd.classList.contains("open");
-            dd.classList.toggle("open", !isOpen);
-            row.classList.toggle("open", !isOpen);
-            const chev = document.getElementById("chevron-" + c.id);
-            if (chev) chev.style.transform = isOpen ? "" : "rotate(180deg)";
+            document.querySelectorAll(".origem-dropdown.open").forEach(el => el.classList.remove("open"));
+            document.querySelectorAll(".origem-row.open").forEach(el => el.classList.remove("open"));
+            document.querySelectorAll("[id^='canal-chev-']").forEach(el => el.style.transform = "");
+            if (!isOpen) {
+              dd.classList.add("open");
+              row.classList.add("open");
+              const chev = document.getElementById(chevId);
+              if (chev) chev.style.transform = "rotate(180deg)";
+            }
           });
 
           container.appendChild(row);
           container.appendChild(dd);
           wrap.appendChild(container);
         });
-      })();
+      };
+
+      // Render com dados estáticos de placeholder até API responder
+      window.renderOrigemRows([]);
       </script>
 
       <!-- Perfil dos Leads -->
@@ -4796,25 +4766,15 @@
     // ── Origem dos Leads ──────────────────────────────────────────────────
     const or = d.origem;
     if (or) {
-      safeText('donutTotal', or.total || d.entrada?.total || 0);
-      // rebuild canal table rows
-      const tbody = document.getElementById('canalTableBody');
-      if (tbody && or.canais) {
-        tbody.innerHTML = '';
-        or.canais.forEach(function(c) {
-          const pct = d.entrada?.total > 0 ? Math.round(c.n / d.entrada.total * 100) : 0;
-          const tr = document.createElement('tr');
-          tr.innerHTML = '<td style="padding:8px 0;font-size:12px;color:var(--dark);">'+c.canal+'</td>'
-            + '<td style="padding:8px 0;font-size:13px;font-weight:600;color:var(--dark);text-align:right;">'+c.n+'</td>'
-            + '<td style="padding:8px 0;font-size:11px;color:var(--gray-light);text-align:right;">'+pct+'%</td>';
-          tbody.appendChild(tr);
-        });
+      // Renderiza tabela de canais com dados reais
+      if (or.canais && typeof window.renderOrigemRows === 'function') {
+        window.renderOrigemRows(or.canais);
       }
       // Mapeado vs Orgânico
       safeText('vg-mapeados',  or.mapeados);
       safeText('vg-organicos', or.organicos);
       const tot = (or.mapeados || 0) + (or.organicos || 0);
-      safeBar('vg-bar-mapeados',  tot > 0 ? Math.round(or.mapeados / tot * 100) : 0);
+      safeBar('vg-bar-mapeados',  tot > 0 ? Math.round(or.mapeados  / tot * 100) : 0);
       safeBar('vg-bar-organicos', tot > 0 ? Math.round(or.organicos / tot * 100) : 0);
     }
 
