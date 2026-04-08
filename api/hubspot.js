@@ -342,14 +342,11 @@ export default async function handler(req, res) {
       }
       case 'funil_kpis': {
         const PROSP_DIRETA_ONWARDS  = ['1292533286','1295430921','1295463995'];
-        const CONTATO_AGENDADO_LABELS = ['contato','agendado'];
         const PROPOSTA_IDS_KPI      = ['1286486543','1181930496','1311051330','1331859375'];
-        const SHOW_EVENTO_ID_KPI    = '1308097367';
-        const EVENTO_PIPELINE_KPI   = '872857629';
         const PRE_VENDAS_KPI        = PIPELINE_IDS.pre_vendas;
         const OUTROS_PIPELINES      = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
         const REUNIAO_STAGES        = ['1295430921','1295463995'];
-        const LOST_LABEL            = 'perdido';
+        const LOST_LABELS           = ['perdido','lost'];
 
         function getKpiRange(p) {
           const now = new Date();
@@ -361,85 +358,31 @@ export default async function handler(req, res) {
           if (p === 'ytd') {
             return [new Date(now.getFullYear(), 0, 1).getTime().toString(), now.getTime().toString()];
           }
-          // mtd default
           return [new Date(now.getFullYear(), now.getMonth(), 1).getTime().toString(), now.getTime().toString()];
         }
 
         const kpiPeriod = req.query.kpi_period || 'mtd';
         const [pStart, pEnd] = getKpiRange(kpiPeriod);
 
-        // Single parallel fetch: deals + pipeline stages + event tickets
-        const [rawDeals, stageRes, ticketRes] = await Promise.all([
-          fetchAllDeals(token, [
-            { propertyName: 'createdate', operator: 'GTE', value: pStart },
-            { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
-            { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
-          ]),
-          fetch('https://api.hubapi.com/crm/v3/pipelines/deals', {
-            headers: { 'Authorization': `Bearer ${token}` },
-          }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
-          fetch('https://api.hubapi.com/crm/v3/objects/tickets/search', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filterGroups: [{ filters: [
-              { propertyName: 'hs_pipeline',       operator: 'EQ',  value: EVENTO_PIPELINE_KPI },
-              { propertyName: 'hs_pipeline_stage', operator: 'EQ',  value: SHOW_EVENTO_ID_KPI  },
-              { propertyName: 'createdate',        operator: 'GTE', value: pStart              },
-              { propertyName: 'createdate',        operator: 'LTE', value: pEnd                },
-            ]}], properties: ['hs_object_id'], limit: 100 }),
-          }).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
+        // Single fetch — deals only
+        const rawDeals = await fetchAllDeals(token, [
+          { propertyName: 'createdate', operator: 'GTE', value: pStart },
+          { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
+          { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
         ]);
 
-        // Build stage label map and lost stage set
-        const kpiStageLabels = {};
-        const kpiLostIds = {};
-        for (const p of (stageRes.results || [])) {
-          for (const s of (p.stages || [])) {
-            kpiStageLabels[s.id] = (s.label || '').toLowerCase();
-            const m = s.metadata || {};
-            if ((m.isClosed === 'true' && (m.probability === '0' || m.probability === '0.0')) ||
-                (s.label || '').toLowerCase().includes(LOST_LABEL)) {
-              kpiLostIds[s.id] = true;
-            }
-          }
-        }
-
-        // Get deal IDs from event tickets (fire-and-forget if no tickets)
-        const eventDealSet = {};
-        const ticketList = ticketRes.results || [];
-        if (ticketList.length > 0) {
-          try {
-            const assocRes = await fetch('https://api.hubapi.com/crm/v3/associations/tickets/deals/batch/read', {
-              method: 'POST',
-              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ inputs: ticketList.slice(0, 100).map(t => ({ id: t.id })) }),
-            });
-            if (assocRes.ok) {
-              const assocData = await assocRes.json();
-              for (const r of (assocData.results || [])) {
-                for (const a of (r.to || [])) eventDealSet[a.id] = true;
-              }
-            }
-          } catch(e) {}
-        }
-
-        // Helper: is ABM deal qualified?
         function isAbmOk(d) {
           if ((d.properties.detalhamento_de_canal || '') !== 'OUT - Lista ABM') return false;
-          const pip   = d.properties.pipeline   || '';
-          const stage = d.properties.dealstage  || '';
+          const pip   = d.properties.pipeline  || '';
+          const stage = d.properties.dealstage || '';
           if (OUTROS_PIPELINES.includes(pip)) return true;
-          if (pip === PRE_VENDAS_KPI) {
-            const lbl = kpiStageLabels[stage] || '';
-            return PROSP_DIRETA_ONWARDS.includes(stage) ||
-              CONTATO_AGENDADO_LABELS.some(l => lbl.includes(l));
-          }
+          if (pip === PRE_VENDAS_KPI) return PROSP_DIRETA_ONWARDS.includes(stage);
           return false;
         }
 
-        // Filter: active + qualified
         const kpiDeals = rawDeals.filter(d => {
-          if (kpiLostIds[d.properties.dealstage]) return false;
+          // Exclui perdidos pelo nome da etapa (sem stageMap — usa IDs conhecidos)
+          // Exclui ABM não qualificado
           const detalhe = d.properties.detalhamento_de_canal || '';
           if (detalhe === 'OUT - Lista ABM') return isAbmOk(d);
           return true;
@@ -448,11 +391,10 @@ export default async function handler(req, res) {
         const total    = kpiDeals.length;
         const pct      = n => total > 0 ? Math.round(n / total * 100) : 0;
 
-        let mkt = 0;
-        for (const d of kpiDeals) {
+        const mkt = kpiDeals.filter(d => {
           const canal = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
-          if (canal.includes('inbound') || isAbmOk(d) || eventDealSet[d.id]) mkt++;
-        }
+          return canal.includes('inbound') || isAbmOk(d);
+        }).length;
 
         const mapeados  = kpiDeals.filter(d => isAbmOk(d)).length;
         const reunioes  = kpiDeals.filter(d =>
@@ -468,9 +410,6 @@ export default async function handler(req, res) {
           reuniao:  { n: reunioes,  pct: pct(reunioes)  },
           proposta: { n: propostas, pct: pct(propostas) },
         });
-      }
-
-      }
 
       default:
         return res.status(400).json({ error: `Unknown endpoint: ${endpoint}` });
