@@ -1015,9 +1015,9 @@
         <div class="sub-header" style="margin-bottom:0;">FUNIL DE GERAÇÃO DE DEMANDA</div>
         <div style="display:flex;gap:6px;">
           <button onclick="selectKpiPeriod('wtd',this)" id="kpi-wtd"
-            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">WTD</button>
+            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">WTD</button>
           <button onclick="selectKpiPeriod('mtd',this)" id="kpi-mtd"
-            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--salmon);background:var(--orange-dim);font-size:10.5px;font-weight:600;color:var(--salmon-dark);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">MTD</button>
+            style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">MTD</button>
           <button onclick="selectKpiPeriod('ytd',this)" id="kpi-ytd"
             style="height:24px;padding:0 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:10.5px;font-weight:500;color:var(--gray-light);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.14s;">YTD</button>
         </div>
@@ -4952,7 +4952,7 @@
 
 
   // ── Funil KPIs ───────────────────────────────────────────────────────────
-  let kpiCurrentPeriod = 'mtd';
+  let kpiCurrentPeriod = 'wtd';
   let kpiAbortController = null;
 
   async function fetchKpiData() {
@@ -5123,18 +5123,30 @@
         ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.fill();
-        // Value label — posiciona acima; corrige se perto do topo ou da linha de meta
-        var dotY  = yPos(v);
-        var labelY = dotY - 7;
-        // Se próximo ao topo, empurra para baixo
-        if (labelY < PAD.top + 8) labelY = dotY + 14;
-        // Se colidir com a linha de meta (±10px), empurra para o lado oposto
+        // Value label — posicionamento robusto com múltiplas checagens
+        var dotY    = yPos(v);
+        var topBound    = PAD.top + 10;
+        var bottomBound = H - PAD.bottom - 10;
+        var labelY  = dotY - 9; // padrão: acima do ponto
+
+        // 1. Se sai pelo topo, coloca abaixo
+        if (labelY < topBound) labelY = dotY + 13;
+
+        // 2. Se sai pelo fundo (valor muito pequeno na escala), sobe
+        if (labelY > bottomBound) labelY = bottomBound;
+
+        // 3. Evitar colisão com linha de meta — threshold de 14px
         if (metaLineY !== null) {
-          if (Math.abs(labelY - metaLineY) < 10) {
-            // Label acima da linha → sobe mais; abaixo → desce mais
-            labelY = (dotY <= metaLineY) ? metaLineY - 11 : metaLineY + 11;
+          if (Math.abs(labelY - metaLineY) < 14) {
+            // Ponto abaixo da meta → empurra label para baixo da linha
+            // Ponto acima da meta → empurra label para cima da linha
+            labelY = (dotY > metaLineY) ? metaLineY + 14 : metaLineY - 14;
+            // Re-checa limites após o ajuste
+            if (labelY < topBound)    labelY = metaLineY + 14;
+            if (labelY > bottomBound) labelY = metaLineY - 14;
           }
         }
+
         ctx.fillStyle = color;
         ctx.font = 'bold 9px Inter,sans-serif';
         ctx.textAlign = 'center';
@@ -5157,13 +5169,14 @@
       ctx.lineTo(W - PAD.right, my);
       ctx.stroke();
       ctx.setLineDash([]);
-      // Label da meta — posiciona abaixo da linha se perto do topo
-      var metaLabelY = my - 4;
-      if (metaLabelY < PAD.top + 8) metaLabelY = my + 11;
+      // Label da meta — posiciona acima da linha; se perto do topo, abaixo
+      var metaLabelY = my - 5;
+      if (metaLabelY < PAD.top + 10) metaLabelY = my + 12;
       ctx.fillStyle = '#D12D2D';
       ctx.font = 'bold 9px Inter,sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText('Meta ' + metaVal, W - PAD.right - 2, metaLabelY);
+      // Recua 40px da borda direita para não sobrepor o label do último ponto
+      ctx.fillText('Meta ' + metaVal, W - PAD.right - 40, metaLabelY);
     }
 
     // Legend
