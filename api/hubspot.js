@@ -431,30 +431,51 @@ export default async function handler(req, res) {
 
         const total = activeDeals.length;
 
+        const PROSP_DIRETA_ONWARDS = ['1292533286','1295430921','1295463995', // Prospecção Direta, Reunião Diag, Concluído no Pré Vendas
+          // Contato Inicial e Agendado — buscar via stageMap
+        ];
+        const PIPELINES_APOS_PRE_VENDAS = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
+
+        function isAbmQualificado(deal) {
+          const detalhe  = deal.properties.detalhamento_de_canal || '';
+          const pipeline = deal.properties.pipeline || '';
+          const stage    = deal.properties.dealstage || '';
+          if (detalhe !== 'OUT - Lista ABM') return false;
+          // Já moveu para outro pipeline
+          if (PIPELINES_APOS_PRE_VENDAS.includes(pipeline)) return true;
+          // Está no Pré Vendas em etapa >= Prospecção Direta
+          if (pipeline === PRE_VENDAS_ID) {
+            const stageLabel = (sMap[stage] || '').toLowerCase();
+            return PROSP_DIRETA_ONWARDS.includes(stage) ||
+              stageLabel.includes('contato') || stageLabel.includes('agendado');
+          }
+          return false;
+        }
+
         // Marketing leads:
         // 1. Inbound canal
-        // 2. ABM na etapa Prospecção Direta do Pré Vendas (detalhamento = OUT - Lista ABM)
+        // 2. ABM qualificado (etapa >= Prospecção Direta ou em outro pipeline)
         // 3. Deals associados a tickets Show no evento
         let mktLeads = 0;
         const mktDealIds = new Set();
         for (const d of activeDeals) {
-          const canal     = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
-          const detalhe   = d.properties.detalhamento_de_canal || '';
-          const stage     = d.properties.dealstage || '';
-          const pipeline  = d.properties.pipeline  || '';
+          const canal    = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
           const isInbound = canal.includes('inbound');
-          const isABM     = detalhe === 'OUT - Lista ABM' && stage === PROSP_DIRETA_ID && pipeline === PRE_VENDAS_ID;
+          const isABM     = isAbmQualificado(d);
           const isEvento  = eventDealIds.has(d.id);
           if (isInbound || isABM || isEvento) { mktLeads++; mktDealIds.add(d.id); }
         }
 
-        // Mapeados: detalhamento = OUT - Lista ABM
-        const mapeados = activeDeals.filter(d => (d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM').length;
+        // Mapeados: ABM qualificado (mesma regra)
+        const mapeados = activeDeals.filter(d => isAbmQualificado(d)).length;
 
-        // Reunião de Diagnóstico: etapa REUNIAO_DIAG_ID no Pré Vendas
+        const REUNIAO_PASSOU_STAGES = ['1295430921','1295463995']; // Reunião de Diag. + Concluído no Pré Vendas
+        const PIPELINES_APOS_REUNIAO = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
+
+        // Reunião de Diagnóstico: passou pela etapa = está em Reunião/Concluído no Pré Vendas OU está em qualquer etapa dos outros pipelines
         const reunioes = activeDeals.filter(d =>
-          d.properties.pipeline  === PRE_VENDAS_ID &&
-          d.properties.dealstage === REUNIAO_DIAG_ID
+          (d.properties.pipeline === PRE_VENDAS_ID && REUNIAO_PASSOU_STAGES.includes(d.properties.dealstage)) ||
+          PIPELINES_APOS_REUNIAO.includes(d.properties.pipeline)
         ).length;
 
         // Proposta enviada: em qualquer dos 4 pipelines com etapa de proposta
