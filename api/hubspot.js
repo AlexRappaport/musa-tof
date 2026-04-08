@@ -420,6 +420,74 @@ module.exports = async function handler(req, res) {
         });
       }
 
+      case 'funil_chart': {
+        const chartMode = req.query.mode || 'wtd';
+        const now = new Date();
+        const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        const PROSP_C  = ['1292533286','1295430921','1295463995'];
+        const OUTROS_C = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
+        const REUN_C   = ['1295430921','1295463995'];
+        const CONTR_C  = ['1214475912','1224336643','1311051331','1331859376'];
+
+        // Build 5 period ranges
+        const periods = [];
+        if (chartMode === 'wtd') {
+          const day = now.getDay();
+          const thisMon = new Date(now);
+          thisMon.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+          thisMon.setHours(0,0,0,0);
+          for (let i = 4; i >= 0; i--) {
+            const s = new Date(thisMon); s.setDate(thisMon.getDate() - i * 7);
+            const e = i === 0 ? new Date() : new Date(s); if (i > 0) { e.setDate(s.getDate() + 6); e.setHours(23,59,59,999); }
+            periods.push({ label: i === 0 ? 'Atual' : 'S-' + i, start: s.getTime(), end: e.getTime() });
+          }
+        } else {
+          for (let i = 4; i >= 0; i--) {
+            const s = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const e = i === 0 ? new Date() : new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+            periods.push({ label: MONTH_NAMES[s.getMonth()], month: s.getFullYear() + '-' + String(s.getMonth()+1).padStart(2,'0'), start: s.getTime(), end: e.getTime() });
+          }
+        }
+
+        // Fetch all deals in full range + stageMap in parallel
+        const [rawAll, stageD] = await Promise.all([
+          fetchAllDeals(token, [
+            { propertyName: 'createdate', operator: 'GTE', value: String(periods[0].start) },
+            { propertyName: 'createdate', operator: 'LTE', value: String(periods[periods.length-1].end) },
+            { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
+          ]),
+          fetchStageMap(token),
+        ]);
+
+        const lostC = (stageD && stageD.lostIds) || {};
+
+        function isAbmC(d) {
+          if ((d.properties.detalhamento_de_canal || '') !== 'OUT - Lista ABM') return false;
+          const pip = d.properties.pipeline || '', stage = d.properties.dealstage || '';
+          if (OUTROS_C.includes(pip)) return true;
+          if (pip === PIPELINE_IDS.pre_vendas) return PROSP_C.includes(stage);
+          return false;
+        }
+
+        const chartData = periods.map(function(p) {
+          const pDeals = rawAll.filter(function(d) {
+            const t = new Date(d.properties.createdate).getTime();
+            if (t < p.start || t > p.end) return false;
+            if (lostC[d.properties.dealstage]) return false;
+            if ((d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM') return isAbmC(d);
+            return true;
+          });
+          const total    = pDeals.length;
+          const mkt      = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbmC(d); }).length;
+          const mapeados = pDeals.filter(isAbmC).length;
+          const reuniao  = pDeals.filter(function(d){ return (d.properties.pipeline===PIPELINE_IDS.pre_vendas&&REUN_C.includes(d.properties.dealstage))||OUTROS_C.includes(d.properties.pipeline); }).length;
+          const contratos= pDeals.filter(function(d){ return CONTR_C.includes(d.properties.dealstage); }).length;
+          return { label: p.label, month: p.month||null, total, mkt, naoMkt: total-mkt, mapeados, naoMapeados: total-mapeados, reuniao, naoReuniao: total-reuniao, contratos, semContrato: total-contratos };
+        });
+
+        return res.status(200).json({ mode: chartMode, data: chartData });
+      }
+
       default:
         return res.status(400).json({ error: `Unknown endpoint: ${endpoint}` });
     }
