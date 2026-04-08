@@ -1138,17 +1138,17 @@
 
         <div class="card animate-in">
           <div class="kpi-label" id="compareLabel1">Evolução vs período anterior</div>
-          <div class="kpi-value small" id="vg-wow-pct" style="color:#2A7A3B;">+14%</div>
-          <div class="kpi-meta">
-            <span class="delta up">↑ 5 leads a mais <span class="compare-suffix" id="compareSuffix1"></span></span>
+          <div class="kpi-value small" id="vg-wow-pct" style="color:#2A7A3B;">—</div>
+          <div class="kpi-meta" id="vg-wow-meta">
+            <span class="delta neutral" id="vg-wow-badge">Carregando...</span>
           </div>
         </div>
 
         <div class="card animate-in">
-          <div class="kpi-label" id="compareLabel2">Acumulado no período</div>
-          <div class="kpi-value small" style="color:var(--gray);">+3%</div>
+          <div class="kpi-label" id="compareLabel2">Período anterior</div>
+          <div class="kpi-value small" id="vg-prev-total" style="color:var(--gray);">—</div>
           <div class="kpi-meta">
-            <span class="delta neutral">→ Crescimento lento</span>
+            <span class="delta neutral" id="vg-prev-badge">leads no período ant.</span>
           </div>
         </div>
 
@@ -4691,7 +4691,7 @@
     'Semestre':        'semestre',
   };
 
-  let vgCurrentPeriod  = 'mes_atual';
+  let vgCurrentPeriod  = 'semana_atual'; // deve bater com o period-opt active no HTML
   let vgCurrentPipeline = 'todos';
   let vgLoading = false;
 
@@ -4706,6 +4706,7 @@
     setVGLoading(true);
     try {
       const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}`;
+      console.log('[Musa TOF] Fetching:', url);
       const res = await fetch(url);
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
@@ -4758,6 +4759,38 @@
     const en = d.entrada;
     if (en) {
       safeText('vg-novos-leads', en.total);
+
+      // Card: Evolução vs período anterior
+      if (en.deltaPct !== null && en.deltaPct !== undefined) {
+        const pct   = en.deltaPct;
+        const absDelta = Math.abs(en.delta);
+        const sinal = pct > 0 ? '+' : '';
+        const arrow = pct > 0 ? '↑' : pct < 0 ? '↓' : '→';
+        const cls   = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
+        const color = pct > 0 ? '#2A7A3B' : pct < 0 ? '#A02020' : 'var(--gray)';
+        const leadsTxt = pct > 0
+          ? `${arrow} ${absDelta} leads a mais vs período ant.`
+          : pct < 0
+          ? `${arrow} ${absDelta} leads a menos vs período ant.`
+          : '→ Igual ao período anterior';
+        safeText('vg-wow-pct', sinal + pct + '%');
+        const pctEl = document.getElementById('vg-wow-pct');
+        if (pctEl) pctEl.style.color = color;
+        const badge = document.getElementById('vg-wow-badge');
+        if (badge) {
+          badge.textContent = leadsTxt;
+          badge.className   = 'delta ' + cls;
+        }
+      } else {
+        safeText('vg-wow-pct', '—');
+        const badge = document.getElementById('vg-wow-badge');
+        if (badge) { badge.textContent = 'Sem dados do período anterior'; badge.className = 'delta neutral'; }
+      }
+
+      // Card: Período anterior
+      safeText('vg-prev-total', en.prevTotal ?? '—');
+      const prevBadge = document.getElementById('vg-prev-badge');
+      if (prevBadge) prevBadge.textContent = 'leads no período anterior';
     }
 
     // ── Origem dos Leads ──────────────────────────────────────────────────
