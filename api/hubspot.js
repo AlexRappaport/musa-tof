@@ -81,7 +81,9 @@ async function fetchStageMap(token) {
       for (const s of (p.stages || [])) {
         labels[s.id] = s.label;
         const meta = s.metadata || {};
-        if (meta.isClosed === 'true' && (meta.probability === '0' || meta.probability === '0.0')) {
+        const isLostByMeta  = meta.isClosed === 'true' && (meta.probability === '0' || meta.probability === '0.0');
+        const isLostByLabel = (s.label || '').toLowerCase().includes('perdido') || (s.label || '').toLowerCase() === 'lost';
+        if (isLostByMeta || isLostByLabel) {
           lostIds[s.id] = true;
         }
       }
