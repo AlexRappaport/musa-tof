@@ -242,7 +242,7 @@ function aggregateCanais(curDeals, prevDeals, ownerMap, stageMap, portalId) {
 }
 
 // ── Main handler ─────────────────────────────────────────────────────────────
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -410,6 +410,7 @@ export default async function handler(req, res) {
           reuniao:  { n: reunioes,  pct: pct(reunioes)  },
           proposta: { n: propostas, pct: pct(propostas) },
         });
+      }
 
       default:
         return res.status(400).json({ error: `Unknown endpoint: ${endpoint}` });
