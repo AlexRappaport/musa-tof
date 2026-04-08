@@ -5106,13 +5106,18 @@
       });
       ctx.stroke();
       ctx.setLineDash([]);
-      // Dots
+      // Dots + value labels
       data.forEach(function(d, i) {
         var v = d[key] || 0;
         ctx.beginPath();
         ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.fill();
+        // Value label above dot
+        ctx.fillStyle = color;
+        ctx.font = 'bold 9px Inter,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(v, xPos(i), yPos(v) - 7);
       });
     }
 
