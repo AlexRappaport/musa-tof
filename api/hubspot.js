@@ -50,7 +50,7 @@ async function fetchPortalId(token) {
     if (!res.ok) return null;
     const d = await res.json();
     return d.portalId || null;
-  } catch { return null; }
+  } catch (e) { return null; }
 }
 
 async function fetchOwners(token) {
@@ -65,7 +65,7 @@ async function fetchOwners(token) {
       map[String(o.id)] = [o.firstName, o.lastName].filter(Boolean).join(' ') || o.email || String(o.id);
     }
     return map;
-  } catch { return {}; }
+  } catch (e) { return {}; }
 }
 
 async function fetchStageMap(token) {
@@ -73,22 +73,21 @@ async function fetchStageMap(token) {
     const res = await fetch('https://api.hubapi.com/crm/v3/pipelines/deals', {
       headers: { 'Authorization': `Bearer ${token}` },
     });
-    if (!res.ok) return { labels: {}, lostIds: new Set() };
+    if (!res.ok) return { labels: {}, lostIds: {} };
     const d = await res.json();
     const labels = {};
-    const lostIds = new Set();
+    const lostIds = {};
     for (const p of (d.results || [])) {
       for (const s of (p.stages || [])) {
         labels[s.id] = s.label;
-        // Closed-lost: isClosed = true AND probability = 0
         const meta = s.metadata || {};
         if (meta.isClosed === 'true' && (meta.probability === '0' || meta.probability === '0.0')) {
-          lostIds.add(s.id);
+          lostIds[s.id] = true;
         }
       }
     }
     return { labels, lostIds };
-  } catch { return { labels: {}, lostIds: new Set() }; }
+  } catch (e) { return { labels: {}, lostIds: {} }; }
 }
 
 // ── Period filters ───────────────────────────────────────────────────────────
@@ -265,11 +264,11 @@ export default async function handler(req, res) {
         ]);
 
         const stageMap  = stageData.labels  || {};
-        const lostIds   = stageData.lostIds || new Set();
+        const lostIds   = stageData.lostIds || {};
 
         // Excluir deals em etapa "Perdido" (closed-lost) da contagem de leads
-        const activeDeals     = allDeals.filter(d => !lostIds.has(d.properties.dealstage));
-        const activePrevDeals = prevDeals.filter(d => !lostIds.has(d.properties.dealstage));
+        const activeDeals     = allDeals.filter(d => !lostIds[d.properties.dealstage]);
+        const activePrevDeals = prevDeals.filter(d => !lostIds[d.properties.dealstage]);
 
         // By pipeline
         const byPipeline = {};
