@@ -259,14 +259,18 @@ module.exports = async function handler(req, res) {
         const { curFilter, prevFilter } = getPeriodFilters(period);
         const pipeFilter = { propertyName: 'pipeline', operator: 'IN', values: ALL_PIPELINE_IDS };
 
-        // Fetch tudo em paralelo
-        const [allDeals, prevDeals, preVendasAll, portalId, ownerMap, stageData] = await Promise.all([
+        // Fetch tudo em paralelo — max 4 chamadas para evitar rate limit
+        const [allDeals, prevDeals, preVendasAll, stageData] = await Promise.all([
           fetchAllDeals(token, [...curFilter,  pipeFilter]),
           fetchAllDeals(token, [...prevFilter, pipeFilter]),
           fetchAllDeals(token, [{ propertyName: 'pipeline', operator: 'EQ', value: PIPELINE_IDS.pre_vendas }]),
+          fetchStageMap(token),
+        ]);
+
+        // Fetch owners e portalId em sequência leve após os deals
+        const [portalId, ownerMap] = await Promise.all([
           fetchPortalId(token),
           fetchOwners(token),
-          fetchStageMap(token),
         ]);
 
         const stageMap  = stageData.labels  || {};
