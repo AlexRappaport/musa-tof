@@ -429,7 +429,14 @@ export default async function handler(req, res) {
         const { labels: sMap, lostIds: lIds } = await fetchStageMap(token).catch(() => ({ labels: {}, lostIds: {} }));
         const activeDeals = allDeals.filter(d => !lIds[d.properties.dealstage]);
 
-        const total = activeDeals.length;
+        // Exclui do total deals ABM que não cumprem regra de qualificação
+        const qualifiedDeals = activeDeals.filter(d => {
+          const detalhe = d.properties.detalhamento_de_canal || '';
+          if (detalhe !== 'OUT - Lista ABM') return true; // não é ABM — conta normalmente
+          return isAbmQualificado(d); // ABM só conta se qualificado
+        });
+
+        const total = qualifiedDeals.length;
 
         const PROSP_DIRETA_ONWARDS = ['1292533286','1295430921','1295463995', // Prospecção Direta, Reunião Diag, Concluído no Pré Vendas
           // Contato Inicial e Agendado — buscar via stageMap
@@ -458,28 +465,25 @@ export default async function handler(req, res) {
         // 3. Deals associados a tickets Show no evento
         let mktLeads = 0;
         const mktDealIds = new Set();
-        for (const d of activeDeals) {
-          const canal    = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
+        for (const d of qualifiedDeals) {
+          const canal     = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
           const isInbound = canal.includes('inbound');
           const isABM     = isAbmQualificado(d);
           const isEvento  = eventDealIds.has(d.id);
           if (isInbound || isABM || isEvento) { mktLeads++; mktDealIds.add(d.id); }
         }
 
-        // Mapeados: ABM qualificado (mesma regra)
-        const mapeados = activeDeals.filter(d => isAbmQualificado(d)).length;
+        const mapeados = qualifiedDeals.filter(d => isAbmQualificado(d)).length;
 
-        const REUNIAO_PASSOU_STAGES = ['1295430921','1295463995']; // Reunião de Diag. + Concluído no Pré Vendas
+        const REUNIAO_PASSOU_STAGES = ['1295430921','1295463995'];
         const PIPELINES_APOS_REUNIAO = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
 
-        // Reunião de Diagnóstico: passou pela etapa = está em Reunião/Concluído no Pré Vendas OU está em qualquer etapa dos outros pipelines
-        const reunioes = activeDeals.filter(d =>
+        const reunioes = qualifiedDeals.filter(d =>
           (d.properties.pipeline === PRE_VENDAS_ID && REUNIAO_PASSOU_STAGES.includes(d.properties.dealstage)) ||
           PIPELINES_APOS_REUNIAO.includes(d.properties.pipeline)
         ).length;
 
-        // Proposta enviada: em qualquer dos 4 pipelines com etapa de proposta
-        const propostas = activeDeals.filter(d => PROPOSTA_IDS.includes(d.properties.dealstage)).length;
+        const propostas = qualifiedDeals.filter(d => PROPOSTA_IDS.includes(d.properties.dealstage)).length;
 
         const pct = (n) => total > 0 ? Math.round(n / total * 100) : 0;
 
