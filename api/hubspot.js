@@ -368,12 +368,17 @@ module.exports = async function handler(req, res) {
         const kpiPeriod = req.query.kpi_period || 'mtd';
         const [pStart, pEnd] = getKpiRange(kpiPeriod);
 
-        // Single fetch — deals only
-        const rawDeals = await fetchAllDeals(token, [
-          { propertyName: 'createdate', operator: 'GTE', value: pStart },
-          { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
-          { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
+        // Fetch deals + stageMap em paralelo
+        const [rawDeals, stageData] = await Promise.all([
+          fetchAllDeals(token, [
+            { propertyName: 'createdate', operator: 'GTE', value: pStart },
+            { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
+            { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
+          ]),
+          fetchStageMap(token),
         ]);
+
+        const kpiLostIds = stageData.lostIds || {};
 
         function isAbmOk(d) {
           if ((d.properties.detalhamento_de_canal || '') !== 'OUT - Lista ABM') return false;
@@ -385,8 +390,7 @@ module.exports = async function handler(req, res) {
         }
 
         const kpiDeals = rawDeals.filter(d => {
-          // Exclui perdidos pelo nome da etapa (sem stageMap — usa IDs conhecidos)
-          // Exclui ABM não qualificado
+          if (kpiLostIds[d.properties.dealstage]) return false; // exclui Perdidos
           const detalhe = d.properties.detalhamento_de_canal || '';
           if (detalhe === 'OUT - Lista ABM') return isAbmOk(d);
           return true;
