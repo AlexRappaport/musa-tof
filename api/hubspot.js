@@ -73,14 +73,22 @@ async function fetchStageMap(token) {
     const res = await fetch('https://api.hubapi.com/crm/v3/pipelines/deals', {
       headers: { 'Authorization': `Bearer ${token}` },
     });
-    if (!res.ok) return {};
+    if (!res.ok) return { labels: {}, lostIds: new Set() };
     const d = await res.json();
-    const map = {};
+    const labels = {};
+    const lostIds = new Set();
     for (const p of (d.results || [])) {
-      for (const s of (p.stages || [])) map[s.id] = s.label;
+      for (const s of (p.stages || [])) {
+        labels[s.id] = s.label;
+        // Closed-lost: isClosed = true AND probability = 0
+        const meta = s.metadata || {};
+        if (meta.isClosed === 'true' && (meta.probability === '0' || meta.probability === '0.0')) {
+          lostIds.add(s.id);
+        }
+      }
     }
-    return map;
-  } catch { return {}; }
+    return { labels, lostIds };
+  } catch { return { labels: {}, lostIds: new Set() }; }
 }
 
 // ── Period filters ───────────────────────────────────────────────────────────
@@ -247,7 +255,7 @@ export default async function handler(req, res) {
         const pipeFilter = { propertyName: 'pipeline', operator: 'IN', values: ALL_PIPELINE_IDS };
 
         // Fetch tudo em paralelo
-        const [allDeals, prevDeals, preVendasAll, portalId, ownerMap, stageMap] = await Promise.all([
+        const [allDeals, prevDeals, preVendasAll, portalId, ownerMap, stageData] = await Promise.all([
           fetchAllDeals(token, [...curFilter,  pipeFilter]),
           fetchAllDeals(token, [...prevFilter, pipeFilter]),
           fetchAllDeals(token, [{ propertyName: 'pipeline', operator: 'EQ', value: PIPELINE_IDS.pre_vendas }]),
@@ -256,19 +264,26 @@ export default async function handler(req, res) {
           fetchStageMap(token),
         ]);
 
+        const stageMap  = stageData.labels  || {};
+        const lostIds   = stageData.lostIds || new Set();
+
+        // Excluir deals em etapa "Perdido" (closed-lost) da contagem de leads
+        const activeDeals     = allDeals.filter(d => !lostIds.has(d.properties.dealstage));
+        const activePrevDeals = prevDeals.filter(d => !lostIds.has(d.properties.dealstage));
+
         // By pipeline
         const byPipeline = {};
         for (const id of ALL_PIPELINE_IDS) byPipeline[id] = 0;
-        for (const d of allDeals) { const p = d.properties.pipeline; if (byPipeline[p] !== undefined) byPipeline[p]++; }
+        for (const d of activeDeals) { const p = d.properties.pipeline; if (byPipeline[p] !== undefined) byPipeline[p]++; }
 
-        // Pré Vendas stats
+        // Pré Vendas stats (sem filtro de período — snapshot atual, inclui todos os estágios)
         const totalPreVendas = preVendasAll.length;
         const qualificados   = preVendasAll.filter(d => d.properties.dealstage !== BACKLOG_STAGE).length;
         const ativados       = preVendasAll.filter(d => ATIVADO_STAGES.includes(d.properties.dealstage)).length;
 
         // Filtered by pipeline pill
-        const filteredDeals = pipeline === 'todos' ? allDeals : allDeals.filter(d => d.properties.pipeline === PIPELINE_IDS[pipeline]);
-        const prevFiltered  = pipeline === 'todos' ? prevDeals : prevDeals.filter(d => d.properties.pipeline === PIPELINE_IDS[pipeline]);
+        const filteredDeals = pipeline === 'todos' ? activeDeals : activeDeals.filter(d => d.properties.pipeline === PIPELINE_IDS[pipeline]);
+        const prevFiltered  = pipeline === 'todos' ? activePrevDeals : activePrevDeals.filter(d => d.properties.pipeline === PIPELINE_IDS[pipeline]);
 
         const totalNovos = filteredDeals.length;
         const totalPrev  = prevFiltered.length;
@@ -306,7 +321,7 @@ export default async function handler(req, res) {
         return res.status(200).json({
           period, pipeline, portalId,
           byPipeline: {
-            total: allDeals.length, pre_vendas: byPipeline[PIPELINE_IDS.pre_vendas],
+            total: activeDeals.length, pre_vendas: byPipeline[PIPELINE_IDS.pre_vendas],
             smb: byPipeline[PIPELINE_IDS.smb], enterprise: byPipeline[PIPELINE_IDS.enterprise],
             expansao: byPipeline[PIPELINE_IDS.expansao], rcc: byPipeline[PIPELINE_IDS.rcc],
           },
