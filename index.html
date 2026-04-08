@@ -1248,44 +1248,45 @@
 
       // ── Render donut ──────────────────────────────────────────────────────
       function renderDonut(canais) {
-        const canvas = document.getElementById("donutCanvas");
-        if (!canvas) return;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = 170 * dpr; canvas.height = 170 * dpr;
-        canvas.style.width = "170px"; canvas.style.height = "170px";
-        const ctx = canvas.getContext("2d");
-        ctx.scale(dpr, dpr);
-        const cx = 85, cy = 85, r = 72, inner = 48;
-        const total = canais.reduce((s, c) => s + c.n, 0);
-        let angle = -Math.PI / 2;
-        const slices = [];
-        canais.forEach(c => {
-          const color = canalColor(c.canal || c.nome || '');
-          const slice = total > 0 ? (c.n / total) * 2 * Math.PI : 0;
-          slices.push({ c, start: angle, slice, color });
-          ctx.beginPath(); ctx.moveTo(cx, cy);
-          ctx.arc(cx, cy, r, angle, angle + slice); ctx.closePath();
-          ctx.fillStyle = color; ctx.fill();
-          angle += slice;
-        });
-        ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-        ctx.fillStyle = "#ffffff"; ctx.fill();
-        // % labels
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        slices.forEach(({ c, start, slice, color }) => {
-          const pct = total > 0 ? (c.n / total) * 100 : 0;
-          if (pct < 8) return;
-          const mid = start + slice / 2;
-          const labelR = (r + inner) / 2;
-          const lx = cx + Math.cos(mid) * labelR;
-          const ly = cy + Math.sin(mid) * labelR;
-          ctx.font = "bold 9px Inter,sans-serif";
-          ctx.fillStyle = "rgba(255,255,255,0.92)";
-          ctx.fillText(Math.round(pct) + "%", lx, ly);
-        });
-        // Update center total
-        const tot = document.getElementById("donutTotal");
-        if (tot) tot.textContent = total;
+        try {
+          const canvas = document.getElementById("donutCanvas");
+          if (!canvas || !canais || !canais.length) return;
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width = 170 * dpr; canvas.height = 170 * dpr;
+          canvas.style.width = "170px"; canvas.style.height = "170px";
+          const ctx = canvas.getContext("2d");
+          ctx.scale(dpr, dpr);
+          const cx = 85, cy = 85, r = 72, inner = 48;
+          const total = canais.reduce((s, c) => s + (c.n || 0), 0);
+          if (total === 0) return;
+          let angle = -Math.PI / 2;
+          const slices = [];
+          canais.forEach(c => {
+            const color = canalColor(c.canal || c.nome || '');
+            const slice = (c.n / total) * 2 * Math.PI;
+            slices.push({ c, start: angle, slice, color });
+            ctx.beginPath(); ctx.moveTo(cx, cy);
+            ctx.arc(cx, cy, r, angle, angle + slice); ctx.closePath();
+            ctx.fillStyle = color; ctx.fill();
+            angle += slice;
+          });
+          ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
+          ctx.fillStyle = "#ffffff"; ctx.fill();
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          slices.forEach(({ c, start, slice }) => {
+            const pct = (c.n / total) * 100;
+            if (pct < 8) return;
+            const mid = start + slice / 2;
+            const labelR = (r + inner) / 2;
+            const lx = cx + Math.cos(mid) * labelR;
+            const ly = cy + Math.sin(mid) * labelR;
+            ctx.font = "bold 9px Inter,sans-serif";
+            ctx.fillStyle = "rgba(255,255,255,0.92)";
+            ctx.fillText(Math.round(pct) + "%", lx, ly);
+          });
+          const tot = document.getElementById("donutTotal");
+          if (tot) tot.textContent = total;
+        } catch(e) { console.error('[Musa TOF] renderDonut error:', e); }
       }
 
       // ── Render rows ───────────────────────────────────────────────────────
@@ -4766,11 +4767,13 @@
     // ── Origem dos Leads ──────────────────────────────────────────────────
     const or = d.origem;
     if (or) {
-      // Renderiza tabela de canais com dados reais
       if (or.canais && typeof window.renderOrigemRows === 'function') {
-        window.renderOrigemRows(or.canais);
+        try {
+          window.renderOrigemRows(or.canais);
+        } catch(e) {
+          console.error('[Musa TOF] renderOrigemRows error:', e);
+        }
       }
-      // Mapeado vs Orgânico
       safeText('vg-mapeados',  or.mapeados);
       safeText('vg-organicos', or.organicos);
       const tot = (or.mapeados || 0) + (or.organicos || 0);
