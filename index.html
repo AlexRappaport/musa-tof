@@ -1297,6 +1297,7 @@
         renderDonut(canais);
 
         canais.forEach((c, idx) => {
+          try {
           const color    = canalColor(c.canal || c.nome || '');
           const nome     = c.canal || c.nome || '—';
           const n        = c.n || 0;
@@ -1415,6 +1416,7 @@
           container.appendChild(row);
           container.appendChild(dd);
           wrap.appendChild(container);
+          } catch(e) { console.error('[TOF] canal error:', (c && c.canal) || idx, e); }
         });
       };
 
