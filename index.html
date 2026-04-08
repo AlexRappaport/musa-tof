@@ -1393,7 +1393,7 @@
             ? `<table class="deal-table" style="margin-top:8px;min-width:760px;">
                 <thead><tr>
                   <th>Negociação</th><th>Entrada</th><th>Pipeline</th><th>Etapa</th>
-                  <th>Responsável</th><th>Closer</th><th>Porte</th><th>Últ. interação</th><th></th>
+                  <th>Proprietário</th><th>Closer</th><th>Porte</th><th>Últ. interação</th><th></th>
                 </tr></thead>
                 <tbody>${dealRowsHtml}</tbody>
               </table>`
@@ -4847,12 +4847,6 @@
     fetchVGData();
   };
 
-  const _origFilterVG = window.filterVGPipeline;
-  window.filterVGPipeline = function(pipe, el) {
-    if (_origFilterVG) _origFilterVG(pipe, el);
-    vgCurrentPipeline = PIPELINE_KEY_MAP[pipe] || 'todos';
-    fetchVGData();
-  };
 
   // ── Initial load ──────────────────────────────────────────────────────
   fetchVGData();
@@ -4972,65 +4966,21 @@
     el.style.color       = 'var(--salmon-dark)';
     el.style.fontWeight  = '600';
 
+    // Update label titles
     const d = VG_PIPELINE_DATA[pipe];
-    if (!d) return;
-
-    // Update labels
-    const origemLbl = document.getElementById('vg-origem-label');
-    if (origemLbl) origemLbl.textContent = d.origemLabel;
-    const perfilLbl = document.getElementById('vg-perfil-label');
-    if (perfilLbl) perfilLbl.textContent = d.perfilLabel;
-    const perfLbl = document.getElementById('vg-perf-label');
-    if (perfLbl) perfLbl.textContent = d.perfLabel;
-
-    // Só sobrescreve com dado estático se não houver dado live
-    if (!vgLiveData) {
-      // Update Entrada de Leads
-      const novosEl = document.getElementById('vg-novos-leads');
-      if (novosEl) novosEl.textContent = d.novos;
-      // Update donut total
-      const donutTotalEl = document.getElementById('donutTotal');
-      if (donutTotalEl) donutTotalEl.textContent = d.novos;
-      // Update top segments
-      const segWrap = document.getElementById('segmentoRows');
-      if (segWrap) {
-        segWrap.innerHTML = '';
-        const maxP = Math.max(...d.segmentos.map(s => s.pct));
-        d.segmentos.forEach(s => {
-          const row = document.createElement('div');
-          row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
-          row.innerHTML = `
-            <span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">${s.nome}</span>
-            <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
-              <div style="width:${(s.pct/maxP)*100}%;height:100%;background:${s.color};border-radius:10px;"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">${s.n}</span>
-            <span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">${s.pct}%</span>`;
-          segWrap.appendChild(row);
-        });
-        // Update Outros footer
-        const totalSeg = d.segmentos.reduce((s,x) => s+x.n, 0);
-        const outros = d.novos - totalSeg;
-        const outrosPct = Math.round(outros / d.novos * 100);
-        const footer = segWrap.parentElement.querySelector('[data-outros]');
-        if (footer) footer.textContent = outros + ' leads · ' + outrosPct + '%';
-      }
-      // Update total card label in segmentos
-      const segTotal = document.getElementById('seg-total-label');
-      if (segTotal) segTotal.textContent = d.novos;
+    if (d) {
+      const origemLbl = document.getElementById('vg-origem-label');
+      if (origemLbl) origemLbl.textContent = d.origemLabel;
+      const perfilLbl = document.getElementById('vg-perfil-label');
+      if (perfilLbl) perfilLbl.textContent = d.perfilLabel;
+      const perfLbl = document.getElementById('vg-perf-label');
+      if (perfLbl) perfLbl.textContent = d.perfLabel;
     }
 
-    // Update Performance bars
-    // Só sobrescreve cobertura com dado estático se não houver dado live
-    if (!vgLiveData) {
-      const cobEl = document.getElementById('vg-cobertura-val');
-      const cobBar = document.getElementById('vg-cobertura-bar-el');
-      if (cobEl) cobEl.textContent = d.cobertura + '%';
-      if (cobBar) cobBar.style.width = d.cobertura + '%';
-    }
-
-    const tempoEl = document.getElementById('vg-tempo-val');
-    if (tempoEl) tempoEl.textContent = d.tempo;
+    // Fetch dados reais da API para o pipeline selecionado
+    vgCurrentPipeline = PIPELINE_KEY_MAP[pipe] || 'todos';
+    vgLiveData = null; // reset para forçar refresh completo
+    fetchVGData();
   };
 
 </script>
