@@ -256,6 +256,55 @@ function aggregateCanais(curDeals, prevDeals, ownerMap, stageMap, portalId) {
     .sort((a, b) => b.n - a.n);
 }
 
+// ── Event deal IDs (tickets associados a deals via "Show no evento") ─────────
+async function fetchEventDealIds(token) {
+  try {
+    // 1. Buscar todos os tickets do pipeline Eventos na stage "Show no evento"
+    let tickets = [], after;
+    do {
+      const body = {
+        filterGroups: [{ filters: [
+          { propertyName: 'hs_pipeline',       operator: 'EQ', value: '872857629' },
+          { propertyName: 'hs_pipeline_stage', operator: 'EQ', value: '1308097367' },
+        ]}],
+        properties: ['hs_pipeline_stage'],
+        limit: 200,
+        ...(after ? { after } : {}),
+      };
+      const res = await fetch('https://api.hubapi.com/crm/v3/objects/tickets/search', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) return new Set();
+      const data = await res.json();
+      tickets = tickets.concat(data.results || []);
+      after = data.paging?.next?.after;
+    } while (after);
+
+    if (!tickets.length) return new Set();
+
+    // 2. Batch: para cada ticket, buscar os deals associados
+    const assocRes = await fetch('https://api.hubapi.com/crm/v4/associations/tickets/deals/batch/read', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inputs: tickets.map(t => ({ id: t.id })) }),
+    });
+    if (!assocRes.ok) return new Set();
+    const assocData = await assocRes.json();
+
+    const dealIds = new Set();
+    for (const result of (assocData.results || [])) {
+      for (const assoc of (result.to || [])) {
+        dealIds.add(String(assoc.toObjectId));
+      }
+    }
+    return dealIds;
+  } catch (e) {
+    return new Set(); // falha silenciosa — não quebra o funil
+  }
+}
+
 // ── Main handler ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -360,7 +409,16 @@ module.exports = async function handler(req, res) {
         });
       }
       case 'funil_kpis': {
-        const PROPOSTA_IDS_KPI      = ['1214475912','1224336643','1311051331','1331859376'];
+        const PROPOSTA_IDS_KPI      = [
+          // SMB: Prop. Aceita, Elaboração, Contrato Enviado, Concluído
+          '1214475912','1214475913','1214475914','1214475915',
+          // Enterprise: Prop. Aceita, Elaboração, Aguardando Assinatura, Concluído
+          '1224336643','1166521949','1224196453','1166521951',
+          // Expansão: Prop. Aceita, Elaboração de Contrato, Concluído
+          '1311051331','1311051332','1311052411',
+          // RCC: Proposta Aceita, Concluído
+          '1331859376','1331859377',
+        ];
         const PRE_VENDAS_KPI        = PIPELINE_IDS.pre_vendas;
         const OUTROS_PIPELINES      = [PIPELINE_IDS.smb, PIPELINE_IDS.enterprise, PIPELINE_IDS.expansao, PIPELINE_IDS.rcc];
         const REUNIAO_STAGES        = ['1295430921','1295463995'];
@@ -381,14 +439,15 @@ module.exports = async function handler(req, res) {
         const kpiPeriod = req.query.kpi_period || 'mtd';
         const [pStart, pEnd] = getKpiRange(kpiPeriod);
 
-        // Fetch deals + stageMap em paralelo
-        const [rawDeals, stageData] = await Promise.all([
+        // Fetch deals + stageMap + event deal IDs em paralelo
+        const [rawDeals, stageData, eventDealIds] = await Promise.all([
           fetchAllDeals(token, [
             { propertyName: 'createdate', operator: 'GTE', value: pStart },
             { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
             { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
           ]),
           fetchStageMap(token),
+          fetchEventDealIds(token),
         ]);
 
         const kpiLostIds = stageData.lostIds || {};
@@ -405,7 +464,7 @@ module.exports = async function handler(req, res) {
 
         const mkt = kpiDeals.filter(d => {
           const canal = (d.properties.hub2_deal__canal_de_aquisicao || '').toLowerCase();
-          return canal.includes('inbound') || isAbm(d);
+          return canal.includes('inbound') || isAbm(d) || eventDealIds.has(d.id);
         }).length;
 
         const mapeados  = kpiDeals.filter(d => isAbm(d)).length;
@@ -429,7 +488,16 @@ module.exports = async function handler(req, res) {
         const now = new Date();
         const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
         const REUN_C   = ['1295430921','1295463995'];
-        const CONTR_C  = ['1214475912','1224336643','1311051331','1331859376'];
+        const CONTR_C  = [
+          // SMB: Prop. Aceita, Elaboração, Contrato Enviado, Concluído
+          '1214475912','1214475913','1214475914','1214475915',
+          // Enterprise: Prop. Aceita, Elaboração, Aguardando Assinatura, Concluído
+          '1224336643','1166521949','1224196453','1166521951',
+          // Expansão: Prop. Aceita, Elaboração de Contrato, Concluído
+          '1311051331','1311051332','1311052411',
+          // RCC: Proposta Aceita, Concluído
+          '1331859376','1331859377',
+        ];
 
         // Build 5 period ranges
         const periods = [];
@@ -451,14 +519,15 @@ module.exports = async function handler(req, res) {
           }
         }
 
-        // Fetch all deals in full range + stageMap in parallel
-        const [rawAll, stageD] = await Promise.all([
+        // Fetch all deals in full range + stageMap + event deal IDs in parallel
+        const [rawAll, stageD, eventDealIds] = await Promise.all([
           fetchAllDeals(token, [
             { propertyName: 'createdate', operator: 'GTE', value: String(periods[0].start) },
             { propertyName: 'createdate', operator: 'LTE', value: String(periods[periods.length-1].end) },
             { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
           ]),
           fetchStageMap(token),
+          fetchEventDealIds(token),
         ]);
 
         const lostC = (stageD && stageD.lostIds) || {};
@@ -472,7 +541,7 @@ module.exports = async function handler(req, res) {
             return true;
           });
           const total    = pDeals.length;
-          const mkt      = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbm(d); }).length;
+          const mkt      = pDeals.filter(function(d){ const c=(d.properties.hub2_deal__canal_de_aquisicao||'').toLowerCase(); return c.includes('inbound')||isAbm(d)||eventDealIds.has(d.id); }).length;
           const mapeados = pDeals.filter(isAbm).length;
           const reuniao  = pDeals.filter(function(d){ return (d.properties.pipeline===PIPELINE_IDS.pre_vendas&&REUN_C.includes(d.properties.dealstage))||ABM_OUTROS_PIPES.includes(d.properties.pipeline); }).length;
           const contratos= pDeals.filter(function(d){ return CONTR_C.includes(d.properties.dealstage); }).length;
