@@ -1506,14 +1506,14 @@
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
             <div class="kpi-label" style="margin-bottom:0;">Top 5 Segmentos</div>
             <div style="display:flex;align-items:baseline;gap:4px;">
-              <span style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;">38</span>
+              <span id="vg-perfil-total" style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);letter-spacing:-0.03em;line-height:1;">—</span>
               <span style="font-size:10px;color:var(--gray-light);">leads no período</span>
             </div>
           </div>
           <div id="segmentoRows"></div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:10px;color:var(--gray-light);">Outros</span>
-            <span style="font-size:11px;font-weight:600;color:var(--gray-light);" data-outros>11 leads · 29%</span>
+            <span id="vg-perfil-outros" style="font-size:11px;font-weight:600;color:var(--gray-light);">—</span>
           </div>
         </div>
 
@@ -1564,35 +1564,6 @@
         </div>
 
       </div>
-
-      <script>
-      (function(){
-        // Base: 38 novos leads no período
-        const SEGMENTOS = [
-          { nome:"Indústria",  n:10, pct:26, color:"#8AA5FF" },
-          { nome:"Construção", n:6,  pct:16, color:"#FFBA86" },
-          { nome:"Ambiental",  n:5,  pct:13, color:"#52A862" },
-          { nome:"Saúde",      n:3,  pct:8,  color:"#9C88E8" },
-          { nome:"Logística",  n:3,  pct:8,  color:"#E3C545" },
-        ];
-        const MAX = Math.max(...SEGMENTOS.map(s => s.pct));
-        const wrap = document.getElementById("segmentoRows");
-        if (!wrap) return;
-        SEGMENTOS.forEach(s => {
-          const row = document.createElement("div");
-          row.style.cssText = "display:flex;align-items:center;gap:10px;margin-bottom:10px;";
-          row.innerHTML = `
-            <span style="font-size:11.5px;font-weight:500;color:var(--dark);width:88px;flex-shrink:0;">${s.nome}</span>
-            <div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
-              <div style="width:${(s.pct/MAX)*100}%;height:100%;background:${s.color};border-radius:10px;"></div>
-            </div>
-            <span style="font-size:11px;font-weight:700;font-family:'Inter',sans-serif;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">${s.n}</span>
-            <span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">${s.pct}%</span>
-          `;
-          wrap.appendChild(row);
-        });
-      })();
-      </script>
 
       <!-- Linha 3: Performance de qualificação -->
       <div class="sub-header" id="vg-perf-label">Performance de qualificação</div>
@@ -4870,6 +4841,13 @@
           segWrap.appendChild(row);
         });
       }
+      // Atualiza contador total e "Outros"
+      const totalNovos = d.entrada?.total ?? d.byPipeline?.total ?? 0;
+      safeText('vg-perfil-total', totalNovos || '—');
+      const top5n   = pe.segmentos.reduce(function(acc, s){ return acc + s.n; }, 0);
+      const outrosN = totalNovos - top5n;
+      const outrosPct = totalNovos > 0 ? Math.round(outrosN / totalNovos * 100) : 0;
+      safeText('vg-perfil-outros', outrosN > 0 ? outrosN + ' leads · ' + outrosPct + '%' : '—');
     }
 
     // ── ICP Match ─────────────────────────────────────────────────────────
