@@ -4857,11 +4857,11 @@
     if (pe && pe.portes) {
       const total = pe.portes.reduce((s, p) => s + p.n, 0) || 1;
       const porteMap = {};
-      pe.portes.forEach(p => { porteMap[p.porte] = p; });
-      function portePct(key) {
+      pe.portes.forEach(function(p) { porteMap[p.porte] = p; });
+      const portePct = function(key) {
         const p = porteMap[key];
         return p ? Math.round(p.n / total * 100) : 0;
-      }
+      };
       const entPct = portePct('Enterprise');
       const smbPct = portePct('SMB');
       const midPct = portePct('Gov'); // "Mid" está mapeado como "Gov" no HubSpot
