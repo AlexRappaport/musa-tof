@@ -1031,7 +1031,10 @@
             <svg id="fk-chev-total" width="10" height="6" viewBox="0 0 10 6" fill="none" style="opacity:0.3;transition:transform 0.18s;flex-shrink:0;margin-top:2px;"><path d="M1 1l4 4 4-4" stroke="var(--dark)" stroke-width="1.3" stroke-linecap="round"/></svg>
           </div>
           <div class="kpi-value medium" id="fk-total" style="font-size:22px;">—</div>
-          <div style="font-size:10px;color:var(--gray-light);margin-top:4px;">no período</div>
+          <div style="margin-top:5px;" id="fk-total-delta-wrap" style="display:none;">
+            <span class="delta neutral" id="fk-total-delta" style="font-size:10px;">—</span>
+          </div>
+          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;" id="fk-total-suffix">no período</div>
         </div>
         <!-- Marketing -->
         <div class="card animate-in" id="fk-card-mkt" onclick="toggleFunilChart('mkt')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
@@ -1067,7 +1070,7 @@
             <div class="kpi-value medium" id="fk-reu-n" style="font-size:22px;">—</div>
             <div id="fk-reu-pct" style="font-size:12px;font-weight:600;color:var(--blue-dark);">—</div>
           </div>
-          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">Pré Vendas / MKT</div>
+          <div style="font-size:9.5px;color:var(--gray-light);margin-top:4px;">PV · SMB · Ent · Exp · RCC</div>
         </div>
         <!-- Contratos Fechados -->
         <div class="card animate-in" id="fk-card-contr" onclick="toggleFunilChart('contr')" style="padding:16px 18px;cursor:pointer;transition:border-color 0.14s;">
@@ -4971,7 +4974,28 @@
   }
 
   function applyKpiData(d) {
-    safeText('fk-total',    d.total ?? '—');
+    safeText('fk-total', d.total ?? '—');
+
+    // Badge de comparação de período (WTD vs semana anterior / MTD vs mês anterior)
+    const deltaWrap  = document.getElementById('fk-total-delta-wrap');
+    const deltaBadge = document.getElementById('fk-total-delta');
+    const suffix     = document.getElementById('fk-total-suffix');
+    if (deltaWrap && deltaBadge && d.totalDeltaPct != null && d.kpi_period !== 'ytd') {
+      const pct  = d.totalDeltaPct;
+      const abs  = Math.abs(pct);
+      const arrow = pct > 0 ? '↑' : pct < 0 ? '↓' : '→';
+      const cls   = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
+      const label = d.kpi_period === 'wtd' ? 'vs sem. ant.' : 'vs mês ant.';
+      deltaBadge.textContent = arrow + ' ' + abs + '% ' + label;
+      deltaBadge.className   = 'delta ' + cls;
+      deltaBadge.style.fontSize = '10px';
+      deltaWrap.style.display   = 'block';
+      if (suffix) suffix.style.display = 'none';
+    } else {
+      if (deltaWrap) deltaWrap.style.display = 'none';
+      if (suffix)    suffix.style.display    = 'block';
+    }
+
     safeText('fk-mkt-n',   d.mkt?.n   ?? '—');
     safeText('fk-mkt-pct', d.mkt?.pct != null  ? d.mkt.pct  + '%' : '—');
     safeText('fk-map-n',   d.mapeados?.n   ?? '—');
