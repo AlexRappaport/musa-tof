@@ -1133,8 +1133,8 @@
         <div class="card" style="background:var(--dark);border-color:var(--dark);">
           <div class="kpi-label" style="color:rgba(255,255,255,0.4);">Total de Negócios</div>
           <div class="kpi-value large" id="vg-count-total" style="color:#fff;">93</div>
-          <div class="kpi-meta">
-            <span class="delta up" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">↑ 11% <span class="compare-suffix"></span></span>
+          <div style="margin-top:6px;" id="vg-total-delta-wrap" style="display:none;">
+            <span id="vg-total-delta" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.75);">—</span>
           </div>
           <div class="kpi-bar" style="background:rgba(255,255,255,0.12);margin-top:14px;"><div class="kpi-bar-fill" style="width:100%;background:rgba(255,255,255,0.35);"></div></div>
         </div>
@@ -1187,34 +1187,6 @@
       </div>
 
 
-
-      <!-- Linha 2: Entrada de Leads -->
-      <div class="sub-header">Entrada de Leads</div>
-      <div class="grid-3" id="vg-entrada-block" style="margin-bottom:12px;">
-
-        <div class="card animate-in">
-          <div class="kpi-label">Novos leads</div>
-          <div class="kpi-value medium" id="vg-novos-leads">38</div>
-          <div class="kpi-meta" id="periodSubLabel" style="color:var(--gray-light);">no período selecionado</div>
-        </div>
-
-        <div class="card animate-in">
-          <div class="kpi-label" id="compareLabel1">Evolução vs período anterior</div>
-          <div class="kpi-value small" id="vg-wow-pct" style="color:#2A7A3B;">—</div>
-          <div class="kpi-meta" id="vg-wow-meta">
-            <span class="delta neutral" id="vg-wow-badge">Carregando...</span>
-          </div>
-        </div>
-
-        <div class="card animate-in">
-          <div class="kpi-label" id="compareLabel2">Período anterior</div>
-          <div class="kpi-value small" id="vg-prev-total" style="color:var(--gray);">—</div>
-          <div class="kpi-meta">
-            <span class="delta neutral" id="vg-prev-badge">leads no período ant.</span>
-          </div>
-        </div>
-
-      </div>
 
       <!-- Filtro de Pipeline — segmenta Origem, Perfil e Scorecard -->
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
@@ -4995,20 +4967,36 @@
     const deltaWrap  = document.getElementById('fk-total-delta-wrap');
     const deltaBadge = document.getElementById('fk-total-delta');
     const suffix     = document.getElementById('fk-total-suffix');
-    if (deltaWrap && deltaBadge && d.totalDeltaPct != null && d.kpi_period !== 'ytd') {
-      const pct  = d.totalDeltaPct;
-      const abs  = Math.abs(pct);
+    // Badge espelho no bloco "Total de Negócios" — mesmo dado, mesmo cálculo
+    const vgDeltaWrap  = document.getElementById('vg-total-delta-wrap');
+    const vgDeltaBadge = document.getElementById('vg-total-delta');
+
+    if (d.totalDeltaPct != null && d.kpi_period !== 'ytd') {
+      const pct   = d.totalDeltaPct;
+      const abs   = Math.abs(pct);
       const arrow = pct > 0 ? '↑' : pct < 0 ? '↓' : '→';
       const cls   = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
       const label = d.kpi_period === 'wtd' ? 'vs sem. ant.' : 'vs mês ant.';
-      deltaBadge.textContent = arrow + ' ' + abs + '% ' + label;
-      deltaBadge.className   = 'delta ' + cls;
-      deltaBadge.style.fontSize = '10px';
-      deltaWrap.style.display   = 'block';
+      const txt   = arrow + ' ' + abs + '% ' + label;
+
+      // Funil block
+      if (deltaWrap && deltaBadge) {
+        deltaBadge.textContent = txt;
+        deltaBadge.className   = 'delta ' + cls;
+        deltaBadge.style.fontSize = '10px';
+        deltaWrap.style.display   = 'block';
+      }
       if (suffix) suffix.style.display = 'none';
+
+      // Pipeline block (mesmo dado)
+      if (vgDeltaWrap && vgDeltaBadge) {
+        vgDeltaBadge.textContent = txt;
+        vgDeltaWrap.style.display = 'block';
+      }
     } else {
-      if (deltaWrap) deltaWrap.style.display = 'none';
-      if (suffix)    suffix.style.display    = 'block';
+      if (deltaWrap)  deltaWrap.style.display  = 'none';
+      if (suffix)     suffix.style.display     = 'block';
+      if (vgDeltaWrap) vgDeltaWrap.style.display = 'none';
     }
 
     safeText('fk-mkt-n',   d.mkt?.n   ?? '—');
