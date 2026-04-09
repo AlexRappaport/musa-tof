@@ -454,23 +454,32 @@ module.exports = async function handler(req, res) {
         const sc = { qualificado: 0, a_validar: 0, recusar: 0, sem_status: 0 };
         for (const d of filteredDeals) {
           const s = (d.properties.status_da_negociacao || '').toLowerCase();
-          if (s.includes('qualificado')) sc.qualificado++;
-          else if (s.includes('validar')) sc.a_validar++;
-          else if (s.includes('recusar')) sc.recusar++;
-          else sc.sem_status++;
+          if (s.includes('qualificado') || s === 'cliente full' || s.includes('negociação'))
+            sc.qualificado++;
+          else if (s.includes('avaliar') || s.includes('validar'))
+            sc.a_validar++;
+          else if (s.includes('recusar'))
+            sc.recusar++;
+          else
+            sc.sem_status++;
         }
-        const comStatus = sc.qualificado + sc.a_validar + sc.recusar;
-        const cobertura = totalNovos > 0 ? Math.round(comStatus / totalNovos * 100) : 0;
 
         // Scorecard — período anterior (para badges de delta)
         const scPrev = { qualificado: 0, a_validar: 0, recusar: 0, sem_status: 0 };
         for (const d of prevFiltered) {
           const s = (d.properties.status_da_negociacao || '').toLowerCase();
-          if (s.includes('qualificado')) scPrev.qualificado++;
-          else if (s.includes('validar')) scPrev.a_validar++;
-          else if (s.includes('recusar')) scPrev.recusar++;
-          else scPrev.sem_status++;
+          if (s.includes('qualificado') || s === 'cliente full' || s.includes('negociação'))
+            scPrev.qualificado++;
+          else if (s.includes('avaliar') || s.includes('validar'))
+            scPrev.a_validar++;
+          else if (s.includes('recusar'))
+            scPrev.recusar++;
+          else
+            scPrev.sem_status++;
         }
+
+        const comStatus = sc.qualificado + sc.a_validar + sc.recusar;
+        const cobertura = totalNovos > 0 ? Math.round(comStatus / totalNovos * 100) : 0;
 
         // Tempo médio em backlog — mediana de dias que deals do Pré Vendas
         // criados no período AINDA estão em backlog (hoje - createdate)
@@ -496,7 +505,7 @@ module.exports = async function handler(req, res) {
           Math.max(0, (now_ts - new Date(d.properties.createdate).getTime()) / 86400000)
         );
         const tempoMediana = medianDays(tempoDias);
-        const tempoMedianaRounded = tempoMediana !== null ? Math.round(tempoMediana * 10) / 10 : null;
+        const tempoMedianaRounded = tempoMediana !== null ? Math.round(tempoMediana) : null;
 
         // Período anterior — mesmo cálculo sobre prevFiltered
         const tempoDealsPrev = prevFiltered.filter(d =>
@@ -508,9 +517,9 @@ module.exports = async function handler(req, res) {
           Math.max(0, (now_ts - new Date(d.properties.createdate).getTime()) / 86400000)
         );
         const tempoMedianaPrev = medianDays(tempoDiasPrev);
-        const tempoMedianaPrevRounded = tempoMedianaPrev !== null ? Math.round(tempoMedianaPrev * 10) / 10 : null;
+        const tempoMedianaPrevRounded = tempoMedianaPrev !== null ? Math.round(tempoMedianaPrev) : null;
         const tempoDelta = (tempoMedianaRounded !== null && tempoMedianaPrevRounded !== null)
-          ? Math.round((tempoMedianaRounded - tempoMedianaPrevRounded) * 10) / 10
+          ? Math.round(tempoMedianaRounded - tempoMedianaPrevRounded)
           : null;
 
         return res.status(200).json({
