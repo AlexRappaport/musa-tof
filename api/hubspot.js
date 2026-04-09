@@ -40,6 +40,8 @@ const DEAL_PROPS = [
 // Busca apenas o total (count) de deals — muito mais rápido que fetchAllDeals
 async function fetchDealCount(token, filters = []) {
   try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 4000);
     const body = {
       filterGroups: filters.length ? [{ filters }] : [],
       properties: ['dealstage'],
@@ -49,7 +51,9 @@ async function fetchDealCount(token, filters = []) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: ctrl.signal,
     });
+    clearTimeout(timer);
     if (!res.ok) return 0;
     const data = await res.json();
     return data.total || 0;
@@ -324,12 +328,16 @@ async function fetchEventDealIds(token) {
 async function fetchIcpDealIds(token, dealIds) {
   if (!dealIds || !dealIds.length) return new Set();
   try {
-    // 1. Busca empresas associadas aos deals (batch)
+    // 1. Busca empresas associadas aos deals (batch) — timeout 4s
+    const ctrl1 = new AbortController();
+    const t1 = setTimeout(() => ctrl1.abort(), 4000);
     const assocRes = await fetch('https://api.hubapi.com/crm/v4/associations/deals/companies/batch/read', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ inputs: dealIds.map(id => ({ id: String(id) })) }),
+      signal: ctrl1.signal,
     });
+    clearTimeout(t1);
     if (!assocRes.ok) return new Set();
     const assocData = await assocRes.json();
 
@@ -348,8 +356,10 @@ async function fetchIcpDealIds(token, dealIds) {
     }
     if (!allCompanyIds.size) return new Set();
 
-    // 2. Busca campo ICP das empresas (batch read)
+    // 2. Busca campo ICP das empresas (batch read) — timeout 4s
     const companyIds = [...allCompanyIds];
+    const ctrl2 = new AbortController();
+    const t2 = setTimeout(() => ctrl2.abort(), 4000);
     const batchRes = await fetch('https://api.hubapi.com/crm/v3/objects/companies/batch/read', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -357,7 +367,9 @@ async function fetchIcpDealIds(token, dealIds) {
         inputs: companyIds.map(id => ({ id })),
         properties: ['segmento_dentro_do_icp'],
       }),
+      signal: ctrl2.signal,
     });
+    clearTimeout(t2);
     if (!batchRes.ok) return new Set();
     const batchData = await batchRes.json();
 
