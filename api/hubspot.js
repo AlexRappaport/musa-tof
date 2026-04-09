@@ -32,6 +32,7 @@ const DEAL_PROPS = [
   'hubspot_owner_id','hub2_deal__canal_de_aquisicao','detalhamento_de_canal',
   'segmento___ibge','hub2_deal_segmento_detalhado','hub2_deal__classificacao_do_lead','status_da_negociacao',
   'hub2_deal__closer','hub2_deal__tipo_negociacao','amount','closedate',
+  'hs_v2_date_entered_current_stage',
 ].join(',');
 
 // ── HubSpot helpers ─────────────────────────────────────────────────────────
@@ -128,17 +129,10 @@ function getPeriodFilters(period) {
       prevEnd   = new Date(curStart); prevEnd.setMilliseconds(-1);
       break;
     }
-    case 'trimestre': {
-      const q = Math.floor(now.getMonth() / 3);
-      curStart = new Date(now.getFullYear(), q * 3, 1); curEnd = new Date();
-      prevStart = new Date(now.getFullYear(), (q - 1) * 3, 1);
-      prevEnd   = new Date(curStart); prevEnd.setMilliseconds(-1);
-      break;
-    }
-    case 'semestre': {
-      const h = now.getMonth() < 6 ? 0 : 6;
-      curStart = new Date(now.getFullYear(), h, 1); curEnd = new Date();
-      prevStart = new Date(h === 0 ? now.getFullYear() - 1 : now.getFullYear(), h === 0 ? 6 : 0, 1);
+    case 'mes_anterior': {
+      curStart  = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      curEnd    = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+      prevStart = new Date(now.getFullYear(), now.getMonth() - 2, 1);
       prevEnd   = new Date(curStart); prevEnd.setMilliseconds(-1);
       break;
     }
@@ -456,7 +450,7 @@ module.exports = async function handler(req, res) {
           }
         }
 
-        // Scorecard
+        // Scorecard — período atual
         const sc = { qualificado: 0, a_validar: 0, recusar: 0, sem_status: 0 };
         for (const d of filteredDeals) {
           const s = (d.properties.status_da_negociacao || '').toLowerCase();
@@ -467,6 +461,61 @@ module.exports = async function handler(req, res) {
         }
         const comStatus = sc.qualificado + sc.a_validar + sc.recusar;
         const cobertura = totalNovos > 0 ? Math.round(comStatus / totalNovos * 100) : 0;
+
+        // Scorecard — período anterior (para badges de delta)
+        const scPrev = { qualificado: 0, a_validar: 0, recusar: 0, sem_status: 0 };
+        for (const d of prevFiltered) {
+          const s = (d.properties.status_da_negociacao || '').toLowerCase();
+          if (s.includes('qualificado')) scPrev.qualificado++;
+          else if (s.includes('validar')) scPrev.a_validar++;
+          else if (s.includes('recusar')) scPrev.recusar++;
+          else scPrev.sem_status++;
+        }
+
+        // Tempo médio até qualificação — mediana de dias em backlog (Pré Vendas)
+        // Lógica: deals do Pré Vendas criados no período que JÁ saíram do backlog
+        // Proxy: hs_v2_date_entered_current_stage - createdate = tempo até sair do backlog
+        function medianDays(arr) {
+          if (!arr.length) return null;
+          const sorted = [...arr].sort((a, b) => a - b);
+          const mid = Math.floor(sorted.length / 2);
+          return sorted.length % 2 !== 0
+            ? sorted[mid]
+            : (sorted[mid - 1] + sorted[mid]) / 2;
+        }
+
+        const BACKLOG_STAGE_ID = '1292533281'; // stage backlog do Pré Vendas
+        const tempoDeals = filteredDeals.filter(d =>
+          d.properties.pipeline === PIPELINE_IDS.pre_vendas &&
+          d.properties.dealstage !== BACKLOG_STAGE_ID &&
+          d.properties.hs_v2_date_entered_current_stage &&
+          d.properties.createdate
+        );
+        const tempoDias = tempoDeals.map(d => {
+          const diff = new Date(d.properties.hs_v2_date_entered_current_stage).getTime()
+                     - new Date(d.properties.createdate).getTime();
+          return Math.max(0, diff / 86400000); // ms → dias
+        });
+        const tempoMediana = medianDays(tempoDias);
+        const tempoMedianaRounded = tempoMediana !== null ? Math.round(tempoMediana * 10) / 10 : null;
+
+        // Tempo médio — período anterior (para delta)
+        const tempoDealsPrev = prevFiltered.filter(d =>
+          d.properties.pipeline === PIPELINE_IDS.pre_vendas &&
+          d.properties.dealstage !== BACKLOG_STAGE_ID &&
+          d.properties.hs_v2_date_entered_current_stage &&
+          d.properties.createdate
+        );
+        const tempoDiasPrev = tempoDealsPrev.map(d => {
+          const diff = new Date(d.properties.hs_v2_date_entered_current_stage).getTime()
+                     - new Date(d.properties.createdate).getTime();
+          return Math.max(0, diff / 86400000);
+        });
+        const tempoMedianaPrev = medianDays(tempoDiasPrev);
+        const tempoMedianaPrevRounded = tempoMedianaPrev !== null ? Math.round(tempoMedianaPrev * 10) / 10 : null;
+        const tempoDelta = (tempoMedianaRounded !== null && tempoMedianaPrevRounded !== null)
+          ? Math.round((tempoMedianaRounded - tempoMedianaPrevRounded) * 10) / 10
+          : null;
 
         return res.status(200).json({
           period, pipeline, portalId,
@@ -484,7 +533,19 @@ module.exports = async function handler(req, res) {
             segDetalhados: Object.entries(segDetCount).map(([seg, n]) => ({ seg, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n).slice(0, 5),
             icpMatch:      { n: icpMatch, pct: icpPct },
           },
-          scorecard: { ...sc, cobertura, total: totalNovos },
+          scorecard: {
+            ...sc,
+            cobertura,
+            total: totalNovos,
+            passaram: comStatus,
+            pendentes: sc.sem_status,
+            prev: scPrev,
+          },
+          tempo: {
+            mediana:     tempoMedianaRounded,
+            medianaPrev: tempoMedianaPrevRounded,
+            delta:       tempoDelta,
+          },
         });
       }
       case 'funil_kpis': {
