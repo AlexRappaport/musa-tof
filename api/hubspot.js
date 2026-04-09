@@ -305,6 +305,69 @@ async function fetchEventDealIds(token) {
   }
 }
 
+// ── ICP Match — cruza deals com campo segmento_dentro_do_icp da Empresa ──────
+// Regra: segmento_dentro_do_icp = 'false' → ICP Match = Sim (label "1")
+async function fetchIcpDealIds(token, dealIds) {
+  if (!dealIds || !dealIds.length) return new Set();
+  try {
+    // 1. Busca empresas associadas aos deals (batch)
+    const assocRes = await fetch('https://api.hubapi.com/crm/v4/associations/deals/companies/batch/read', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inputs: dealIds.map(id => ({ id: String(id) })) }),
+    });
+    if (!assocRes.ok) return new Set();
+    const assocData = await assocRes.json();
+
+    // Monta mapa dealId → [companyId]
+    const dealToCompanies = {};
+    const allCompanyIds = new Set();
+    for (const result of (assocData.results || [])) {
+      const dId = String(result.from?.id || '');
+      if (!dId) continue;
+      dealToCompanies[dId] = [];
+      for (const assoc of (result.to || [])) {
+        const cId = String(assoc.toObjectId);
+        dealToCompanies[dId].push(cId);
+        allCompanyIds.add(cId);
+      }
+    }
+    if (!allCompanyIds.size) return new Set();
+
+    // 2. Busca campo ICP das empresas (batch read)
+    const companyIds = [...allCompanyIds];
+    const batchRes = await fetch('https://api.hubapi.com/crm/v3/objects/companies/batch/read', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        inputs: companyIds.map(id => ({ id })),
+        properties: ['segmento_dentro_do_icp'],
+      }),
+    });
+    if (!batchRes.ok) return new Set();
+    const batchData = await batchRes.json();
+
+    // Monta Set de company IDs que são ICP Match
+    const icpCompanyIds = new Set();
+    for (const c of (batchData.results || [])) {
+      if (c.properties?.segmento_dentro_do_icp === 'false') {
+        icpCompanyIds.add(String(c.id));
+      }
+    }
+
+    // 3. Retorna Set de deal IDs cujas empresas são ICP Match
+    const icpDealIds = new Set();
+    for (const [dId, cIds] of Object.entries(dealToCompanies)) {
+      if (cIds.some(cId => icpCompanyIds.has(cId))) {
+        icpDealIds.add(dId);
+      }
+    }
+    return icpDealIds;
+  } catch (e) {
+    return new Set(); // falha silenciosa
+  }
+}
+
 // ── Main handler ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -370,6 +433,11 @@ module.exports = async function handler(req, res) {
         let mapeados = 0;
         for (const d of filteredDeals) { if ((d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM') mapeados++; }
 
+        // ICP Match — cruza com empresas associadas
+        const icpDealIds = await fetchIcpDealIds(token, filteredDeals.map(d => d.id));
+        const icpMatch   = filteredDeals.filter(d => icpDealIds.has(String(d.id))).length;
+        const icpPct     = totalNovos > 0 ? Math.round(icpMatch / totalNovos * 100) : 0;
+
         // Perfil
         const segCount = {}, porteCount = {};
         for (const d of filteredDeals) {
@@ -404,6 +472,7 @@ module.exports = async function handler(req, res) {
           perfil: {
             segmentos: Object.entries(segCount).map(([seg, n]) => ({ seg, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n).slice(0, 5),
             portes:    Object.entries(porteCount).map(([porte, n]) => ({ porte, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n),
+            icpMatch:  { n: icpMatch, pct: icpPct },
           },
           scorecard: { ...sc, cobertura, total: totalNovos },
         });
