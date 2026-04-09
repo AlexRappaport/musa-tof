@@ -1097,8 +1097,10 @@
         </div>
       </div>
 
-      <!-- Filtro de período -->
-      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+
+      <!-- NOVOS LEADS POR PIPELINE -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sub-header" style="margin-bottom:0;">NOVOS LEADS POR PIPELINE</div>
         <div class="period-filter" id="periodFilter">
           <button class="period-btn" id="periodBtn" onclick="togglePeriod()">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1V4M11 1V4M1 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -1109,24 +1111,10 @@
             <div class="period-opt active" onclick="selectPeriod(this,'Semana Atual')">Semana Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="period-opt" onclick="selectPeriod(this,'Semana Anterior')">Semana Anterior<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="period-opt" onclick="selectPeriod(this,'Mês Atual')">Mês Atual<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="period-opt" onclick="selectPeriod(this,'Trimestre')">Trimestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="period-opt" onclick="selectPeriod(this,'Semestre')">Semestre<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="period-divider"></div>
-            <div class="period-custom">
-              <div class="period-custom-label">Período personalizado</div>
-              <div class="period-dates">
-                <input type="date" id="dateFrom" />
-                <span>até</span>
-                <input type="date" id="dateTo" />
-              </div>
-              <button class="period-apply" onclick="applyCustom()">Aplicar</button>
-            </div>
+            <div class="period-opt" onclick="selectPeriod(this,'Mês Anterior')">Mês Anterior<svg class="check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="var(--salmon-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
         </div>
       </div>
-
-      <!-- NOVOS LEADS POR PIPELINE -->
-      <div class="sub-header" style="margin-bottom:12px;">NOVOS LEADS POR PIPELINE</div>
       <div style="display:grid;grid-template-columns:1.2fr repeat(5,1fr);gap:10px;margin-bottom:24px;">
 
         <!-- Total -->
@@ -4686,8 +4674,7 @@
     'Semana Atual':    'semana_atual',
     'Semana Anterior': 'semana_anterior',
     'Mês Atual':       'mes_atual',
-    'Trimestre':       'trimestre',
-    'Semestre':        'semestre',
+    'Mês Anterior':    'mes_anterior',
   };
 
   let vgCurrentPeriod  = 'semana_atual';
