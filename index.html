@@ -1555,29 +1555,11 @@
           <div style="font-size:10px;color:var(--gray-light);margin-top:6px;"><strong id="vg-icp-n" style="color:var(--dark);font-weight:600;">—</strong> leads · Empresa: Segmento dentro do ICP</div>
         </div>
 
-        <!-- Card 4: Mapeado vs Orgânico -->
+        <!-- Card 4: Top 5 Segmento Detalhado -->
         <div class="card no-hover">
-          <div class="kpi-label" style="margin-bottom:6px;">Mapeado vs Orgânico</div>
-          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
-            <div style="text-align:center;">
-              <div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--blue-dark);line-height:1;">22</div>
-              <div style="font-size:9px;color:var(--gray-light);margin-top:2px;">mapeados</div>
-            </div>
-            <div style="flex:1;height:6px;background:var(--border);border-radius:10px;overflow:hidden;display:flex;gap:1px;">
-              <div style="width:58%;height:100%;background:var(--blue);border-radius:10px 0 0 10px;"></div>
-              <div style="width:42%;height:100%;background:var(--salmon);border-radius:0 10px 10px 0;"></div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:22px;font-weight:700;font-family:'Inter',sans-serif;color:var(--salmon-dark);line-height:1;">16</div>
-              <div style="font-size:9.5px;color:var(--gray-light);margin-top:2px;">orgânicos</div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-            <div>
-              <span style="font-size:10px;color:var(--blue-dark);font-weight:600;">58% mapeados</span>
-              <div style="font-size:9px;color:var(--gray-light);margin-top:2px;">Detalhamento de Canal = OUT - Lista ABM</div>
-            </div>
-            <span style="font-size:10px;color:var(--salmon-dark);font-weight:600;">42% orgânicos</span>
+          <div class="kpi-label" style="margin-bottom:10px;">TOP 5 SEGMENTO DETALHADO</div>
+          <div id="segDetRows">
+            <div style="font-size:11px;color:var(--gray-light);">Carregando…</div>
           </div>
         </div>
 
@@ -4896,12 +4878,34 @@
       safeText('vg-icp-pct', icp.pct + '%');
       safeText('vg-icp-n',   icp.n);
       safeBar('vg-icp-bar',  icp.pct);
-      // Cor condicional: verde ≥ 50%, amarelo ≥ 30%, vermelho < 30%
       const icpColor = icp.pct >= 50 ? 'var(--green)' : icp.pct >= 30 ? 'var(--yellow)' : 'var(--red)';
       const icpPctEl = document.getElementById('vg-icp-pct');
       const icpBarEl = document.getElementById('vg-icp-bar');
       if (icpPctEl) icpPctEl.style.color = icpColor;
       if (icpBarEl) icpBarEl.style.background = icpColor;
+    }
+
+    // ── Segmento Detalhado ────────────────────────────────────────────────
+    if (pe && pe.segDetalhados) {
+      const detWrap = document.getElementById('segDetRows');
+      if (detWrap) {
+        detWrap.innerHTML = '';
+        const colors = ['#8AA5FF','#FFBA86','#52A862','#9C88E8','#E3C545'];
+        const maxN = Math.max(...pe.segDetalhados.map(s => s.n), 1);
+        pe.segDetalhados.forEach(function(s, i) {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:9px;';
+          row.innerHTML =
+            '<span style="font-size:10.5px;font-weight:500;color:var(--dark);width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+s.seg+'">'+s.seg+'</span>'
+            + '<div style="flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="width:'+(s.n/maxN*100)+'%;height:100%;background:'+colors[i % colors.length]+';border-radius:10px;"></div></div>'
+            + '<span style="font-size:11px;font-weight:700;color:var(--dark);width:18px;text-align:right;flex-shrink:0;">'+s.n+'</span>'
+            + '<span style="font-size:10px;color:var(--gray-light);width:32px;text-align:right;flex-shrink:0;">'+s.pct+'%</span>';
+          detWrap.appendChild(row);
+        });
+        if (!pe.segDetalhados.length) {
+          detWrap.innerHTML = '<div style="font-size:11px;color:var(--gray-light);">Sem dados no período</div>';
+        }
+      }
     }
 
     // ── Scorecard ─────────────────────────────────────────────────────────
