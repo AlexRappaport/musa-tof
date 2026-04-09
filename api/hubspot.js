@@ -36,6 +36,26 @@ const DEAL_PROPS = [
 ].join(',');
 
 // ── HubSpot helpers ─────────────────────────────────────────────────────────
+
+// Busca apenas o total (count) de deals — muito mais rápido que fetchAllDeals
+async function fetchDealCount(token, filters = []) {
+  try {
+    const body = {
+      filterGroups: filters.length ? [{ filters }] : [],
+      properties: ['dealstage'],
+      limit: 1,
+    };
+    const res = await fetch('https://api.hubapi.com/crm/v3/objects/deals/search', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) return 0;
+    const data = await res.json();
+    return data.total || 0;
+  } catch (e) { return 0; }
+}
+
 async function fetchAllDeals(token, filters = []) {
   let deals = [], after;
   do {
@@ -384,13 +404,19 @@ module.exports = async function handler(req, res) {
         const pipeFilter = { propertyName: 'pipeline', operator: 'IN', values: ALL_PIPELINE_IDS };
 
         // Fetch em paralelo — todas as chamadas independentes juntas
-        const [allDeals, prevDeals, preVendasAll, stageData, portalId, ownerMap] = await Promise.all([
+        // preVendasAll substituído por 3 contagens leves (muito mais rápido)
+        const PV_FILTER = { propertyName: 'pipeline', operator: 'EQ', value: PIPELINE_IDS.pre_vendas };
+        const [allDeals, prevDeals, stageData, portalId, ownerMap,
+               pvTotal, pvQualif, pvAtivados] = await Promise.all([
           fetchAllDeals(token, [...curFilter,  pipeFilter]),
           fetchAllDeals(token, [...prevFilter, pipeFilter]),
-          fetchAllDeals(token, [{ propertyName: 'pipeline', operator: 'EQ', value: PIPELINE_IDS.pre_vendas }]),
           fetchStageMap(token),
           fetchPortalId(token),
           fetchOwners(token),
+          // Snapshot Pré Vendas via count-only (1 chamada por métrica, sem paginação)
+          fetchDealCount(token, [PV_FILTER]),
+          fetchDealCount(token, [PV_FILTER, { propertyName: 'dealstage', operator: 'NEQ', value: BACKLOG_STAGE }]),
+          fetchDealCount(token, [PV_FILTER, { propertyName: 'dealstage', operator: 'IN', values: ATIVADO_STAGES }]),
         ]);
 
         const stageMap  = stageData.labels  || {};
@@ -406,9 +432,9 @@ module.exports = async function handler(req, res) {
         for (const d of activeDeals) { const p = d.properties.pipeline; if (byPipeline[p] !== undefined) byPipeline[p]++; }
 
         // Pré Vendas stats (sem filtro de período — snapshot atual, inclui todos os estágios)
-        const totalPreVendas = preVendasAll.length;
-        const qualificados   = preVendasAll.filter(d => d.properties.dealstage !== BACKLOG_STAGE).length;
-        const ativados       = preVendasAll.filter(d => ATIVADO_STAGES.includes(d.properties.dealstage)).length;
+        const totalPreVendas = pvTotal;
+        const qualificados   = pvQualif;
+        const ativados       = pvAtivados;
 
         // Filtered by pipeline pill
         const filteredDeals = pipeline === 'todos' ? activeDeals : activeDeals.filter(d => d.properties.pipeline === PIPELINE_IDS[pipeline]);
