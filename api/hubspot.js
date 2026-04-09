@@ -365,7 +365,7 @@ async function fetchIcpDealIds(token, dealIds) {
 // ── Main handler ─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -373,7 +373,9 @@ module.exports = async function handler(req, res) {
   const token = process.env.HUBSPOT_API_KEY;
   if (!token) return res.status(500).json({ error: 'HUBSPOT_API_KEY not configured' });
 
-  const { endpoint, period = 'mes_atual', pipeline = 'todos' } = req.query;
+  // Aceita params tanto via query string (GET) quanto via body (POST)
+  const params = req.method === 'POST' ? (req.body || {}) : req.query;
+  const { endpoint, period = 'mes_atual', pipeline = 'todos' } = params;
 
   try {
     switch (endpoint) {
@@ -381,16 +383,12 @@ module.exports = async function handler(req, res) {
         const { curFilter, prevFilter } = getPeriodFilters(period);
         const pipeFilter = { propertyName: 'pipeline', operator: 'IN', values: ALL_PIPELINE_IDS };
 
-        // Fetch tudo em paralelo — max 4 chamadas para evitar rate limit
-        const [allDeals, prevDeals, preVendasAll, stageData] = await Promise.all([
+        // Fetch em paralelo — todas as chamadas independentes juntas
+        const [allDeals, prevDeals, preVendasAll, stageData, portalId, ownerMap] = await Promise.all([
           fetchAllDeals(token, [...curFilter,  pipeFilter]),
           fetchAllDeals(token, [...prevFilter, pipeFilter]),
           fetchAllDeals(token, [{ propertyName: 'pipeline', operator: 'EQ', value: PIPELINE_IDS.pre_vendas }]),
           fetchStageMap(token),
-        ]);
-
-        // Fetch owners e portalId em sequência leve após os deals
-        const [portalId, ownerMap] = await Promise.all([
           fetchPortalId(token),
           fetchOwners(token),
         ]);
@@ -614,7 +612,7 @@ module.exports = async function handler(req, res) {
           return null; // ytd sem comparação
         }
 
-        const kpiPeriod = req.query.kpi_period || 'wtd';
+        const kpiPeriod = params.kpi_period || 'wtd';
         const [pStart, pEnd] = getKpiRange(kpiPeriod);
         const prevRange = getPrevKpiRange(kpiPeriod);
 
@@ -679,7 +677,7 @@ module.exports = async function handler(req, res) {
       }
 
       case 'funil_chart': {
-        const chartMode = req.query.mode || 'wtd';
+        const chartMode = params.mode || 'wtd';
         const now = new Date();
         const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
         const REUN_C   = ['1295430921','1295463995'];
