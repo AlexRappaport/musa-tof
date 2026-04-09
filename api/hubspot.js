@@ -30,7 +30,7 @@ function isAbm(d) {
 const DEAL_PROPS = [
   'dealname','pipeline','dealstage','createdate','hs_lastmodifieddate',
   'hubspot_owner_id','hub2_deal__canal_de_aquisicao','detalhamento_de_canal',
-  'segmento___ibge','hub2_deal__classificacao_do_lead','status_da_negociacao',
+  'segmento___ibge','hub2_deal_segmento_detalhado','hub2_deal__classificacao_do_lead','status_da_negociacao',
   'hub2_deal__closer','hub2_deal__tipo_negociacao','amount','closedate',
 ].join(',');
 
@@ -439,12 +439,21 @@ module.exports = async function handler(req, res) {
         const icpPct     = totalNovos > 0 ? Math.round(icpMatch / totalNovos * 100) : 0;
 
         // Perfil
-        const segCount = {}, porteCount = {};
+        const segCount = {}, porteCount = {}, segDetCount = {};
         for (const d of filteredDeals) {
           const seg   = d.properties.segmento___ibge                  || 'Não definido';
           const porte = d.properties.hub2_deal__classificacao_do_lead || 'Não definido';
           segCount[seg]     = (segCount[seg]     || 0) + 1;
           porteCount[porte] = (porteCount[porte] || 0) + 1;
+
+          // Segmento detalhado — campo pode ter múltiplos valores separados por ";"
+          const detRaw = d.properties.hub2_deal_segmento_detalhado || '';
+          if (detRaw) {
+            detRaw.split(';').forEach(s => {
+              const det = s.trim();
+              if (det) segDetCount[det] = (segDetCount[det] || 0) + 1;
+            });
+          }
         }
 
         // Scorecard
@@ -470,9 +479,10 @@ module.exports = async function handler(req, res) {
           entrada:   { total: totalNovos, prevTotal: totalPrev, delta, deltaPct },
           origem:    { canais, mapeados, organicos: totalNovos - mapeados },
           perfil: {
-            segmentos: Object.entries(segCount).map(([seg, n]) => ({ seg, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n).slice(0, 5),
-            portes:    Object.entries(porteCount).map(([porte, n]) => ({ porte, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n),
-            icpMatch:  { n: icpMatch, pct: icpPct },
+            segmentos:     Object.entries(segCount).map(([seg, n]) => ({ seg, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n).slice(0, 5),
+            portes:        Object.entries(porteCount).map(([porte, n]) => ({ porte, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n),
+            segDetalhados: Object.entries(segDetCount).map(([seg, n]) => ({ seg, n, pct: totalNovos > 0 ? Math.round(n / totalNovos * 100) : 0 })).sort((a, b) => b.n - a.n).slice(0, 5),
+            icpMatch:      { n: icpMatch, pct: icpPct },
           },
           scorecard: { ...sc, cobertura, total: totalNovos },
         });
