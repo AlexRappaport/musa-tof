@@ -1517,25 +1517,26 @@
         <div class="card no-hover">
           <div class="kpi-label" style="margin-bottom:10px;">Porte</div>
           <div style="display:flex;height:7px;border-radius:4px;overflow:hidden;gap:1px;margin-bottom:8px;">
-            <div style="width:38%;background:var(--blue);border-radius:3px 0 0 3px;" title="Enterprise 38%"></div>
-            <div style="width:35%;background:var(--salmon);"></div>
-            <div style="width:15%;background:var(--yellow);border-radius:0 3px 3px 0;"></div>
-            <div style="width:12%;background:var(--border);border-radius:0 3px 3px 0;"></div>
+            <div id="vg-porte-bar-ent" style="width:38%;background:var(--blue);border-radius:3px 0 0 3px;"></div>
+            <div id="vg-porte-bar-smb" style="width:35%;background:var(--salmon);"></div>
+            <div id="vg-porte-bar-mid" style="width:15%;background:var(--yellow);"></div>
+            <div id="vg-porte-bar-sem" style="width:12%;background:var(--border);border-radius:0 3px 3px 0;"></div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
-              <span style="width:7px;height:7px;border-radius:2px;background:var(--blue);display:inline-block;"></span>Enterprise <strong style="color:var(--dark);">38%</strong>
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--blue);display:inline-block;"></span>Enterprise <strong id="vg-porte-pct-ent" style="color:var(--dark);">—%</strong>
             </span>
             <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
-              <span style="width:7px;height:7px;border-radius:2px;background:var(--salmon);display:inline-block;"></span>SMB <strong style="color:var(--dark);">35%</strong>
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--salmon);display:inline-block;"></span>SMB <strong id="vg-porte-pct-smb" style="color:var(--dark);">—%</strong>
             </span>
             <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
-              <span style="width:7px;height:7px;border-radius:2px;background:var(--yellow);display:inline-block;"></span>Mid <strong style="color:var(--dark);">15%</strong>
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--yellow);display:inline-block;"></span>Mid <strong id="vg-porte-pct-mid" style="color:var(--dark);">—%</strong>
             </span>
             <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--gray);">
-              <span style="width:7px;height:7px;border-radius:2px;background:var(--border);display:inline-block;"></span>Sem def. <strong style="color:var(--gray-light);">12%</strong>
+              <span style="width:7px;height:7px;border-radius:2px;background:var(--border);display:inline-block;"></span>Sem def. <strong id="vg-porte-pct-sem" style="color:var(--gray-light);">—%</strong>
             </span>
           </div>
+          <div style="font-size:9px;color:var(--gray-light);margin-top:8px;">Segue período · pipeline</div>
         </div>
 
         <!-- Card 4: ICP Match -->
@@ -1560,17 +1561,18 @@
         <div class="card animate-in">
           <div class="kpi-label">Cobertura do scorecard</div>
           <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
-            <div class="kpi-value medium">61%</div>
+            <div id="vg-cobertura-val" class="kpi-value medium">—%</div>
             <div style="font-size:11px;color:var(--gray-light);padding-bottom:4px;">dos leads qualificados</div>
           </div>
           <div style="display:flex;gap:3px;height:8px;border-radius:10px;overflow:hidden;">
-            <div style="width:61%;background:var(--blue);border-radius:10px;"></div>
-            <div style="width:39%;background:var(--border);border-radius:10px;"></div>
+            <div id="vg-cobertura-bar-el" style="width:0%;background:var(--blue);border-radius:10px;transition:width 0.4s ease;"></div>
+            <div style="flex:1;background:var(--border);border-radius:10px;"></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:6px;">
             <span id="vg-sc-passaram" style="font-size:10px;color:var(--blue-dark);font-weight:600;">— passaram</span>
             <span id="vg-sc-pendentes" style="font-size:10px;color:var(--gray-light);">— pendentes</span>
           </div>
+          <div style="font-size:9px;color:var(--gray-light);margin-top:6px;">Segue período · pipeline</div>
         </div>
 
         <div class="card animate-in">
@@ -1579,7 +1581,8 @@
             <div id="vg-tempo-val" class="kpi-value medium">—</div>
             <div id="vg-tempo-delta" class="delta neutral" style="margin-bottom:4px;">—</div>
           </div>
-          <div style="font-size:11px;color:var(--gray-light);line-height:1.6;">Mediana de tempo em Backlog antes de ser movido para <strong style="font-weight:600;color:var(--gray);">Recusar</strong>, <strong style="font-weight:600;color:var(--gray);">A Validar</strong> ou <strong style="font-weight:600;color:var(--gray);">Definição de Canal</strong></div>
+          <div style="font-size:11px;color:var(--gray-light);line-height:1.6;">Mediana de dias que leads criados no período estão parados em <strong style="font-weight:600;color:var(--gray);">Backlog</strong> sem classificação</div>
+          <div style="font-size:9px;color:var(--gray-light);margin-top:6px;">Pré Vendas/MKT · segue período</div>
         </div>
 
       </div>
@@ -4850,7 +4853,33 @@
       if (icpBarEl) icpBarEl.style.background = icpColor;
     }
 
-    // ── Segmento Detalhado ────────────────────────────────────────────────
+    // ── Porte ──────────────────────────────────────────────────────────────
+    if (pe && pe.portes) {
+      const total = pe.portes.reduce((s, p) => s + p.n, 0) || 1;
+      const porteMap = {};
+      pe.portes.forEach(p => { porteMap[p.porte] = p; });
+      function portePct(key) {
+        const p = porteMap[key];
+        return p ? Math.round(p.n / total * 100) : 0;
+      }
+      const entPct = portePct('Enterprise');
+      const smbPct = portePct('SMB');
+      const midPct = portePct('Gov'); // "Mid" está mapeado como "Gov" no HubSpot
+      const semPct = portePct('Não definido');
+
+      // Barras
+      const setBar = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = pct + '%'; };
+      setBar('vg-porte-bar-ent', entPct);
+      setBar('vg-porte-bar-smb', smbPct);
+      setBar('vg-porte-bar-mid', midPct);
+      setBar('vg-porte-bar-sem', semPct);
+
+      // Labels
+      safeText('vg-porte-pct-ent', entPct + '%');
+      safeText('vg-porte-pct-smb', smbPct + '%');
+      safeText('vg-porte-pct-mid', midPct + '%');
+      safeText('vg-porte-pct-sem', semPct + '%');
+    }
     if (pe && pe.segDetalhados) {
       const detWrap = document.getElementById('segDetRows');
       if (detWrap) {
