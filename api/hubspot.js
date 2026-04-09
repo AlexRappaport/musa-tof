@@ -418,6 +418,20 @@ module.exports = async function handler(req, res) {
         const totalNovos = filteredDeals.length;
         const totalPrev  = prevFiltered.length;
         const delta      = totalNovos - totalPrev;
+
+        // Pool qualificado — mesma regra do funil_kpis:
+        // exclui deals ABM não qualificados (detalhamento = OUT - Lista ABM mas ainda em stages iniciais)
+        // Usado para: perfil, scorecard, tempo médio
+        const qualifiedDeals     = filteredDeals.filter(d => {
+          const detalhe = d.properties.detalhamento_de_canal || '';
+          if (detalhe === 'OUT - Lista ABM') return isAbm(d);
+          return true;
+        });
+        const prevQualifiedDeals = prevFiltered.filter(d => {
+          const detalhe = d.properties.detalhamento_de_canal || '';
+          if (detalhe === 'OUT - Lista ABM') return isAbm(d);
+          return true;
+        });
         const deltaPct   = totalPrev > 0 ? Math.round(delta / totalPrev * 100) : null;
 
         // Canal aggregation (rich)
@@ -427,14 +441,15 @@ module.exports = async function handler(req, res) {
         let mapeados = 0;
         for (const d of filteredDeals) { if ((d.properties.detalhamento_de_canal || '') === 'OUT - Lista ABM') mapeados++; }
 
-        // ICP Match — cruza com empresas associadas
-        const icpDealIds = await fetchIcpDealIds(token, filteredDeals.map(d => d.id));
-        const icpMatch   = filteredDeals.filter(d => icpDealIds.has(String(d.id))).length;
-        const icpPct     = totalNovos > 0 ? Math.round(icpMatch / totalNovos * 100) : 0;
+        // ICP Match — cruza com empresas associadas (usa pool qualificado)
+        const icpDealIds = await fetchIcpDealIds(token, qualifiedDeals.map(d => d.id));
+        const icpMatch   = qualifiedDeals.filter(d => icpDealIds.has(String(d.id))).length;
+        const qualTotal  = qualifiedDeals.length;
+        const icpPct     = qualTotal > 0 ? Math.round(icpMatch / qualTotal * 100) : 0;
 
-        // Perfil
+        // Perfil — usa pool qualificado (mesma base do Funil)
         const segCount = {}, porteCount = {}, segDetCount = {};
-        for (const d of filteredDeals) {
+        for (const d of qualifiedDeals) {
           const seg   = d.properties.segmento___ibge                  || 'Não definido';
           const porte = d.properties.hub2_deal__classificacao_do_lead || 'Não definido';
           segCount[seg]     = (segCount[seg]     || 0) + 1;
@@ -450,9 +465,9 @@ module.exports = async function handler(req, res) {
           }
         }
 
-        // Scorecard — período atual
+        // Scorecard — período atual (usa pool qualificado)
         const sc = { qualificado: 0, a_validar: 0, recusar: 0, sem_status: 0 };
-        for (const d of filteredDeals) {
+        for (const d of qualifiedDeals) {
           const s = (d.properties.status_da_negociacao || '').toLowerCase();
           if (s.includes('qualificado') || s === 'cliente full' || s.includes('negociação'))
             sc.qualificado++;
@@ -464,9 +479,9 @@ module.exports = async function handler(req, res) {
             sc.sem_status++;
         }
 
-        // Scorecard — período anterior (para badges de delta)
+        // Scorecard — período anterior (usa pool qualificado anterior)
         const scPrev = { qualificado: 0, a_validar: 0, recusar: 0, sem_status: 0 };
-        for (const d of prevFiltered) {
+        for (const d of prevQualifiedDeals) {
           const s = (d.properties.status_da_negociacao || '').toLowerCase();
           if (s.includes('qualificado') || s === 'cliente full' || s.includes('negociação'))
             scPrev.qualificado++;
@@ -479,7 +494,7 @@ module.exports = async function handler(req, res) {
         }
 
         const comStatus = sc.qualificado + sc.a_validar + sc.recusar;
-        const cobertura = totalNovos > 0 ? Math.round(comStatus / totalNovos * 100) : 0;
+        const cobertura = qualTotal > 0 ? Math.round(comStatus / qualTotal * 100) : 0;
 
         // Tempo médio em backlog — mediana de dias que deals do Pré Vendas
         // criados no período AINDA estão em backlog (hoje - createdate)
@@ -496,7 +511,7 @@ module.exports = async function handler(req, res) {
         const BACKLOG_STAGE_ID = '1292533281';
         const now_ts = Date.now();
 
-        const tempoDeals = filteredDeals.filter(d =>
+        const tempoDeals = qualifiedDeals.filter(d =>
           d.properties.pipeline === PIPELINE_IDS.pre_vendas &&
           d.properties.dealstage === BACKLOG_STAGE_ID &&
           d.properties.createdate
@@ -507,8 +522,8 @@ module.exports = async function handler(req, res) {
         const tempoMediana = medianDays(tempoDias);
         const tempoMedianaRounded = tempoMediana !== null ? Math.round(tempoMediana) : null;
 
-        // Período anterior — mesmo cálculo sobre prevFiltered
-        const tempoDealsPrev = prevFiltered.filter(d =>
+        // Período anterior — mesmo cálculo sobre prevQualifiedDeals
+        const tempoDealsPrev = prevQualifiedDeals.filter(d =>
           d.properties.pipeline === PIPELINE_IDS.pre_vendas &&
           d.properties.dealstage === BACKLOG_STAGE_ID &&
           d.properties.createdate
