@@ -4776,13 +4776,14 @@
     if (overlay) overlay.style.display = on ? 'flex' : 'none';
   }
 
-  async function fetchVGData() {
-    // Cancela qualquer fetch anterior em andamento
-    if (vgAbortController) vgAbortController.abort();
-    vgAbortController = new AbortController();
+  async function fetchVGData(retryCount = 0) {
+    // Novo abort controller apenas no primeiro disparo (não nos retries)
+    if (retryCount === 0) {
+      if (vgAbortController) vgAbortController.abort();
+      vgAbortController = new AbortController();
+      setVGLoading(true);
+    }
     const signal = vgAbortController.signal;
-
-    setVGLoading(true);
     try {
       const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}`;
       const res = await fetch(url, { signal });
@@ -4790,15 +4791,23 @@
       const d = await res.json();
       vgLiveData = d;
       applyVGData(d);
-    } catch (err) {
-      if (err.name === 'AbortError') return; // fetch cancelado — ignora silenciosamente
-      console.warn('HubSpot API unavailable:', err.message, '— using simulated data');
-      const badge = document.getElementById('vg-last-refresh');
-      if (badge) badge.textContent = 'Dados simulados · API indisponível';
-    } finally {
       setVGLoading(false);
       const overlay = document.getElementById('vg-loading-overlay');
       if (overlay) overlay.style.display = 'none';
+    } catch (err) {
+      if (err.name === 'AbortError') { setVGLoading(false); return; }
+      if (retryCount < 2) {
+        // Auto-retry: 2s na primeira tentativa, 4s na segunda
+        setTimeout(() => fetchVGData(retryCount + 1), retryCount === 0 ? 2000 : 4000);
+        return; // mantém loading spinner enquanto tenta
+      }
+      // Desiste após 3 tentativas
+      setVGLoading(false);
+      const overlay = document.getElementById('vg-loading-overlay');
+      if (overlay) overlay.style.display = 'none';
+      console.warn('HubSpot API unavailable:', err.message, '— using simulated data');
+      const badge = document.getElementById('vg-last-refresh');
+      if (badge) badge.textContent = 'Dados simulados · API indisponível';
     }
   }
 
@@ -4958,9 +4967,11 @@
   let kpiCurrentPeriod = 'wtd';
   let kpiAbortController = null;
 
-  async function fetchKpiData() {
-    if (kpiAbortController) kpiAbortController.abort();
-    kpiAbortController = new AbortController();
+  async function fetchKpiData(retryCount = 0) {
+    if (retryCount === 0) {
+      if (kpiAbortController) kpiAbortController.abort();
+      kpiAbortController = new AbortController();
+    }
     try {
       const url = `/api/hubspot?endpoint=funil_kpis&kpi_period=${kpiCurrentPeriod}`;
       const res = await fetch(url, { signal: kpiAbortController.signal });
@@ -4969,6 +4980,10 @@
       applyKpiData(d);
     } catch(e) {
       if (e.name === 'AbortError') return;
+      if (retryCount < 2) {
+        setTimeout(() => fetchKpiData(retryCount + 1), retryCount === 0 ? 2000 : 4000);
+        return;
+      }
       console.warn('[Musa TOF] KPI fetch failed:', e.message);
     }
   }
