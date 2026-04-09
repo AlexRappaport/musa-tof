@@ -5104,7 +5104,11 @@
       ctx.fillText(d.label, xPos(i), H - 6);
     });
 
+    // Bucket para coletar labels de TODAS as linhas antes de renderizar
+    var pendingLabels = []; // { x, rawY, v, color }
+
     function drawLine(key, color, dashed) {
+      // 1. Desenha a linha
       ctx.beginPath();
       ctx.strokeStyle = color;
       ctx.lineWidth = dashed ? 1.5 : 2;
@@ -5116,47 +5120,88 @@
       });
       ctx.stroke();
       ctx.setLineDash([]);
-      // Dots + value labels
+      // 2. Desenha dots e coleta labels (sem renderizar ainda)
       data.forEach(function(d, i) {
         var v = d[key] || 0;
         ctx.beginPath();
         ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.fill();
-        // Value label — posicionamento robusto com múltiplas checagens
-        var dotY    = yPos(v);
-        var topBound    = PAD.top + 10;
-        var bottomBound = H - PAD.bottom - 10;
-        var labelY  = dotY - 9; // padrão: acima do ponto
-
-        // 1. Se sai pelo topo, coloca abaixo
-        if (labelY < topBound) labelY = dotY + 13;
-
-        // 2. Se sai pelo fundo (valor muito pequeno na escala), sobe
-        if (labelY > bottomBound) labelY = bottomBound;
-
-        // 3. Evitar colisão com linha de meta — threshold de 14px
-        if (metaLineY !== null) {
-          if (Math.abs(labelY - metaLineY) < 14) {
-            // Ponto abaixo da meta → empurra label para baixo da linha
-            // Ponto acima da meta → empurra label para cima da linha
-            labelY = (dotY > metaLineY) ? metaLineY + 14 : metaLineY - 14;
-            // Re-checa limites após o ajuste
-            if (labelY < topBound)    labelY = metaLineY + 14;
-            if (labelY > bottomBound) labelY = metaLineY - 14;
-          }
-        }
-
-        ctx.fillStyle = color;
-        ctx.font = 'bold 9px Inter,sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(v, xPos(i), labelY);
+        pendingLabels.push({ x: xPos(i), rawY: yPos(v), v: v, color: color });
       });
     }
 
-    // Draw lines
+    // Renderiza todos os labels depois de coletar, resolvendo colisões
+    function flushLabels() {
+      var TOP    = PAD.top + 10;
+      var BOTTOM = H - PAD.bottom - 10;
+      var GAP    = 13; // distância mínima entre labels (px)
+
+      // Agrupa por posição X (arredondada ao pixel)
+      var byX = {};
+      pendingLabels.forEach(function(lp) {
+        var k = Math.round(lp.x);
+        if (!byX[k]) byX[k] = [];
+        byX[k].push(lp);
+      });
+
+      Object.keys(byX).forEach(function(k) {
+        var group = byX[k];
+
+        // Calcula labelY inicial para cada item (acima do ponto)
+        group.forEach(function(lp) {
+          lp.labelY = lp.rawY - 9;
+          if (lp.labelY < TOP)    lp.labelY = lp.rawY + 13; // perto do topo → baixo
+          if (lp.labelY > BOTTOM) lp.labelY = BOTTOM;        // perto do fundo → sobe
+        });
+
+        // Ordena por labelY (de cima para baixo)
+        group.sort(function(a, b) { return a.labelY - b.labelY; });
+
+        // Resolve colisões entre labels do mesmo grupo (empurra para baixo)
+        for (var j = 1; j < group.length; j++) {
+          var prev = group[j - 1];
+          var curr = group[j];
+          if (curr.labelY - prev.labelY < GAP) {
+            curr.labelY = prev.labelY + GAP;
+          }
+        }
+
+        // Se o último ultrapassou o fundo, compacta de baixo para cima
+        for (var j = group.length - 1; j >= 0; j--) {
+          if (group[j].labelY > BOTTOM) group[j].labelY = BOTTOM;
+          if (j > 0 && group[j].labelY - group[j-1].labelY < GAP) {
+            group[j-1].labelY = group[j].labelY - GAP;
+          }
+        }
+
+        // Evita colisão com linha de meta (threshold 14px)
+        if (metaLineY !== null) {
+          group.forEach(function(lp) {
+            if (Math.abs(lp.labelY - metaLineY) < 14) {
+              lp.labelY = (lp.rawY > metaLineY) ? metaLineY + 14 : metaLineY - 14;
+              if (lp.labelY < TOP)    lp.labelY = metaLineY + 14;
+              if (lp.labelY > BOTTOM) lp.labelY = metaLineY - 14;
+            }
+          });
+        }
+
+        // Renderiza
+        group.forEach(function(lp) {
+          ctx.fillStyle = lp.color;
+          ctx.font = 'bold 9px Inter,sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(lp.v, lp.x, lp.labelY);
+        });
+      });
+    }
+
+    // Draw lines (coleta labels)
     drawLine(cfg.line1.key, cfg.line1.color, false);
     if (cfg.line2) drawLine(cfg.line2.key, cfg.line2.color, false);
+
+    // Renderiza todos os labels de uma vez, com colisões resolvidas
+    flushLabels();
 
     // Draw meta line — linha horizontal no nível da meta do mês/semana atual
     if (metaVal !== null && metaVal > 0) {
@@ -5169,7 +5214,7 @@
       ctx.lineTo(W - PAD.right, my);
       ctx.stroke();
       ctx.setLineDash([]);
-      // Label da meta — posiciona acima da linha; se perto do topo, abaixo
+      // Label da meta — posiciona acima; se perto do topo, abaixo
       var metaLabelY = my - 5;
       if (metaLabelY < PAD.top + 10) metaLabelY = my + 12;
       ctx.fillStyle = '#D12D2D';
@@ -5178,6 +5223,7 @@
       // Recua 40px da borda direita para não sobrepor o label do último ponto
       ctx.fillText('Meta ' + metaVal, W - PAD.right - 40, metaLabelY);
     }
+
 
     // Legend
     var legendEl = document.getElementById('funil-chart-legend');
