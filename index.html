@@ -4702,7 +4702,7 @@
     }
     const signal = vgAbortController.signal;
     try {
-      const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}`;
+      const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}&_t=${Date.now()}`;
       const res = await fetch(url, { signal });
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
@@ -5004,7 +5004,7 @@
       kpiAbortController = new AbortController();
     }
     try {
-      const url = `/api/hubspot?endpoint=funil_kpis&kpi_period=${kpiCurrentPeriod}`;
+      const url = `/api/hubspot?endpoint=funil_kpis&kpi_period=${kpiCurrentPeriod}&_t=${Date.now()}`;
       const res = await fetch(url, { signal: kpiAbortController.signal });
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
@@ -5335,7 +5335,7 @@
     if (funilChartAbort) funilChartAbort.abort();
     funilChartAbort = new AbortController();
     try {
-      var res = await fetch('/api/hubspot?endpoint=funil_chart&mode=' + mode, { signal: funilChartAbort.signal });
+      var res = await fetch('/api/hubspot?endpoint=funil_chart&mode=' + mode + '&_t=' + Date.now(), { signal: funilChartAbort.signal });
       if (!res.ok) throw new Error('API error');
       var d = await res.json();
       funilChartData = d;
