@@ -4629,14 +4629,26 @@
     dd.classList.toggle('open');
   }
   function selectPeriod(el, label) {
-    document.querySelectorAll('.period-opt').forEach(o => o.classList.remove('active'));
+    // UI
+    document.querySelectorAll('#periodDropdown .period-opt').forEach(o => o.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('periodLabel').textContent = label;
     updatePeriodLabels(label);
-    if (!el.closest('.period-custom')) {
-      document.getElementById('periodBtn').classList.remove('open');
-      document.getElementById('periodDropdown').classList.remove('open');
-    }
+    document.getElementById('periodBtn').classList.remove('open');
+    document.getElementById('periodDropdown').classList.remove('open');
+    // Feedback imediato: zera origem enquanto carrega
+    const origemWrap = document.getElementById('origemRows');
+    if (origemWrap) origemWrap.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--gray-light);">Carregando…</div>';
+    // Fetch — mapeia label → key de período e dispara
+    const periodMap = {
+      'Semana Atual':    'semana_atual',
+      'Semana Anterior': 'semana_anterior',
+      'Mês Atual':       'mes_atual',
+      'Mês Anterior':    'mes_anterior',
+    };
+    vgCurrentPeriod = periodMap[label] || 'semana_atual';
+    vgLiveData = null;
+    fetchVGData();
   }
   function applyCustom() {
     const f = document.getElementById('dateFrom').value;
@@ -4673,12 +4685,6 @@
     'rcc':        'rcc',
   };
 
-  const PERIOD_KEY_MAP = {
-    'Semana Atual':    'semana_atual',
-    'Semana Anterior': 'semana_anterior',
-    'Mês Atual':       'mes_atual',
-    'Mês Anterior':    'mes_anterior',
-  };
 
   let vgCurrentPeriod  = 'semana_atual';
   let vgCurrentPipeline = 'todos';
@@ -4702,8 +4708,12 @@
     }
     const signal = vgAbortController.signal;
     try {
-      const url = `/api/hubspot?endpoint=visao_geral&period=${vgCurrentPeriod}&pipeline=${vgCurrentPipeline}&_t=${Date.now()}`;
-      const res = await fetch(url, { signal });
+      const res = await fetch('/api/hubspot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: 'visao_geral', period: vgCurrentPeriod, pipeline: vgCurrentPipeline }),
+        signal,
+      });
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
       vgLiveData = d;
@@ -4983,14 +4993,6 @@
     safeBar(barId, pct);
   }
 
-  // ── Hook into existing period + pipeline filters ───────────────────────
-  const _origSelectPeriod = window.selectPeriod;
-  window.selectPeriod = function(el, label) {
-    if (_origSelectPeriod) _origSelectPeriod(el, label);
-    vgCurrentPeriod = PERIOD_KEY_MAP[label] || 'mes_atual';
-    fetchVGData();
-  };
-
 
   // ── Funil KPIs ───────────────────────────────────────────────────────────
   let kpiCurrentPeriod = 'wtd';
@@ -5004,8 +5006,12 @@
       kpiAbortController = new AbortController();
     }
     try {
-      const url = `/api/hubspot?endpoint=funil_kpis&kpi_period=${kpiCurrentPeriod}&_t=${Date.now()}`;
-      const res = await fetch(url, { signal: kpiAbortController.signal });
+      const res = await fetch('/api/hubspot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: 'funil_kpis', kpi_period: kpiCurrentPeriod }),
+        signal: kpiAbortController.signal,
+      });
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
       applyKpiData(d);
@@ -5335,7 +5341,12 @@
     if (funilChartAbort) funilChartAbort.abort();
     funilChartAbort = new AbortController();
     try {
-      var res = await fetch('/api/hubspot?endpoint=funil_chart&mode=' + mode + '&_t=' + Date.now(), { signal: funilChartAbort.signal });
+      var res = await fetch('/api/hubspot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: 'funil_chart', mode: mode }),
+        signal: funilChartAbort.signal,
+      });
       if (!res.ok) throw new Error('API error');
       var d = await res.json();
       funilChartData = d;
