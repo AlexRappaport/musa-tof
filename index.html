@@ -4741,6 +4741,7 @@
   let vgCurrentPipeline = 'todos';
   let vgLoading = false;
   let vgAbortController = null;
+  let vgRetryTimeout = null; // controla retry agendado — evita corrida de condição
 
   function setVGLoading(on) {
     vgLoading = on;
@@ -4749,8 +4750,9 @@
   }
 
   async function fetchVGData(retryCount = 0) {
-    // Novo abort controller apenas no primeiro disparo (não nos retries)
     if (retryCount === 0) {
+      // Cancela retry pendente e qualquer fetch anterior
+      if (vgRetryTimeout) { clearTimeout(vgRetryTimeout); vgRetryTimeout = null; }
       if (vgAbortController) vgAbortController.abort();
       vgAbortController = new AbortController();
       setVGLoading(true);
@@ -4769,9 +4771,9 @@
     } catch (err) {
       if (err.name === 'AbortError') { setVGLoading(false); return; }
       if (retryCount < 2) {
-        // Auto-retry: 2s na primeira tentativa, 4s na segunda
-        setTimeout(() => fetchVGData(retryCount + 1), retryCount === 0 ? 2000 : 4000);
-        return; // mantém loading spinner enquanto tenta
+        const delay = retryCount === 0 ? 2000 : 4000;
+        vgRetryTimeout = setTimeout(() => fetchVGData(retryCount + 1), delay);
+        return;
       }
       // Desiste após 3 tentativas
       setVGLoading(false);
@@ -4938,9 +4940,11 @@
   // ── Funil KPIs ───────────────────────────────────────────────────────────
   let kpiCurrentPeriod = 'wtd';
   let kpiAbortController = null;
+  let kpiRetryTimeout = null; // controla retry agendado
 
   async function fetchKpiData(retryCount = 0) {
     if (retryCount === 0) {
+      if (kpiRetryTimeout) { clearTimeout(kpiRetryTimeout); kpiRetryTimeout = null; }
       if (kpiAbortController) kpiAbortController.abort();
       kpiAbortController = new AbortController();
     }
@@ -4953,7 +4957,7 @@
     } catch(e) {
       if (e.name === 'AbortError') return;
       if (retryCount < 2) {
-        setTimeout(() => fetchKpiData(retryCount + 1), retryCount === 0 ? 2000 : 4000);
+        kpiRetryTimeout = setTimeout(() => fetchKpiData(retryCount + 1), retryCount === 0 ? 2000 : 4000);
         return;
       }
       console.warn('[Musa TOF] KPI fetch failed:', e.message);
