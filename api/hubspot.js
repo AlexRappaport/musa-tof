@@ -436,16 +436,39 @@ module.exports = async function handler(req, res) {
           return [new Date(now.getFullYear(), now.getMonth(), 1).getTime().toString(), now.getTime().toString()];
         }
 
-        const kpiPeriod = req.query.kpi_period || 'mtd';
-        const [pStart, pEnd] = getKpiRange(kpiPeriod);
+        function getPrevKpiRange(p) {
+          const now = new Date();
+          if (p === 'wtd') {
+            const d = now.getDay();
+            const thisMon = new Date(now); thisMon.setDate(now.getDate() - (d === 0 ? 6 : d - 1)); thisMon.setHours(0,0,0,0);
+            const prevMon = new Date(thisMon); prevMon.setDate(thisMon.getDate() - 7);
+            const prevSun = new Date(thisMon); prevSun.setMilliseconds(-1);
+            return [prevMon.getTime().toString(), prevSun.getTime().toString()];
+          }
+          if (p === 'mtd') {
+            const prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const prevEnd   = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+            return [prevStart.getTime().toString(), prevEnd.getTime().toString()];
+          }
+          return null; // ytd sem comparação
+        }
 
-        // Fetch deals + stageMap + event deal IDs em paralelo
-        const [rawDeals, stageData, eventDealIds] = await Promise.all([
+        const kpiPeriod = req.query.kpi_period || 'wtd';
+        const [pStart, pEnd] = getKpiRange(kpiPeriod);
+        const prevRange = getPrevKpiRange(kpiPeriod);
+
+        // Fetch deals atuais + período anterior (se aplicável) + stageMap + event IDs em paralelo
+        const [rawDeals, prevRawDeals, stageData, eventDealIds] = await Promise.all([
           fetchAllDeals(token, [
             { propertyName: 'createdate', operator: 'GTE', value: pStart },
             { propertyName: 'createdate', operator: 'LTE', value: pEnd  },
             { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
           ]),
+          prevRange ? fetchAllDeals(token, [
+            { propertyName: 'createdate', operator: 'GTE', value: prevRange[0] },
+            { propertyName: 'createdate', operator: 'LTE', value: prevRange[1] },
+            { propertyName: 'pipeline',   operator: 'IN',  values: ALL_PIPELINE_IDS },
+          ]) : Promise.resolve([]),
           fetchStageMap(token),
           fetchEventDealIds(token),
         ]);
@@ -459,7 +482,18 @@ module.exports = async function handler(req, res) {
           return true;
         });
 
+        // Período anterior — mesma lógica de filtro
+        const prevKpiDeals = prevRawDeals.filter(d => {
+          if (kpiLostIds[d.properties.dealstage]) return false;
+          const detalhe = d.properties.detalhamento_de_canal || '';
+          if (detalhe === 'OUT - Lista ABM') return isAbm(d);
+          return true;
+        });
+
         const total    = kpiDeals.length;
+        const prevTotal = prevKpiDeals.length;
+        const totalDelta = total - prevTotal;
+        const totalDeltaPct = prevTotal > 0 ? Math.round(totalDelta / prevTotal * 100) : null;
         const pct      = n => total > 0 ? Math.round(n / total * 100) : 0;
 
         const mkt = kpiDeals.filter(d => {
@@ -475,7 +509,7 @@ module.exports = async function handler(req, res) {
         const propostas = kpiDeals.filter(d => PROPOSTA_IDS_KPI.includes(d.properties.dealstage)).length;
 
         return res.status(200).json({
-          kpi_period: kpiPeriod, total,
+          kpi_period: kpiPeriod, total, totalDelta, totalDeltaPct,
           mkt:      { n: mkt,       pct: pct(mkt)       },
           mapeados: { n: mapeados,  pct: pct(mapeados)  },
           reuniao:  { n: reunioes,  pct: pct(reunioes)  },
