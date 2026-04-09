@@ -1568,16 +1568,16 @@
             <div style="width:39%;background:var(--border);border-radius:10px;"></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:6px;">
-            <span style="font-size:10px;color:var(--blue-dark);font-weight:600;">150 passaram</span>
-            <span style="font-size:10px;color:var(--gray-light);">97 pendentes</span>
+            <span id="vg-sc-passaram" style="font-size:10px;color:var(--blue-dark);font-weight:600;">— passaram</span>
+            <span id="vg-sc-pendentes" style="font-size:10px;color:var(--gray-light);">— pendentes</span>
           </div>
         </div>
 
         <div class="card animate-in">
           <div class="kpi-label">Tempo médio até qualificação</div>
           <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">
-            <div class="kpi-value medium">4.2 <span style="font-size:16px;font-family:'Inter';font-weight:400;color:var(--gray-light);">dias</span></div>
-            <div class="delta down" style="margin-bottom:4px;">↑ +0.8d <span class="compare-suffix" id="compareSuffix2"></span></div>
+            <div id="vg-tempo-val" class="kpi-value medium">—</div>
+            <div id="vg-tempo-delta" class="delta neutral" style="margin-bottom:4px;">—</div>
           </div>
           <div style="font-size:11px;color:var(--gray-light);line-height:1.6;">Mediana de tempo em Backlog antes de ser movido para <strong style="font-weight:600;color:var(--gray);">Recusar</strong>, <strong style="font-weight:600;color:var(--gray);">A Validar</strong> ou <strong style="font-weight:600;color:var(--gray);">Definição de Canal</strong></div>
         </div>
@@ -4876,16 +4876,59 @@
     // ── Scorecard ─────────────────────────────────────────────────────────
     const sc = d.scorecard;
     if (sc) {
-      safeText('vg-cobertura-val',  sc.cobertura + '%');
+      safeText('vg-cobertura-val', sc.cobertura + '%');
       safeBar('vg-cobertura-bar-el', sc.cobertura);
-      // Qualificados / A Validar / Recusar bars
+
+      // Passaram / Pendentes — dados reais
+      const passaram  = sc.passaram  ?? (sc.qualificado + sc.a_validar + sc.recusar);
+      const pendentes = sc.pendentes ?? sc.sem_status;
+      safeText('vg-sc-passaram',  passaram  + ' passaram');
+      safeText('vg-sc-pendentes', pendentes + ' pendentes');
+
+      // Qualificados / A Validar / Recusar — números e barras
       const total = sc.total || 1;
-      safeText('vg-sc-qualif',   sc.qualificado);
-      safeText('vg-sc-validar',  sc.a_validar);
-      safeText('vg-sc-recusar',  sc.recusar);
+      safeText('vg-sc-qualif',  sc.qualificado);
+      safeText('vg-sc-validar', sc.a_validar);
+      safeText('vg-sc-recusar', sc.recusar);
       safeBar('vg-sc-qualif-bar',  Math.round(sc.qualificado / total * 100));
       safeBar('vg-sc-validar-bar', Math.round(sc.a_validar   / total * 100));
       safeBar('vg-sc-recusar-bar', Math.round(sc.recusar     / total * 100));
+
+      // Badges de delta vs período anterior
+      if (sc.prev) {
+        function renderDelta(id, cur, prev) {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const diff = cur - prev;
+          if (diff === 0) { el.textContent = '→ 0 vs per. ant.'; el.className = 'delta neutral'; return; }
+          const arrow = diff > 0 ? '↑' : '↓';
+          el.textContent = arrow + ' ' + Math.abs(diff) + ' vs per. ant.';
+          // Para Recusar: subir é ruim (down class); Para A Validar e Def. Canal: subir é bom (up)
+          el.className = 'delta ' + (id === 'recusarDelta'
+            ? (diff > 0 ? 'down' : 'up')
+            : (diff > 0 ? 'up'   : 'down'));
+        }
+        renderDelta('recusarDelta', sc.recusar,     sc.prev.recusar);
+        renderDelta('validarDelta', sc.a_validar,   sc.prev.a_validar);
+        renderDelta('canalDelta',   sc.qualificado, sc.prev.qualificado);
+      }
+    }
+
+    // ── Tempo Médio até Qualificação ──────────────────────────────────────
+    const tempo = d.tempo;
+    if (tempo && tempo.mediana !== null) {
+      safeText('vg-tempo-val', tempo.mediana + ' dias');
+      // Badge de delta
+      const tempoBadge = document.getElementById('vg-tempo-delta');
+      if (tempoBadge && tempo.delta !== null) {
+        const abs = Math.abs(tempo.delta);
+        const arrow = tempo.delta > 0 ? '↑' : '↓';
+        // Tempo crescendo = ruim (demora mais) = down class; diminuindo = bom = up
+        tempoBadge.textContent = arrow + ' +' + abs + 'd vs per. ant.';
+        tempoBadge.className   = 'delta ' + (tempo.delta > 0 ? 'down' : 'up');
+      } else if (tempoBadge) {
+        tempoBadge.style.display = 'none';
+      }
     }
 
     // Update last refreshed timestamp
