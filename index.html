@@ -4717,10 +4717,14 @@
       if (!res.ok) throw new Error('API error ' + res.status);
       const d = await res.json();
       vgLiveData = d;
-      applyVGData(d);
       setVGLoading(false);
       const overlay = document.getElementById('vg-loading-overlay');
       if (overlay) overlay.style.display = 'none';
+      try {
+        applyVGData(d);
+      } catch(applyErr) {
+        console.error('[Musa TOF] applyVGData error:', applyErr);
+      }
     } catch (err) {
       if (err.name === 'AbortError') { setVGLoading(false); return; }
       if (retryCount < 2) {
@@ -4934,19 +4938,18 @@
       safeBar('vg-sc-recusar-bar', Math.round(sc.recusar     / total * 100));
 
       // Badges de delta vs período anterior
+      const renderDelta = function(id, cur, prev) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const diff = cur - prev;
+        if (diff === 0) { el.textContent = '→ 0 vs per. ant.'; el.className = 'delta neutral'; return; }
+        const arrow = diff > 0 ? '↑' : '↓';
+        el.textContent = arrow + ' ' + Math.abs(diff) + ' vs per. ant.';
+        el.className = 'delta ' + (id === 'recusarDelta'
+          ? (diff > 0 ? 'down' : 'up')
+          : (diff > 0 ? 'up'   : 'down'));
+      };
       if (sc.prev) {
-        function renderDelta(id, cur, prev) {
-          const el = document.getElementById(id);
-          if (!el) return;
-          const diff = cur - prev;
-          if (diff === 0) { el.textContent = '→ 0 vs per. ant.'; el.className = 'delta neutral'; return; }
-          const arrow = diff > 0 ? '↑' : '↓';
-          el.textContent = arrow + ' ' + Math.abs(diff) + ' vs per. ant.';
-          // Para Recusar: subir é ruim (down class); Para A Validar e Def. Canal: subir é bom (up)
-          el.className = 'delta ' + (id === 'recusarDelta'
-            ? (diff > 0 ? 'down' : 'up')
-            : (diff > 0 ? 'up'   : 'down'));
-        }
         renderDelta('recusarDelta', sc.recusar,     sc.prev.recusar);
         renderDelta('validarDelta', sc.a_validar,   sc.prev.a_validar);
         renderDelta('canalDelta',   sc.qualificado, sc.prev.qualificado);
