@@ -472,9 +472,9 @@ module.exports = async function handler(req, res) {
           else scPrev.sem_status++;
         }
 
-        // Tempo médio até qualificação — mediana de dias em backlog (Pré Vendas)
-        // Lógica: deals do Pré Vendas criados no período que JÁ saíram do backlog
-        // Proxy: hs_v2_date_entered_current_stage - createdate = tempo até sair do backlog
+        // Tempo médio em backlog — mediana de dias que deals do Pré Vendas
+        // criados no período AINDA estão em backlog (hoje - createdate)
+        // Métrica acionável: mostra há quanto tempo leads estão sem classificação
         function medianDays(arr) {
           if (!arr.length) return null;
           const sorted = [...arr].sort((a, b) => a - b);
@@ -484,33 +484,29 @@ module.exports = async function handler(req, res) {
             : (sorted[mid - 1] + sorted[mid]) / 2;
         }
 
-        const BACKLOG_STAGE_ID = '1292533281'; // stage backlog do Pré Vendas
+        const BACKLOG_STAGE_ID = '1292533281';
+        const now_ts = Date.now();
+
         const tempoDeals = filteredDeals.filter(d =>
           d.properties.pipeline === PIPELINE_IDS.pre_vendas &&
-          d.properties.dealstage !== BACKLOG_STAGE_ID &&
-          d.properties.hs_v2_date_entered_current_stage &&
+          d.properties.dealstage === BACKLOG_STAGE_ID &&
           d.properties.createdate
         );
-        const tempoDias = tempoDeals.map(d => {
-          const diff = new Date(d.properties.hs_v2_date_entered_current_stage).getTime()
-                     - new Date(d.properties.createdate).getTime();
-          return Math.max(0, diff / 86400000); // ms → dias
-        });
+        const tempoDias = tempoDeals.map(d =>
+          Math.max(0, (now_ts - new Date(d.properties.createdate).getTime()) / 86400000)
+        );
         const tempoMediana = medianDays(tempoDias);
         const tempoMedianaRounded = tempoMediana !== null ? Math.round(tempoMediana * 10) / 10 : null;
 
-        // Tempo médio — período anterior (para delta)
+        // Período anterior — mesmo cálculo sobre prevFiltered
         const tempoDealsPrev = prevFiltered.filter(d =>
           d.properties.pipeline === PIPELINE_IDS.pre_vendas &&
-          d.properties.dealstage !== BACKLOG_STAGE_ID &&
-          d.properties.hs_v2_date_entered_current_stage &&
+          d.properties.dealstage === BACKLOG_STAGE_ID &&
           d.properties.createdate
         );
-        const tempoDiasPrev = tempoDealsPrev.map(d => {
-          const diff = new Date(d.properties.hs_v2_date_entered_current_stage).getTime()
-                     - new Date(d.properties.createdate).getTime();
-          return Math.max(0, diff / 86400000);
-        });
+        const tempoDiasPrev = tempoDealsPrev.map(d =>
+          Math.max(0, (now_ts - new Date(d.properties.createdate).getTime()) / 86400000)
+        );
         const tempoMedianaPrev = medianDays(tempoDiasPrev);
         const tempoMedianaPrevRounded = tempoMedianaPrev !== null ? Math.round(tempoMedianaPrev * 10) / 10 : null;
         const tempoDelta = (tempoMedianaRounded !== null && tempoMedianaPrevRounded !== null)
