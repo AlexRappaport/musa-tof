@@ -9,8 +9,8 @@ const PIPELINE_NAMES = {
   '863330820': 'Pré Vendas/MKT', '821308952': 'SMB 3.0',
   '795451392': 'Enterprise 3.0', '874756940': 'Expansão', '885602211': 'RCC',
 };
-const BACKLOG_STAGE  = 'backlog';
-const ATIVADO_STAGES = ['contato_inicial','agendado','reuniao_diagnostico','concluido'];
+const BACKLOG_STAGE  = '1292533281'; // Backlog
+const ATIVADO_STAGES = ['1292533287', '1295430920', '1295430921']; // Contato Inicial, Agendado, Reunião de Diagnóstico
 
 // ── Regra ABM Qualificado (fonte única de verdade) ───────────────────────────
 // Deal com detalhamento_de_canal = 'OUT - Lista ABM' SÓ conta se:
@@ -427,7 +427,10 @@ module.exports = async function handler(req, res) {
           fetchOwners(token),
           // Snapshot Pré Vendas via count-only (1 chamada por métrica, sem paginação)
           fetchDealCount(token, [PV_FILTER]),
-          fetchDealCount(token, [PV_FILTER, { propertyName: 'dealstage', operator: 'NEQ', value: BACKLOG_STAGE }]),
+          // Qualificados = tudo que passou positivamente pelo scorecard
+          // (não está em Backlog, A Validar ou Recusar)
+          fetchDealCount(token, [PV_FILTER, { propertyName: 'dealstage', operator: 'NOT_IN', values: ['1292533281', '1292533282', '1297403449'] }]),
+          // Ativados = Contato Inicial + Agendado + Reunião de Diagnóstico
           fetchDealCount(token, [PV_FILTER, { propertyName: 'dealstage', operator: 'IN', values: ATIVADO_STAGES }]),
         ]);
 
