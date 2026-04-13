@@ -175,6 +175,9 @@ function getPeriodFilters(period) {
 
 // ── Canal aggregation ────────────────────────────────────────────────────────
 function aggregateCanais(curDeals, prevDeals, ownerMap, stageMap, portalId) {
+  const AQUECIMENTO_STAGE = '1292533285'; // Aquecimento de lead — excluído da Origem dos Leads
+  curDeals  = curDeals.filter(d => d.properties.dealstage !== AQUECIMENTO_STAGE);
+  prevDeals = prevDeals.filter(d => d.properties.dealstage !== AQUECIMENTO_STAGE);
   const map = {};
 
   for (const deal of curDeals) {
