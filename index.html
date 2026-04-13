@@ -1688,7 +1688,7 @@
         LEADS POR ETAPA DE PRÉ VENDAS
         
         <div style="margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0;">
-          <span style="font-size:11px;font-weight:600;color:var(--blue-dark);text-transform:none;letter-spacing:0;">247 no pipe</span>
+          <span id="pv-pipe-total" style="font-size:11px;font-weight:600;color:var(--blue-dark);text-transform:none;letter-spacing:0;">— no pipe</span>
           <div style="width:1px;height:12px;background:var(--border);"></div>
           <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-light);"><span style="width:7px;height:7px;border-radius:2px;background:#AEADA8;display:inline-block;flex-shrink:0;"></span>Entrada</span>
           <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-light);"><span style="width:7px;height:7px;border-radius:2px;background:#FFBA86;display:inline-block;flex-shrink:0;"></span>Scorecard</span>
@@ -1705,20 +1705,47 @@
       </div>
 
       <script>
-      (function() {
-        const STAGES = [
-          { label:"Backlog",         n:35,  color:"#AEADA8", tip:"Aguardando classificação inicial"            },
-          { label:"A Validar",       n:58,  color:"#FFBA86", tip:"Em análise — aprovação ou recusa pendente"  },
-          { label:"Recusar",         n:65,  color:"#E8A06E", tip:"Fora do ICP — encerramento em andamento"    },
-          { label:"Def. Canal",      n:24,  color:"#FFD4B0", tip:"Qualificado — definindo canal de abordagem" },
-          { label:"Aquecimento",     n:27,  color:"#8AA5FF", tip:"Em cadência ativa de contatos outbound"     },
-          { label:"Prosp. Direta",   n:20,  color:"#6B88E0", tip:"Abordagem direta pelo closer responsável"   },
-          { label:"Contato Inicial", n:11,  color:"#A8BFFF", tip:"Primeiro contato realizado"                 },
-          { label:"Agendado",        n:5,   color:"#7B9AFF", tip:"Reunião de diagnóstico marcada"             },
-          { label:"Reunião Diag.",   n:2,   color:"#52A862", tip:"Diagnóstico em andamento"                   },
-          { label:"Concluído",       n:0,   color:"#429952", tip:"Diagnóstico concluído — seguiu para pipeline"},
-        ];
+      // ── Leads por Etapa de Pré Vendas — dinâmico ────────────────────────────
+      let pvStagesData = null;
 
+      async function fetchPvStages() {
+        try {
+          const res = await fetch('/api/hubspot?endpoint=pv_stages&_t=' + Date.now());
+          if (!res.ok) return;
+          const d = await res.json();
+          pvStagesData = d.stages;
+          const totalEl = document.getElementById('pv-pipe-total');
+          if (totalEl) totalEl.textContent = d.total + ' no pipe';
+          drawPvStages();
+        } catch(e) { console.error('[Musa TOF] pv_stages error:', e); }
+      }
+
+      (function() {
+        const GROUP_BREAKS = [1, 4, 8];
+        const canvas  = document.getElementById('pipeCanvas');
+        const card    = canvas ? canvas.closest('.card') : null;
+
+        window.drawPvStages = function() {
+          if (!canvas || !card) return;
+          const STAGES = pvStagesData || [
+            { label:'Backlog',         n:0, color:'#AEADA8', tip:'Aguardando classificação inicial'             },
+            { label:'A Validar',       n:0, color:'#FFBA86', tip:'Em análise — aprovação ou recusa pendente'   },
+            { label:'Recusar',         n:0, color:'#E8A06E', tip:'Fora do ICP — encerramento em andamento'     },
+            { label:'Def. Canal',      n:0, color:'#FFD4B0', tip:'Qualificado — definindo canal de abordagem'  },
+            { label:'Aquecimento',     n:0, color:'#8AA5FF', tip:'Em cadência ativa de contatos outbound'      },
+            { label:'Prosp. Direta',   n:0, color:'#6B88E0', tip:'Abordagem direta pelo closer responsável'    },
+            { label:'Contato Inicial', n:0, color:'#A8BFFF', tip:'Primeiro contato realizado'                  },
+            { label:'Agendado',        n:0, color:'#7B9AFF', tip:'Reunião de diagnóstico marcada'              },
+            { label:'Reunião Diag.',   n:0, color:'#52A862', tip:'Diagnóstico em andamento'                    },
+            { label:'Concluído',       n:0, color:'#429952', tip:'Diagnóstico concluído — seguiu para pipeline' },
+          ];
+          draw(STAGES);
+        };
+
+        // alias for resize
+        window.draw = window.drawPvStages;
+
+        function draw(STAGES) {
         const GROUP_BREAKS = [1, 4, 8]; // indices that start a new group
         const TOTAL = STAGES.reduce((s,x) => s+x.n, 0);
         const MAX   = Math.max(...STAGES.map(x => x.n));
@@ -5408,6 +5435,7 @@
   // ── Initial load ──────────────────────────────────────────────────────
   fetchVGData();
   fetchKpiData();
+  fetchPvStages();
 
   // ── VG Pipeline filter ───────────────────────────────────────────────────
   const VG_PIPELINE_DATA = {
