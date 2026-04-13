@@ -440,9 +440,10 @@ module.exports = async function handler(req, res) {
         const stageMap  = stageData.labels  || {};
         const lostIds   = stageData.lostIds || {};
 
-        // Excluir deals em etapa "Perdido" (closed-lost) da contagem de leads
-        const activeDeals     = allDeals.filter(d => !lostIds[d.properties.dealstage]);
-        const activePrevDeals = prevDeals.filter(d => !lostIds[d.properties.dealstage]);
+        // Excluir deals em etapa "Perdido" (closed-lost) e "Aquecimento de lead" da contagem
+        const AQUECIMENTO     = '1292533285';
+        const activeDeals     = allDeals.filter(d => !lostIds[d.properties.dealstage] && d.properties.dealstage !== AQUECIMENTO);
+        const activePrevDeals = prevDeals.filter(d => !lostIds[d.properties.dealstage] && d.properties.dealstage !== AQUECIMENTO);
 
         // By pipeline
         const byPipeline = {};
