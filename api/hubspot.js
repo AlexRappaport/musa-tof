@@ -721,6 +721,34 @@ module.exports = async function handler(req, res) {
         });
       }
 
+      case 'pv_stages': {
+        const PV = PIPELINE_IDS.pre_vendas;
+        const PV_FILTER = { propertyName: 'pipeline', operator: 'EQ', value: PV };
+
+        const STAGE_DEFS = [
+          { id: '1292533281', label: 'Backlog',         color: '#AEADA8', tip: 'Aguardando classificação inicial'             },
+          { id: '1292533282', label: 'A Validar',       color: '#FFBA86', tip: 'Em análise — aprovação ou recusa pendente'   },
+          { id: '1297403449', label: 'Recusar',         color: '#E8A06E', tip: 'Fora do ICP — encerramento em andamento'     },
+          { id: '1292533284', label: 'Def. Canal',      color: '#FFD4B0', tip: 'Qualificado — definindo canal de abordagem'  },
+          { id: '1292533285', label: 'Aquecimento',     color: '#8AA5FF', tip: 'Em cadência ativa de contatos outbound'      },
+          { id: '1292533286', label: 'Prosp. Direta',   color: '#6B88E0', tip: 'Abordagem direta pelo closer responsável'    },
+          { id: '1292533287', label: 'Contato Inicial', color: '#A8BFFF', tip: 'Primeiro contato realizado'                  },
+          { id: '1295430920', label: 'Agendado',        color: '#7B9AFF', tip: 'Reunião de diagnóstico marcada'              },
+          { id: '1295430921', label: 'Reunião Diag.',   color: '#52A862', tip: 'Diagnóstico em andamento'                    },
+          { id: '1295463995', label: 'Concluído',       color: '#429952', tip: 'Diagnóstico concluído — seguiu para pipeline' },
+        ];
+
+        // Busca todos os counts em paralelo
+        const counts = await Promise.all(
+          STAGE_DEFS.map(s => fetchDealCount(token, [PV_FILTER, { propertyName: 'dealstage', operator: 'EQ', value: s.id }]))
+        );
+
+        const stages = STAGE_DEFS.map((s, i) => ({ ...s, n: counts[i] }));
+        const total  = stages.reduce((sum, s) => sum + s.n, 0);
+
+        return res.status(200).json({ stages, total });
+      }
+
       case 'funil_chart': {
         const chartMode = params.mode || 'wtd';
         const now = new Date();
